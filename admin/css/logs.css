@@ -1,0 +1,293 @@
+/* Card Styles */
+.card {
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    margin-bottom: 20px;
+    overflow: hidden;
+}
+
+.card-header {
+    padding: 20px;
+    border-bottom: 1px solid #e5e7eb;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.card-header h3 {
+    color: #1e293b;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.card-header i {
+    color: #2563eb;
+}
+
+/* Filter Form Styles */
+.filter-form {
+    padding: 20px;
+}
+
+.filter-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    align-items: end;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group label {
+    margin-bottom: 5px;
+    color: #374151;
+    font-weight: 500;
+}
+
+.form-group input,
+.form-group select {
+    padding: 10px;
+    border: 1px solid #d1d5db;
+    border-radius: 5px;
+    font-size: 14px;
+    transition: border-color 0.3s ease;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+    outline: none;
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.filter-buttons {
+    display: flex;
+    align-items: flex-end;
+}
+
+.button-group {
+    display: flex;
+    gap: 10px;
+}
+
+/* Button Styles */
+.btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+}
+
+.btn-primary {
+    background: #2563eb;
+    color: white;
+}
+
+.btn-primary:hover {
+    background: #1d4ed8;
+}
+
+.btn-secondary {
+    background: #6b7280;
+    color: white;
+}
+
+.btn-secondary:hover {
+    background: #4b5563;
+}
+
+.btn-success {
+    background: #059669;
+    color: white;
+}
+
+.btn-success:hover {
+    background: #047857;
+}
+
+/* Table Styles */
+.logs-table {
+    overflow-x: auto;
+}
+
+.logs-table table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.logs-table th,
+.logs-table td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.logs-table th {
+    background: #f9fafb;
+    font-weight: 600;
+    color: #374151;
+}
+
+.logs-table tr:hover {
+    background: #f9fafb;
+}
+
+/* Log Time Display */
+.log-time {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.log-time .date {
+    font-weight: 500;
+    color: #1e293b;
+}
+
+.log-time .time {
+    font-size: 12px;
+    color: #6b7280;
+}
+
+/* User Info Display */
+.user-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.user-info .username {
+    font-weight: 500;
+    color: #1e293b;
+}
+
+.user-info .full-name {
+    font-size: 12px;
+    color: #6b7280;
+}
+
+/* Action Badge Styles */
+.action-badge {
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    text-transform: uppercase;
+}
+
+.action-login {
+    background: #d1fae5;
+    color: #065f46;
+}
+
+.action-logout {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+.action-user {
+    background: #dbeafe;
+    color: #1e40af;
+}
+
+/* IP Address Display */
+.ip-address {
+    font-family: 'Courier New', monospace;
+    font-size: 12px;
+    color: #6b7280;
+    background: #f3f4f6;
+    padding: 4px 8px;
+    border-radius: 4px;
+}
+
+/* Export Section */
+.export-section {
+    display: flex;
+    align-items: center;
+}
+
+/* Text Utilities */
+.text-center {
+    text-align: center;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .filter-grid {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+    
+    .card-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .export-section {
+        width: 100%;
+        justify-content: flex-start;
+    }
+    
+    .logs-table {
+        font-size: 14px;
+    }
+    
+    .logs-table th,
+    .logs-table td {
+        padding: 8px;
+    }
+    
+    .button-group {
+        flex-direction: column;
+        width: 100%;
+    }
+    
+    .btn {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+@media (max-width: 480px) {
+    .logs-table {
+        font-size: 12px;
+    }
+    
+    .logs-table th,
+    .logs-table td {
+        padding: 6px;
+    }
+    
+    .action-badge {
+        font-size: 10px;
+        padding: 4px 8px;
+    }
+    
+    .ip-address {
+        font-size: 10px;
+        padding: 2px 6px;
+    }
+    
+    .log-time .time,
+    .user-info .full-name {
+        font-size: 10px;
+    }
+}

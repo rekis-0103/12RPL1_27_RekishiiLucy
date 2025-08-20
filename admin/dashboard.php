@@ -13,6 +13,27 @@ $user_id = $_SESSION['user_id'];
 $username = $_SESSION['username'];
 $full_name = $_SESSION['full_name'];
 $role = $_SESSION['role'];
+
+// Get statistics
+$total_users_query = "SELECT COUNT(*) as total FROM users WHERE hapus = 0";
+$total_users_result = mysqli_query($conn, $total_users_query);
+$total_users = mysqli_fetch_assoc($total_users_result)['total'];
+
+$active_jobs_query = "SELECT COUNT(*) as total FROM lowongan WHERE status = 'open' AND hapus = 0";
+$active_jobs_result = mysqli_query($conn, $active_jobs_query);
+$active_jobs = mysqli_fetch_assoc($active_jobs_result)['total'];
+
+$total_applications_query = "SELECT COUNT(*) as total FROM applications";
+$total_applications_result = mysqli_query($conn, $total_applications_query);
+$total_applications = mysqli_fetch_assoc($total_applications_result)['total'];
+
+// Get recent activity (5 most recent)
+$recent_activity_query = "SELECT l.*, u.username, u.full_name 
+                         FROM log_aktivitas l 
+                         LEFT JOIN users u ON l.user_id = u.user_id 
+                         ORDER BY l.log_time DESC 
+                         LIMIT 5";
+$recent_activity_result = mysqli_query($conn, $recent_activity_query);
 ?>
 <!DOCTYPE html>
 <html lang="id">
@@ -52,46 +73,42 @@ $role = $_SESSION['role'];
             <div class="stats-grid">
                 <div class="stat-card">
                     <i class="fas fa-users"></i>
-                    <h3>4</h3>
+                    <h3><?php echo $total_users; ?></h3>
                     <p>Total User</p>
                 </div>
                 <div class="stat-card">
                     <i class="fas fa-briefcase"></i>
-                    <h3>0</h3>
+                    <h3><?php echo $active_jobs; ?></h3>
                     <p>Lowongan Aktif</p>
                 </div>
                 <div class="stat-card">
                     <i class="fas fa-file-alt"></i>
-                    <h3>0</h3>
+                    <h3><?php echo $total_applications; ?></h3>
                     <p>Lamaran Masuk</p>
-                </div>
-                <div class="stat-card">
-                    <i class="fas fa-newspaper"></i>
-                    <h3>0</h3>
-                    <p>Berita</p>
                 </div>
             </div>
             
             <div class="recent-activity">
                 <h3>Aktivitas Terbaru</h3>
-                <div class="activity-item">
-                    <div class="activity-icon">
-                        <i class="fas fa-sign-in-alt"></i>
+                <?php if (mysqli_num_rows($recent_activity_result) > 0): ?>
+                    <?php while ($activity = mysqli_fetch_assoc($recent_activity_result)): ?>
+                        <div class="activity-item">
+                            <div class="activity-icon">
+                                <i class="fas fa-<?php echo ($activity['action'] == 'Login') ? 'sign-in-alt' : (($activity['action'] == 'Logout') ? 'sign-out-alt' : 'user'); ?>"></i>
+                            </div>
+                            <div class="activity-content">
+                                <h4><?php echo htmlspecialchars($activity['action']); ?></h4>
+                                <p><?php echo htmlspecialchars($activity['full_name'] ?: $activity['username']); ?> - <?php echo date('d/m/Y H:i', strtotime($activity['log_time'])); ?></p>
+                            </div>
+                        </div>
+                    <?php endwhile; ?>
+                <?php else: ?>
+                    <div class="activity-item">
+                        <div class="activity-content">
+                            <p>Tidak ada aktivitas terbaru</p>
+                        </div>
                     </div>
-                    <div class="activity-content">
-                        <h4>Login Berhasil</h4>
-                        <p>Anda telah login ke sistem</p>
-                    </div>
-                </div>
-                <div class="activity-item">
-                    <div class="activity-icon">
-                        <i class="fas fa-user"></i>
-                    </div>
-                    <div class="activity-content">
-                        <h4>Dashboard Admin</h4>
-                        <p>Mengakses halaman dashboard admin</p>
-                    </div>
-                </div>
+                <?php endif; ?>
             </div>
         </div>
     </div>

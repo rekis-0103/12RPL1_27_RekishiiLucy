@@ -103,10 +103,10 @@ CREATE TABLE `live_streaming` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `log_aktifitas`
+-- Table structure for table `log_aktivitas`
 --
 
-CREATE TABLE `log_aktifitas` (
+CREATE TABLE `log_aktivitas` (
   `log_id` int NOT NULL,
   `user_id` int DEFAULT NULL,
   `action` varchar(255) NOT NULL,
