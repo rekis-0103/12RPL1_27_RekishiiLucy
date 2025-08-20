@@ -55,7 +55,7 @@ $actions_result = mysqli_query($conn, $actions_query);
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Log Aktifitas - PT Waindo Specterra</title>
+    <title>Log Aktivitas - PT Waindo Specterra</title>
     <link rel="stylesheet" href="../assets/css/common.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="css/dashboard.css">
@@ -66,7 +66,7 @@ $actions_result = mysqli_query($conn, $actions_query);
     <div class="dashboard-container">
         <div class="sidebar" id="sidebar">
             <div class="sidebar-header">
-                <h3>Log Aktifitas</h3>
+                <h3>Log Aktivitas</h3>
                 <p>Selamat datang, <?php echo htmlspecialchars($full_name); ?></p>
             </div>
 

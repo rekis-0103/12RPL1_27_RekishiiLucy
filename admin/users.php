@@ -14,6 +14,17 @@ $username = $_SESSION['username'];
 $full_name = $_SESSION['full_name'];
 $role = $_SESSION['role'];
 
+// Function to log activities
+function logActivity($conn, $admin_user_id, $action, $details = '') {
+    $admin_user_id = (int)$admin_user_id;
+    $action = mysqli_real_escape_string($conn, $action);
+    $details = mysqli_real_escape_string($conn, $details);
+    $ip_address = $_SERVER['REMOTE_ADDR'] ?? '::1';
+    
+    $log_query = "INSERT INTO log_aktivitas (user_id, action, ip_address) VALUES ($admin_user_id, '$action', '$ip_address')";
+    mysqli_query($conn, $log_query);
+}
+
 // Handle form submissions
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (isset($_POST['action'])) {
@@ -30,12 +41,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 
                 if (mysqli_num_rows($check_result) > 0) {
                     $error = "Username atau email sudah ada!";
+                    logActivity($conn, $user_id, "Gagal menambah user: Username/email sudah ada", "Username: $username, Email: $email");
                 } else {
                     $insert_query = "INSERT INTO users (username, password, email, full_name, role) VALUES ('$username', '$password', '$email', '$full_name', '$role')";
                     if (mysqli_query($conn, $insert_query)) {
                         $success = "User berhasil ditambahkan!";
+                        logActivity($conn, $user_id, "Menambah user baru", "Username: $username, Email: $email, Role: $role, Nama: $full_name");
                     } else {
                         $error = "Gagal menambahkan user!";
+                        logActivity($conn, $user_id, "Gagal menambah user: Database error", "Username: $username, Email: $email");
                     }
                 }
                 break;
@@ -44,19 +58,26 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 $update_user_id = (int)$_POST['user_id'];
                 $new_role = mysqli_real_escape_string($conn, $_POST['new_role']);
                 
-                // Prevent admin from changing other admin roles
-                $check_admin_query = "SELECT role FROM users WHERE user_id = $update_user_id";
-                $check_admin_result = mysqli_query($conn, $check_admin_query);
-                $user_data = mysqli_fetch_assoc($check_admin_result);
+                // Get user info for logging
+                $get_user_query = "SELECT username, full_name, role FROM users WHERE user_id = $update_user_id";
+                $get_user_result = mysqli_query($conn, $get_user_query);
+                $user_data = mysqli_fetch_assoc($get_user_result);
+                $old_role = $user_data['role'];
+                $target_username = $user_data['username'];
+                $target_fullname = $user_data['full_name'];
                 
+                // Prevent admin from changing other admin roles
                 if ($user_data['role'] == 'admin' && $_SESSION['user_id'] != $update_user_id) {
                     $error = "Tidak dapat mengubah role admin lain!";
+                    logActivity($conn, $user_id, "Gagal mengubah role: Mencoba mengubah admin lain", "Target user: $target_username ($target_fullname)");
                 } else {
                     $update_query = "UPDATE users SET role = '$new_role' WHERE user_id = $update_user_id";
                     if (mysqli_query($conn, $update_query)) {
                         $success = "Role user berhasil diubah!";
+                        logActivity($conn, $user_id, "Mengubah role user", "User: $target_username ($target_fullname), Role lama: $old_role, Role baru: $new_role");
                     } else {
                         $error = "Gagal mengubah role user!";
+                        logActivity($conn, $user_id, "Gagal mengubah role: Database error", "User: $target_username, Role baru: $new_role");
                     }
                 }
                 break;
@@ -64,19 +85,26 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             case 'delete_user':
                 $delete_user_id = (int)$_POST['user_id'];
                 
-                // Prevent admin from deleting other admins
-                $check_admin_query = "SELECT role FROM users WHERE user_id = $delete_user_id";
-                $check_admin_result = mysqli_query($conn, $check_admin_query);
-                $user_data = mysqli_fetch_assoc($check_admin_result);
+                // Get user info for logging
+                $get_user_query = "SELECT username, full_name, role FROM users WHERE user_id = $delete_user_id";
+                $get_user_result = mysqli_query($conn, $get_user_query);
+                $user_data = mysqli_fetch_assoc($get_user_result);
+                $target_username = $user_data['username'];
+                $target_fullname = $user_data['full_name'];
+                $target_role = $user_data['role'];
                 
+                // Prevent admin from deleting other admins
                 if ($user_data['role'] == 'admin' && $_SESSION['user_id'] != $delete_user_id) {
                     $error = "Tidak dapat menghapus admin lain!";
+                    logActivity($conn, $user_id, "Gagal menghapus user: Mencoba menghapus admin lain", "Target user: $target_username ($target_fullname)");
                 } else {
                     $delete_query = "UPDATE users SET hapus = 1 WHERE user_id = $delete_user_id";
                     if (mysqli_query($conn, $delete_query)) {
                         $success = "User berhasil dihapus!";
+                        logActivity($conn, $user_id, "Menghapus user", "User: $target_username ($target_fullname), Role: $target_role");
                     } else {
                         $error = "Gagal menghapus user!";
+                        logActivity($conn, $user_id, "Gagal menghapus user: Database error", "User: $target_username");
                     }
                 }
                 break;
