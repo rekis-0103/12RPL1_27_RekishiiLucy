@@ -1,0 +1,133 @@
+body {
+    font-family: Arial, sans-serif;
+    background: #f4f4f4;
+    margin-top: 100px;
+}
+
+main {
+    text-align: center;
+    padding: 20px;
+}
+
+h1 {
+    margin-bottom: 20px;
+    color: #333;
+}
+
+.buttons {
+    margin-bottom: 30px;
+}
+
+button {
+    padding: 10px 25px;
+    margin: 0 10px;
+    border: none;
+    background: #3498db;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-size: 16px;
+}
+
+button:hover {
+    background: #2980b9;
+    transform: translateY(-2px);
+}
+
+.card-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 30px;
+    padding: 20px;
+}
+
+/* Card Style */
+.card {
+    background: white;
+    border-radius: 10px;
+    width: 250px;
+    padding: 20px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    text-align: center;
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeInUp 0.5s forwards;
+    transition: transform 0.3s;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 300px;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+}
+
+.card img {
+    width: 180px;
+    height: 120px;
+    object-fit: contain;
+    border-radius: 5px;
+    margin-bottom: 20px;
+}
+
+.card h3 {
+    margin: 0;
+    color: #333;
+    font-size: 18px;
+    margin-top: auto;
+    padding: 10px 0;
+}
+
+/* Animations */
+@keyframes fadeInUp {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.fade-out {
+    animation: fadeOutDown 0.5s forwards;
+}
+
+@keyframes fadeOutDown {
+    to {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .card {
+        width: 200px;
+        min-height: 250px;
+    }
+    
+    .card img {
+        width: 150px;
+        height: 100px;
+    }
+}
+
+@media (max-width: 576px) {
+    .buttons {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    button {
+        width: 80%;
+        margin: 0 auto;
+    }
+    
+    .card {
+        width: 80%;
+        min-height: auto;
+    }
+}

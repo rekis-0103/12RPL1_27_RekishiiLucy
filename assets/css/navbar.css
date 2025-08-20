@@ -1,0 +1,331 @@
+/* Navbar Container Improvements */
+.nav-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1200px;
+  padding: 0 20px;
+  overflow: visible;
+  margin-top: 7px;
+  margin-bottom: 7px;
+  margin-left: 180px;
+}
+
+/* Logo Improvements */
+.nav-logo {
+  flex-shrink: 0;
+}
+
+.nav-logo img {
+  max-width: 180px;
+  height: auto;
+  display: block;
+}
+
+/* Navigation Menu Improvements */
+.nav-menu {
+  display: flex;
+  gap: 1rem;
+  flex: 1; /* biar ambil ruang tengah */
+  justify-content: center; /* pusatkan menu */
+  list-style: none;
+}
+
+.nav-menu li {
+  margin: 0;
+  padding: 0;
+}
+
+.nav-menu a {
+  text-decoration: none;
+  color: #64748b;
+  font-weight: 500;
+  transition: color 0.3s ease;
+  padding: 0.75rem 1rem;
+  border-radius: 6px;
+  white-space: nowrap;
+  display: block;
+  font-size: 0.95rem;
+}
+
+.nav-menu a:hover,
+.nav-menu a.active {
+  color: #2563eb;
+  background-color: #f1f5f9;
+}
+
+/* Nav Right Container */
+.nav-right {
+  display: flex;
+  align-items: center;
+  margin-left: auto; /* dorong ke kanan */
+  padding-left: 1.5rem; /* kasih jarak dari menu terakhir */
+}
+
+/* Login Button Improvements */
+.login-btn {
+  background: #2563eb !important;
+  color: white !important;
+  padding: 0.75rem 1.5rem !important;
+  border-radius: 6px !important;
+  transition: all 0.3s ease !important;
+  font-weight: 600 !important;
+  white-space: nowrap !important;
+  display: inline-block !important;
+  text-align: center !important;
+  min-width: 80px !important;
+}
+
+.login-btn:hover {
+  background: #1d4ed8 !important;
+  transform: translateY(-1px) !important;
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3) !important;
+}
+
+/* User Dropdown Styles - Improved */
+.user-dropdown {
+  position: relative;
+  display: inline-block;
+  margin-left: 0.5rem;
+}
+
+.user-dropdown-btn {
+  background: #2563eb;
+  color: white !important;
+  padding: 0.75rem 1.25rem;
+  border-radius: 6px;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: 600;
+  white-space: nowrap;
+  font-size: 0.95rem;
+  border: none;
+  outline: none;
+}
+
+.user-dropdown-btn:hover {
+  background: #1d4ed8 !important;
+  color: white !important;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+}
+
+.user-dropdown-btn i {
+  font-size: 0.9rem;
+}
+
+.user-dropdown-content {
+  display: none;
+  position: absolute;
+  right: 0;
+  top: 100%;
+  background-color: white;
+  min-width: 200px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+  z-index: 1001;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid #e5e7eb;
+}
+
+.user-dropdown-content a {
+  color: #374151;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  transition: all 0.3s ease;
+  font-weight: 500;
+  font-size: 0.95rem;
+  border: none;
+  background: transparent;
+}
+
+.user-dropdown-content a:hover {
+  background-color: #f8fafc;
+  color: #2563eb;
+}
+
+.user-dropdown-content a:first-child {
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.user-dropdown-content a i {
+  width: 16px;
+  text-align: center;
+  font-size: 0.9rem;
+}
+
+.user-dropdown:hover .user-dropdown-content {
+  display: block;
+}
+
+/* Hamburger Menu */
+.hamburger {
+  display: none;
+  flex-direction: column;
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 4px;
+  transition: background-color 0.3s ease;
+}
+
+.hamburger:hover {
+  background-color: #f1f5f9;
+}
+
+.hamburger span {
+  width: 25px;
+  height: 3px;
+  background: #374151;
+  margin: 3px 0;
+  transition: 0.3s;
+  border-radius: 2px;
+}
+
+/* Mobile Responsive - Improved */
+@media (max-width: 1024px) {
+  .nav-menu {
+    gap: 1rem;
+  }
+  
+  .nav-menu a {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .nav-container {
+    padding: 0 15px;
+    gap: 1rem;
+  }
+  
+  .nav-logo img {
+    max-width: 150px;
+  }
+  
+  .nav-menu {
+    position: fixed;
+    left: -100%;
+    top: 70px;
+    flex-direction: column;
+    background-color: white;
+    width: 100%;
+    text-align: center;
+    transition: 0.3s;
+    box-shadow: 0 10px 27px rgba(0, 0, 0, 0.1);
+    padding: 2rem 0;
+    gap: 0;
+    justify-content: flex-start;
+    height: calc(100vh - 70px);
+    overflow-y: auto;
+    justify-self: stretch;
+  }
+  
+  .nav-menu.active {
+    left: 0;
+  }
+  
+  .nav-menu li {
+    width: 100%;
+    margin: 0;
+  }
+  
+  .nav-menu a {
+    padding: 1rem 2rem;
+    border-radius: 0;
+    border-bottom: 1px solid #f1f5f9;
+    justify-content: center;
+    font-size: 1rem;
+  }
+  
+  .nav-menu a:hover,
+  .nav-menu a.active {
+    background-color: #f8fafc;
+    color: #2563eb;
+  }
+  
+  .user-dropdown {
+    width: 100%;
+    margin: 1rem 0 0 0;
+  }
+  
+  .user-dropdown-btn {
+    justify-content: center;
+    width: 100%;
+    padding: 1rem 2rem;
+    border-radius: 0;
+    margin: 0 2rem;
+    width: calc(100% - 4rem);
+  }
+  
+  .user-dropdown-content {
+    position: static;
+    box-shadow: none;
+    border: none;
+    margin: 0.5rem 2rem 0 2rem;
+    width: calc(100% - 4rem);
+    display: none;
+    border-radius: 6px;
+    border: 1px solid #e5e7eb;
+  }
+  
+  .user-dropdown:hover .user-dropdown-content {
+    display: none;
+  }
+  
+  .user-dropdown.active .user-dropdown-content {
+    display: block;
+  }
+  
+  .user-dropdown-content a {
+    justify-content: center;
+    padding: 0.75rem 1rem;
+  }
+  
+  .hamburger {
+    display: flex;
+  }
+  
+  .login-btn {
+    margin: 0 2rem;
+    width: calc(100% - 4rem);
+    justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .nav-container {
+    padding: 0 10px;
+  }
+  
+  .nav-logo img {
+    max-width: 120px;
+  }
+  
+  .nav-menu a {
+    padding: 1rem 1.5rem;
+  }
+  
+  .user-dropdown-btn,
+  .login-btn {
+    margin: 0 1.5rem;
+    width: calc(100% - 3rem);
+  }
+  
+  .user-dropdown-content {
+    margin: 0.5rem 1.5rem 0 1.5rem;
+    width: calc(100% - 3rem);
+  }
+}
+
+/* Ensure proper spacing and alignment */
+.nav-menu li:last-child {
+  margin-left: 0;
+}
