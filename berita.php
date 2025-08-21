@@ -1,5 +1,19 @@
 <?php
 session_start();
+require_once 'connect/koneksi.php';
+
+// Fetch dynamic content
+$q_kegiatan = "SELECT k.*, (SELECT gf.foto FROM kegiatan_foto gf WHERE gf.kegiatan_id=k.kegiatan_id LIMIT 1) AS cover FROM kegiatan k ORDER BY k.created_at DESC LIMIT 6";
+$kegiatan = mysqli_query($conn, $q_kegiatan);
+
+$q_webinar = "SELECT * FROM webinar ORDER BY created_at DESC LIMIT 6";
+$webinar = mysqli_query($conn, $q_webinar);
+
+$q_live = "SELECT * FROM live_streaming ORDER BY created_at DESC LIMIT 4";
+$live = mysqli_query($conn, $q_live);
+
+$q_galeri = "SELECT g.*, (SELECT gf.foto FROM galeri_foto gf WHERE gf.galeri_id=g.galeri_id LIMIT 1) AS cover FROM galeri g ORDER BY g.created_at DESC LIMIT 8";
+$galeri = mysqli_query($conn, $q_galeri);
 ?>
 <!DOCTYPE html>
 <html lang="id">
@@ -15,15 +29,14 @@ session_start();
 </head>
 
 <body>
-	
-	 <?php include 'includes/navbar.php'; ?>
+
+	<?php include 'includes/navbar.php'; ?>
 	<main>
 		<section class="page-header">
 			<div class="container">
 				<h1>Berita & Informasi</h1>
 			</div>
 		</section>
-
 		<div class="container berita-wrapper">
 			<div class="tabs" role="tablist" aria-label="Kategori Berita">
 				<button class="tab active" data-tab="kegiatan" role="tab" aria-selected="true">Kegiatan</button>
@@ -37,83 +50,24 @@ session_start();
 				<section id="panel-kegiatan" class="tab-panel active" aria-labelledby="kegiatan" role="tabpanel">
 					<h2 class="section-title">Kegiatan</h2>
 					<div class="news-grid">
-						<article class="news-card fade-in-up">
-							<img src="assets/slider1.jpeg" alt="Outing & Family Gathering">
-							<div class="news-card-body">
-								<div class="news-card-title">Kegiatan Outing dan Family Gathering</div>
-								<div class="news-card-meta">Internal • Kebersamaan</div>
-								<p class="news-card-desc">Family day sebagai bentuk apresiasi perusahaan untuk mempererat hubungan antar karyawan dan keluarga sekaligus menyegarkan kembali semangat bekerja.</p>
-								<div class="card-actions">
-									<span class="badge">Kegiatan</span>
-									<a href="#" class="btn-secondary">Lihat Galeri</a>
-								</div>
-							</div>
-						</article>
-
-						<article class="news-card fade-in-up">
-							<img src="assets/slider2.png" alt="Halal Bi Halal Virtual">
-							<div class="news-card-body">
-								<div class="news-card-title">Halal Bi Halal Virtual saat Pandemi</div>
-								<div class="news-card-meta">Internal • Silaturahmi</div>
-								<p class="news-card-desc">Momen saling bermaafan secara virtual dengan tausiyah bermakna demi menjaga kebersamaan di masa pandemi.</p>
-								<div class="card-actions">
-									<span class="badge">Kegiatan</span>
-									<a href="#" class="btn-secondary">Lihat Galeri</a>
-								</div>
-							</div>
-						</article>
-
-						<article class="news-card fade-in-up">
-							<img src="assets/remotesesing.jpg" alt="Pembagian Sembako">
-							<div class="news-card-body">
-								<div class="news-card-title">Pembagian Sembako</div>
-								<div class="news-card-meta">Support • Kepedulian</div>
-								<p class="news-card-desc">Dukungan perusahaan untuk karyawan dan keluarga melalui program pembagian sembako serta voucher belanja.</p>
-								<div class="card-actions">
-									<span class="badge">Kegiatan</span>
-									<a href="#" class="btn-secondary">Lihat Galeri</a>
-								</div>
-							</div>
-						</article>
-
-						<article class="news-card fade-in-up">
-							<img src="assets/lidar1.jpg" alt="Berbagi Ramadhan & Santunan">
-							<div class="news-card-body">
-								<div class="news-card-title">Berbagi Ramadhan & Santunan Anak Yatim</div>
-								<div class="news-card-meta">CSR • Ramadhan</div>
-								<p class="news-card-desc">Kegiatan rutin membagikan makanan berbuka untuk anak yatim dan dukungan untuk masjid di lingkungan karyawan.</p>
-								<div class="card-actions">
-									<span class="badge">Kegiatan</span>
-									<a href="#" class="btn-secondary">Lihat Galeri</a>
-								</div>
-							</div>
-						</article>
-
-						<article class="news-card fade-in-up">
-							<img src="assets/topograpsurvey.jpg" alt="Program Idul Adha">
-							<div class="news-card-body">
-								<div class="news-card-title">Program Idul Adha</div>
-								<div class="news-card-meta">Keagamaan • Tahunan</div>
-								<p class="news-card-desc">Program kurban bergilir bagi karyawan sebagai wujud kebersamaan dan rasa syukur.</p>
-								<div class="card-actions">
-									<span class="badge">Kegiatan</span>
-									<a href="#" class="btn-secondary">Lihat Galeri</a>
-								</div>
-							</div>
-						</article>
-
-						<article class="news-card fade-in-up">
-							<img src="assets/hidrograpsurvey1.jpg" alt="Olahraga Karyawan">
-							<div class="news-card-body">
-								<div class="news-card-title">Olahraga Karyawan</div>
-								<div class="news-card-meta">Wellness • Rutin</div>
-								<p class="news-card-desc">Men Sana in Corpore Sano. Program olahraga untuk menjaga kebugaran dan meningkatkan produktivitas.</p>
-								<div class="card-actions">
-									<span class="badge">Kegiatan</span>
-									<a href="#" class="btn-secondary">Lihat Galeri</a>
-								</div>
-							</div>
-						</article>
+						<?php if ($kegiatan && mysqli_num_rows($kegiatan) > 0): ?>
+							<?php while ($row = mysqli_fetch_assoc($kegiatan)): ?>
+								<article class="news-card fade-in-up">
+									<img src="<?php echo htmlspecialchars($row['cover'] ?: 'assets/slider1.jpeg'); ?>" alt="<?php echo htmlspecialchars($row['judul']); ?>">
+									<div class="news-card-body">
+										<div class="news-card-title"><?php echo htmlspecialchars($row['judul']); ?></div>
+										<div class="news-card-meta">Kegiatan • <?php echo date('d M Y', strtotime($row['created_at'])); ?></div>
+										<p class="news-card-desc"><?php echo htmlspecialchars(mb_strimwidth((string)$row['deskripsi'], 0, 140, '...')); ?></p>
+										<div class="card-actions">
+											<span class="badge">Kegiatan</span>
+											<a href="galeri.php?type=kegiatan&id=<?php echo (int)$row['kegiatan_id']; ?>" class="btn-secondary">Lihat Galeri</a>
+										</div>
+									</div>
+								</article>
+							<?php endwhile;
+						else: ?>
+							<p class="muted">Belum ada kegiatan.</p>
+						<?php endif; ?>
 					</div>
 				</section>
 
@@ -121,38 +75,19 @@ session_start();
 				<section id="panel-webinar" class="tab-panel" aria-labelledby="webinar" role="tabpanel">
 					<h2 class="section-title">Webinar</h2>
 					<div class="webinar-grid">
-						<div class="webinar-card fade-in-up" data-webinar="1">
-							<div class="webinar-title">Webinar Waindo Series #1 — GIS Enterprise & Dashboard, CSRT, Airborne LiDAR</div>
-							<p class="webinar-desc">Bahasan implementasi GIS enterprise, operasi dashboard, teknologi CSRT, serta pemanfaatan LiDAR.</p>
-							<div class="webinar-form">
-								<input type="email" placeholder="Email — masukkan alamat email" aria-label="Email Webinar 1">
-								<button class="btn-secondary js-check-email">Cek Email Kembali</button>
-								<button class="btn-primary js-download" disabled>Download Sertifikat</button>
-							</div>
-							<div class="alert alert-danger js-alert" style="display:none;">Maaf email anda tidak tersedia !!</div>
-						</div>
-
-						<div class="webinar-card fade-in-up" data-webinar="2">
-							<div class="webinar-title">Webinar Waindo Series #2 — Pembuatan Peta 3D Menggunakan ArcGIS PRO</div>
-							<p class="webinar-desc">Mendalami workflow pembuatan peta 3D dari data spasial menggunakan ArcGIS Pro.</p>
-							<div class="webinar-form">
-								<input type="email" placeholder="Email — masukkan alamat email" aria-label="Email Webinar 2">
-								<button class="btn-secondary js-check-email">Cek Email Kembali</button>
-								<button class="btn-primary js-download" disabled>Download Sertifikat</button>
-							</div>
-							<div class="alert alert-danger js-alert" style="display:none;">Maaf email anda tidak tersedia !!</div>
-						</div>
-
-						<div class="webinar-card fade-in-up" data-webinar="3">
-							<div class="webinar-title">Webinar Waindo Series #3 — Low Cost GNSS for Surveying & Monitoring</div>
-							<p class="webinar-desc">Update teknologi GNSS biaya rendah dan penerapannya untuk survei dan monitoring.</p>
-							<div class="webinar-form">
-								<input type="email" placeholder="Email — masukkan alamat email" aria-label="Email Webinar 3">
-								<button class="btn-secondary js-check-email">Cek Email Kembali</button>
-								<button class="btn-primary js-download" disabled>Download Sertifikat</button>
-							</div>
-							<div class="alert alert-danger js-alert" style="display:none;">Maaf email anda tidak tersedia !!</div>
-						</div>
+						<?php if ($webinar && mysqli_num_rows($webinar) > 0): ?>
+							<?php while ($row = mysqli_fetch_assoc($webinar)): ?>
+								<div class="webinar-card fade-in-up">
+									<div class="webinar-title"><?php echo htmlspecialchars($row['judul']); ?></div>
+									<?php if (!empty($row['gambar'])): ?>
+										<p class="webinar-desc"><img src="<?php echo htmlspecialchars($row['gambar']); ?>" alt="<?php echo htmlspecialchars($row['judul']); ?>" style="max-width:100%; height:auto"></p>
+									<?php endif; ?>
+									<p class="muted">Diterbitkan: <?php echo date('d M Y', strtotime($row['created_at'])); ?></p>
+								</div>
+							<?php endwhile;
+						else: ?>
+							<p class="muted">Belum ada webinar.</p>
+						<?php endif; ?>
 					</div>
 				</section>
 
@@ -160,18 +95,24 @@ session_start();
 				<section id="panel-live" class="tab-panel" aria-labelledby="live" role="tabpanel">
 					<h2 class="section-title">Live Streaming</h2>
 					<div class="live-wrapper">
-						<div class="live-card fade-in-up">
-							<iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" title="Live 1" allowfullscreen></iframe>
-							<div class="live-body">
-								<div class="news-card-title">Live Talk: Transformasi Digital Geospasial</div>
-							</div>
-						</div>
-						<div class="live-card fade-in-up">
-							<iframe src="https://www.youtube.com/embed/oHg5SJYRHA0" title="Live 2" allowfullscreen></iframe>
-							<div class="live-body">
-								<div class="news-card-title">Live Demo: Workflow LiDAR ke Peta 3D</div>
-							</div>
-						</div>
+						<?php if ($live && mysqli_num_rows($live) > 0): ?>
+							<?php while ($row = mysqli_fetch_assoc($live)): ?>
+								<div class="live-card fade-in-up">
+									<?php if ($row['tipe'] === 'mp4'): ?>
+										<video controls style="width:100%; height:300px;">
+											<source src="<?php echo htmlspecialchars($row['url']); ?>" type="video/mp4">
+										</video>
+									<?php else: ?>
+										<iframe src="<?php echo htmlspecialchars($row['url']); ?>" title="<?php echo htmlspecialchars($row['judul']); ?>" allowfullscreen></iframe>
+									<?php endif; ?>
+									<div class="live-body">
+										<div class="news-card-title"><?php echo htmlspecialchars($row['judul']); ?></div>
+									</div>
+								</div>
+							<?php endwhile;
+						else: ?>
+							<p class="muted">Belum ada live streaming.</p>
+						<?php endif; ?>
 					</div>
 				</section>
 
@@ -179,14 +120,13 @@ session_start();
 				<section id="panel-galeri" class="tab-panel" aria-labelledby="galeri" role="tabpanel">
 					<h2 class="section-title">Galeri Foto</h2>
 					<div class="gallery-grid">
-						<img src="assets/Geograpic-Information-System.jpg" alt="GIS Enterprise">
-						<img src="assets/lidar1.jpg" alt="LiDAR">
-						<img src="assets/topograpsurvey.jpg" alt="Topographic Survey">
-						<img src="assets/hidrograpsurvey1.jpg" alt="Hidrography Survey">
-						<img src="assets/slider1.jpeg" alt="Family Day">
-						<img src="assets/slider2.png" alt="Virtual Event">
-						<img src="assets/remotesesing.jpg" alt="Remote Sensing">
-						<img src="assets/Fotogrametri.jpg" alt="Fotogrametri">
+						<?php if ($galeri && mysqli_num_rows($galeri) > 0): ?>
+							<?php while ($row = mysqli_fetch_assoc($galeri)): ?>
+								<img src="<?php echo htmlspecialchars($row['cover'] ?: 'assets/slider1.jpeg'); ?>" alt="<?php echo htmlspecialchars($row['judul']); ?>">
+							<?php endwhile;
+						else: ?>
+							<p class="muted">Belum ada galeri.</p>
+						<?php endif; ?>
 					</div>
 				</section>
 			</div>
@@ -261,8 +201,9 @@ session_start();
 				const downloadBtn = card.querySelector('.js-download');
 				const alertBox = card.querySelector('.js-alert');
 
-				checkBtn.addEventListener('click', () => {
-					const email = (input.value || '').trim();
+				checkBtn && checkBtn.addEventListener('click', () => {
+					const email = (input && input.value || '').trim();
+					if (!alertBox || !downloadBtn) return;
 					alertBox.style.display = 'none';
 					downloadBtn.disabled = true;
 
@@ -283,7 +224,7 @@ session_start();
 					}
 				});
 
-				downloadBtn.addEventListener('click', () => {
+				downloadBtn && downloadBtn.addEventListener('click', () => {
 					if (downloadBtn.disabled) return;
 					if (window.showSuccessMessage) {
 						window.showSuccessMessage('Mengunduh sertifikat (demo)...');

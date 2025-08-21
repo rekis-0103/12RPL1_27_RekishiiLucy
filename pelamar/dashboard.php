@@ -13,6 +13,20 @@ $user_id = $_SESSION['user_id'];
 $username = $_SESSION['username'];
 $full_name = $_SESSION['full_name'];
 $role = $_SESSION['role'];
+
+// Stats
+$open_jobs = 0; $sent_apps = 0; $waiting = 0; $accepted = 0;
+$r1 = mysqli_query($conn, "SELECT COUNT(*) c FROM lowongan WHERE status='open' AND hapus=0");
+if ($r1) { $open_jobs = (int)mysqli_fetch_assoc($r1)['c']; }
+$r2 = mysqli_query($conn, "SELECT COUNT(*) c FROM applications WHERE user_id=$user_id");
+if ($r2) { $sent_apps = (int)mysqli_fetch_assoc($r2)['c']; }
+$r3 = mysqli_query($conn, "SELECT COUNT(*) c FROM applications WHERE user_id=$user_id AND status IN ('pendaftaran diterima','seleksi administrasi')");
+if ($r3) { $waiting = (int)mysqli_fetch_assoc($r3)['c']; }
+$r4 = mysqli_query($conn, "SELECT COUNT(*) c FROM applications WHERE user_id=$user_id AND status='diterima bekerja'");
+if ($r4) { $accepted = (int)mysqli_fetch_assoc($r4)['c']; }
+
+// Recent applications (5)
+$recent = mysqli_query($conn, "SELECT a.*, l.title FROM applications a JOIN lowongan l ON a.job_id=l.job_id WHERE a.user_id=$user_id ORDER BY a.applied_at DESC LIMIT 5");
 ?>
 <!DOCTYPE html>
 <html lang="id">
@@ -55,38 +69,55 @@ $role = $_SESSION['role'];
             <div class="stats-grid">
                 <div class="stat-card">
                     <i class="fas fa-briefcase"></i>
-                    <h3>0</h3>
+                    <h3><?php echo $open_jobs; ?></h3>
                     <p>Lowongan Tersedia</p>
                 </div>
                 <div class="stat-card">
                     <i class="fas fa-file-alt"></i>
-                    <h3>0</h3>
+                    <h3><?php echo $sent_apps; ?></h3>
                     <p>Lamaran Terkirim</p>
                 </div>
                 <div class="stat-card">
                     <i class="fas fa-clock"></i>
-                    <h3>0</h3>
+                    <h3><?php echo $waiting; ?></h3>
                     <p>Menunggu Review</p>
                 </div>
                 <div class="stat-card">
                     <i class="fas fa-check-circle"></i>
-                    <h3>0</h3>
+                    <h3><?php echo $accepted; ?></h3>
                     <p>Diterima</p>
                 </div>
             </div>
 
             <div class="recent-applications">
                 <h3>Lamaran Terbaru</h3>
-                <div class="application-item">
-                    <div class="application-icon">
-                        <i class="fas fa-file-alt"></i>
+                <?php if ($recent && mysqli_num_rows($recent) > 0): ?>
+                    <?php while ($app = mysqli_fetch_assoc($recent)): ?>
+                        <div class="application-item">
+                            <div class="application-icon">
+                                <i class="fas fa-file-alt"></i>
+                            </div>
+                            <div class="application-content">
+                                <h4><?php echo htmlspecialchars($app['title']); ?></h4>
+                                <p>Status: <?php echo htmlspecialchars(ucfirst($app['status'])); ?></p>
+                            </div>
+                            <span class="status-badge <?php echo $app['status']==='diterima bekerja'?'status-accepted':($app['status']==='ditolak'?'status-rejected':'status-pending'); ?>">
+                                <?php echo date('d/m/Y', strtotime($app['applied_at'])); ?>
+                            </span>
+                        </div>
+                    <?php endwhile; ?>
+                <?php else: ?>
+                    <div class="application-item">
+                        <div class="application-icon">
+                            <i class="fas fa-file-alt"></i>
+                        </div>
+                        <div class="application-content">
+                            <h4>Belum ada lamaran</h4>
+                            <p>Anda belum mengirimkan lamaran apapun</p>
+                        </div>
+                        <span class="status-badge status-pending">-</span>
                     </div>
-                    <div class="application-content">
-                        <h4>Belum ada lamaran</h4>
-                        <p>Anda belum mengirimkan lamaran apapun</p>
-                    </div>
-                    <span class="status-badge status-pending">-</span>
-                </div>
+                <?php endif; ?>
             </div>
         </div>
     </div>

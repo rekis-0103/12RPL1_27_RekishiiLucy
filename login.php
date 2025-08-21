@@ -53,7 +53,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             
             // Log activity
             $ip_address = $_SERVER['REMOTE_ADDR'];
-            $log_query = "INSERT INTO log_aktifitas (user_id, action, ip_address) VALUES (?, 'Login', ?)";
+            $log_query = "INSERT INTO log_aktivitas (user_id, action, ip_address) VALUES (?, 'Login', ?)";
             $log_stmt = mysqli_prepare($conn, $log_query);
             mysqli_stmt_bind_param($log_stmt, "is", $user['user_id'], $ip_address);
             mysqli_stmt_execute($log_stmt);
