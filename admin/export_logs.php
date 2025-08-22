@@ -51,7 +51,7 @@ $output = fopen('php://output', 'w');
 fprintf($output, chr(0xEF).chr(0xBB).chr(0xBF));
 
 // Add CSV headers
-fputcsv($output, array('No', 'Waktu', 'Username', 'Nama Lengkap', 'Aksi', 'IP Address'));
+fputcsv($output, array('No', 'Waktu', 'Username', 'Nama Lengkap', 'Aksi'));
 
 // Add data rows
 $no = 1;
@@ -61,8 +61,7 @@ while ($log = mysqli_fetch_assoc($logs_result)) {
         date('d/m/Y H:i:s', strtotime($log['log_time'])),
         $log['username'] ?: 'Unknown',
         $log['full_name'] ?: 'N/A',
-        $log['action'],
-        $log['ip_address'] ?: 'N/A'
+        $log['action']
     );
     fputcsv($output, $row);
 }

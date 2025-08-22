@@ -146,7 +146,6 @@ $actions_result = mysqli_query($conn, $actions_query);
                                 <th>Waktu</th>
                                 <th>User</th>
                                 <th>Aksi</th>
-                                <th>IP Address</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -172,9 +171,6 @@ $actions_result = mysqli_query($conn, $actions_query);
                                                 <i class="fas fa-<?php echo ($log['action'] == 'Login') ? 'sign-in-alt' : (($log['action'] == 'Logout') ? 'sign-out-alt' : 'user'); ?>"></i>
                                                 <?php echo htmlspecialchars($log['action']); ?>
                                             </span>
-                                        </td>
-                                        <td>
-                                            <span class="ip-address"><?php echo htmlspecialchars($log['ip_address'] ?: 'N/A'); ?></span>
                                         </td>
                                     </tr>
                                 <?php endwhile; ?>

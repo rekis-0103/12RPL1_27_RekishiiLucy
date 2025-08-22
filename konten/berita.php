@@ -19,7 +19,7 @@ function logActivity($conn, $actor_user_id, $action) {
 	$actor_user_id = (int)$actor_user_id;
 	$action = mysqli_real_escape_string($conn, $action);
 	$ip = $_SERVER['REMOTE_ADDR'] ?? '::1';
-	mysqli_query($conn, "INSERT INTO log_aktivitas (user_id, action, ip_address) VALUES ($actor_user_id, '$action', '$ip')");
+	mysqli_query($conn, "INSERT INTO log_aktivitas (user_id, action) VALUES ($actor_user_id, '$action')");
 }
 
 // Ensure upload directories exist

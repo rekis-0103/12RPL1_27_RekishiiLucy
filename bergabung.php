@@ -24,7 +24,7 @@ require_once 'connect/koneksi.php';
         $actionEsc = mysqli_real_escape_string($conn, $action);
         $ip = $_SERVER['REMOTE_ADDR'] ?? '::1';
         $ipEsc = mysqli_real_escape_string($conn, $ip);
-        mysqli_query($conn, "INSERT INTO log_aktivitas (user_id, action, ip_address) VALUES ($uid, '$actionEsc', '$ipEsc')");
+        mysqli_query($conn, "INSERT INTO log_aktivitas (user_id, action) VALUES ($uid, '$actionEsc')");
     }
 
     $isLoggedIn = isset($_SESSION['user_id']);

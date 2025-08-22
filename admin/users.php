@@ -21,7 +21,7 @@ function logActivity($conn, $admin_user_id, $action, $details = '') {
     $details = mysqli_real_escape_string($conn, $details);
     $ip_address = $_SERVER['REMOTE_ADDR'] ?? '::1';
     
-    $log_query = "INSERT INTO log_aktivitas (user_id, action, ip_address) VALUES ($admin_user_id, '$action', '$ip_address')";
+    $log_query = "INSERT INTO log_aktivitas (user_id, action) VALUES ($admin_user_id, '$action')";
     mysqli_query($conn, $log_query);
 }
 
