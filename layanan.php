@@ -45,7 +45,7 @@ session_start();
                             <div class="service-items">
                                 <div class="service-item">
                                     <div class="service-image">
-                                        <img src="assets/Lidar.png" alt="" style="width: 100%; height:auto;">
+                                        <img src="assets/Lidar.png" alt="" style="width: 100%; height:100%;">
                                     </div>
                                     <div class="service-content">
                                         <h3>Pengambilan & Pengolahan Data LIDAR</h3>
@@ -69,7 +69,7 @@ session_start();
                                         </ul>
                                     </div>
                                     <div class="service-image">
-                                        <img src="assets/Data-Lidar.png" alt="" style="width: 100%; height:auto;">
+                                        <img src="assets/Data-Lidar.png" alt="" style="width: 100%; height:100%;">
                                     </div>
                                 </div>
                             </div>
@@ -79,7 +79,7 @@ session_start();
                             <div class="service-items">
                                 <div class="service-item">
                                     <div class="service-image">
-                                        <img src="assets/LandSurvey.png" alt="" style="width: 100%; height:auto;">
+                                        <img src="assets/LandSurvey.png" alt="" style="width: 100%; height:100%;">
                                     </div>
                                     <div class="service-content">
                                         <h3>Survey – Hydrografi dan Terestrial dengan GPS dan 3D Mobile System</h3>
@@ -98,7 +98,7 @@ session_start();
                             <div class="service-items">
                                 <div class="service-item">
                                     <div class="service-image">
-                                        <img src="assets/tematik1.png" alt="">
+                                        <img src="assets/tematik1.png" alt="" style="width: 100%; height:100%;">
                                     </div>
                                     <div class="service-content">
                                         <h3>Sasaran dari kegiatan Pemetaan Penutup Lahan adalah :</h3>
@@ -117,7 +117,7 @@ session_start();
                                         </p>
                                     </div>
                                     <div class="service-image">
-                                        <img src="assets/tematik2.png" alt="" style="width: 100%; height:auto">
+                                        <img src="assets/tematik2.png" alt="" style="width: 100%; height:100%">
                                     </div>
                                 </div>
                             </div>
@@ -127,7 +127,7 @@ session_start();
                             <div class="service-items">
                                 <div class="service-item">
                                     <div class="service-image">
-                                        <img src="assets/Dispotrud.jpeg" alt="" style="width: 100%; height:auto">
+                                        <img src="assets/Dispotrud.jpeg" alt="" style="width: 100%; height:100%">
                                     </div>
                                     <div class="service-content">
                                         <h3>Training Dispotrud</h3>
@@ -145,7 +145,7 @@ session_start();
                             <div class="service-items">
                                 <div class="service-item">
                                     <div class="service-image">
-                                        <img src="assets/ddsaplication.jpeg" alt="" style="width: 100%; height:auto">
+                                        <img src="assets/ddsaplication.jpeg" alt="" style="width: 100%; height:100%">
                                     </div>
                                     <div class="service-content">
                                         <h3>DDS Application</h3>
@@ -157,13 +157,13 @@ session_start();
                                         <h3>SIPETA Application</h3>
                                     </div>
                                     <div class="service-image">
-                                        <img src="assets/sipeta.jpeg" alt="" style="width: 100%; height:auto">
+                                        <img src="assets/sipeta.jpeg" alt="" style="width: 100%; height:100%">
                                     </div>
                                 </div>
 
                                 <div class="service-item">
                                     <div class="service-image">
-                                        <img src="assets/webgis.jpeg" alt="" style="width: 100%; height:auto">
+                                        <img src="assets/webgis.jpeg" alt="" style="width: 100%; height:100%">
                                     </div>
                                     <div class="service-content">
                                         <h3>WebGIS & Mobile Apps</h3>

@@ -55,7 +55,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $ip_address = $_SERVER['REMOTE_ADDR'];
             $log_query = "INSERT INTO log_aktivitas (user_id, action) VALUES (?, 'Login')";
             $log_stmt = mysqli_prepare($conn, $log_query);
-            mysqli_stmt_bind_param($log_stmt, "is", $user['user_id'], $ip_address);
+            mysqli_stmt_bind_param($log_stmt, "i", $user['user_id']);
             mysqli_stmt_execute($log_stmt);
             
             // Redirect based on role

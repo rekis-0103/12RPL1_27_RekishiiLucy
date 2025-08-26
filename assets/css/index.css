@@ -154,6 +154,194 @@
   margin: 0;
 }
 
+/* Berita Terbaru Section */
+.berita-terbaru {
+  padding: 4rem 0;
+  background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+  margin-top: 3rem;
+}
+
+.section-header {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.section-header h2 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #1e293b;
+  margin-bottom: 1rem;
+}
+
+.section-header p {
+  font-size: 1.1rem;
+  color: #64748b;
+  max-width: 600px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+
+.berita-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 2rem;
+  margin-bottom: 3rem;
+}
+
+.berita-card {
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+  border: 1px solid #e2e8f0;
+}
+
+.berita-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+.berita-image {
+  position: relative;
+  height: 200px;
+  overflow: hidden;
+}
+
+.berita-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.berita-card:hover .berita-image img {
+  transform: scale(1.05);
+}
+
+.placeholder-image {
+  width: 100%;
+  height: 100%;
+  background: #f1f5f9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #94a3b8;
+  font-size: 3rem;
+}
+
+.kategori-badge {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  background: rgba(37, 99, 235, 0.9);
+  color: white;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  backdrop-filter: blur(4px);
+}
+
+.kategori-badge i {
+  font-size: 0.7rem;
+}
+
+.berita-content {
+  padding: 1.5rem;
+}
+
+.berita-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #1e293b;
+  margin-bottom: 0.75rem;
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.berita-desc {
+  color: #64748b;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  margin-bottom: 1rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.berita-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 1rem;
+  border-top: 1px solid #f1f5f9;
+}
+
+.berita-date {
+  color: #94a3b8;
+  font-size: 0.85rem;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.berita-date i {
+  font-size: 0.8rem;
+}
+
+.no-berita {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 3rem;
+  color: #94a3b8;
+}
+
+.no-berita i {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  opacity: 0.5;
+}
+
+.no-berita p {
+  font-size: 1.1rem;
+}
+
+.berita-actions {
+  text-align: center;
+}
+
+.berita-actions .btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 24px;
+  font-size: 1rem;
+  font-weight: 600;
+  text-decoration: none;
+  background: #2563eb;
+  color: white;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+.berita-actions .btn-primary:hover {
+  background: #1d4ed8;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+}
+
+.berita-actions .btn-primary i {
+  font-size: 0.9rem;
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
   .slide-content {
@@ -174,5 +362,66 @@
     width: 40px;
     height: 40px;
     font-size: 20px;
+  }
+
+  .section-header h2 {
+    font-size: 2rem;
+  }
+
+  .berita-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .berita-card {
+    margin: 0 1rem;
+  }
+
+  .berita-image {
+    height: 180px;
+  }
+
+  .berita-content {
+    padding: 1.25rem;
+  }
+
+  .berita-title {
+    font-size: 1.1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .visi,
+  .misi {
+    flex-direction: column;
+    text-align: center;
+    gap: 1.5rem;
+  }
+
+  .visi img,
+  .misi img {
+    width: 80%;
+  }
+
+  .visi h2,
+  .misi h2 {
+    font-size: 28px;
+  }
+
+  .visi p,
+  .misi p {
+    font-size: 16px;
+  }
+
+  .berita-terbaru {
+    padding: 2rem 0;
+  }
+
+  .section-header h2 {
+    font-size: 1.75rem;
+  }
+
+  .berita-card {
+    margin: 0 0.5rem;
   }
 }

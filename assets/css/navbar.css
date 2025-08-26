@@ -8,7 +8,7 @@
   overflow: visible;
   margin-top: 7px;
   margin-bottom: 7px;
-  margin-left: 130px;
+  margin-left: 175px;
 }
 
 /* Logo Improvements */
@@ -29,6 +29,7 @@
   flex: 1; /* biar ambil ruang tengah */
   justify-content: center; /* pusatkan menu */
   list-style: none;
+  margin-left: 20px;
 }
 
 .nav-menu li {

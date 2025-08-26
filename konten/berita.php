@@ -144,6 +144,114 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
 		mysqli_query($conn, "DELETE FROM galeri_foto WHERE galeri_id=$id");
 		if (mysqli_query($conn, "DELETE FROM galeri WHERE galeri_id=$id")) { logActivity($conn, $user_id, "Konten: hapus galeri #$id"); $notice_success = 'Galeri dihapus'; } else { $notice_error = 'Gagal menghapus galeri'; }
 	}
+
+	// Edit functionality
+	if ($action === 'edit_kegiatan' && isset($_POST['id'])) {
+		$id = (int)$_POST['id'];
+		$judul = esc($conn, $_POST['judul'] ?? '');
+		$deskripsi = esc($conn, $_POST['deskripsi'] ?? '');
+		if ($judul === '') { $notice_error = 'Judul Kegiatan wajib diisi'; }
+		else {
+			if (mysqli_query($conn, "UPDATE kegiatan SET judul='$judul', deskripsi='$deskripsi' WHERE kegiatan_id=$id")) {
+				// Handle new photos if uploaded
+				if (!empty($_FILES['foto']['name'][0])) {
+					for ($i=0; $i<count($_FILES['foto']['name']); $i++) {
+						if (!is_uploaded_file($_FILES['foto']['tmp_name'][$i])) continue;
+						$fn = time().'_'.preg_replace('/[^A-Za-z0-9_\.-]/','_', $_FILES['foto']['name'][$i]);
+						$dest = "../uploads/kegiatan/$fn";
+						if (@move_uploaded_file($_FILES['foto']['tmp_name'][$i], $dest)) {
+							$rel = 'uploads/kegiatan/'.$fn;
+							mysqli_query($conn, "INSERT INTO kegiatan_foto (kegiatan_id, foto) VALUES ($id, '".esc($conn,$rel)."')");
+						}
+					}
+				}
+				logActivity($conn, $user_id, "Konten: edit kegiatan #$id ($judul)");
+				$notice_success = 'Kegiatan berhasil diperbarui';
+			} else { $notice_error = 'Gagal memperbarui kegiatan'; }
+		}
+	}
+
+	if ($action === 'edit_webinar' && isset($_POST['id'])) {
+		$id = (int)$_POST['id'];
+		$judul = esc($conn, $_POST['judul'] ?? '');
+		$gambar_path = null;
+		if (isset($_FILES['gambar']) && is_uploaded_file($_FILES['gambar']['tmp_name'])) {
+			$fn = time().'_'.preg_replace('/[^A-Za-z0-9_\.-]/','_', $_FILES['gambar']['name']);
+			$dest = "../uploads/webinar/$fn";
+			if (@move_uploaded_file($_FILES['gambar']['tmp_name'], $dest)) { 
+				$gambar_path = 'uploads/webinar/'.$fn; 
+				// Delete old image if exists
+				$res = mysqli_query($conn, "SELECT gambar FROM webinar WHERE webinar_id=$id");
+				if ($res) { $r = mysqli_fetch_assoc($res); if (!empty($r['gambar'])) { $p = '../'.ltrim($r['gambar'],'/'); if (is_file($p)) { @unlink($p); } } }
+			}
+		}
+		if ($judul === '') { $notice_error = 'Judul Webinar wajib diisi'; }
+		else {
+			$q = "UPDATE webinar SET judul='$judul'".($gambar_path?", gambar='".esc($conn,$gambar_path)."'":"")." WHERE webinar_id=$id";
+			if (mysqli_query($conn, $q)) { logActivity($conn, $user_id, "Konten: edit webinar #$id ($judul)"); $notice_success = 'Webinar berhasil diperbarui'; } else { $notice_error = 'Gagal memperbarui webinar'; }
+		}
+	}
+
+	if ($action === 'edit_live' && isset($_POST['id'])) {
+		$id = (int)$_POST['id'];
+		$judul = esc($conn, $_POST['judul'] ?? '');
+		$tipe = $_POST['tipe'] === 'mp4' ? 'mp4' : 'youtube';
+		$url = esc($conn, $_POST['url'] ?? '');
+		if ($tipe === 'mp4' && isset($_FILES['file_mp4']) && is_uploaded_file($_FILES['file_mp4']['tmp_name'])) {
+			$fn = time().'_'.preg_replace('/[^A-Za-z0-9_\.-]/','_', $_FILES['file_mp4']['name']);
+			$dest = "../uploads/live/$fn";
+			if (@move_uploaded_file($_FILES['file_mp4']['tmp_name'], $dest)) { 
+				$url = esc($conn, 'uploads/live/'.$fn); 
+				// Delete old file if exists
+				$res = mysqli_query($conn, "SELECT tipe, url FROM live_streaming WHERE streaming_id=$id");
+				if ($res) { $r = mysqli_fetch_assoc($res); if ($r && $r['tipe']==='mp4') { $p = '../'.ltrim($r['url'],'/'); if (is_file($p)) { @unlink($p); } } }
+			}
+		}
+		if ($judul === '' || $url === '') { $notice_error = 'Judul dan URL/File wajib diisi'; }
+		else {
+			$q = "UPDATE live_streaming SET judul='$judul', tipe='$tipe', url='$url' WHERE streaming_id=$id";
+			if (mysqli_query($conn, $q)) { logActivity($conn, $user_id, "Konten: edit live_streaming #$id ($tipe)"); $notice_success = 'Live streaming berhasil diperbarui'; } else { $notice_error = 'Gagal memperbarui live streaming'; }
+		}
+	}
+
+	if ($action === 'edit_galeri' && isset($_POST['id'])) {
+		$id = (int)$_POST['id'];
+		$judul = esc($conn, $_POST['judul'] ?? '');
+		if ($judul === '') { $notice_error = 'Judul Galeri wajib diisi'; }
+		else {
+			if (mysqli_query($conn, "UPDATE galeri SET judul='$judul' WHERE galeri_id=$id")) {
+				logActivity($conn, $user_id, "Konten: edit galeri #$id ($judul)");
+				// Handle new photos if uploaded
+				if (!empty($_FILES['foto']['name'][0])) {
+					for ($i=0; $i<count($_FILES['foto']['name']); $i++) {
+						if (!is_uploaded_file($_FILES['foto']['tmp_name'][$i])) continue;
+						$fn = time().'_'.preg_replace('/[^A-Za-z0-9_\.-]/','_', $_FILES['foto']['name'][$i]);
+						$dest = "../uploads/galeri/$fn";
+						if (@move_uploaded_file($_FILES['foto']['tmp_name'][$i], $dest)) {
+							$rel = 'uploads/galeri/'.$fn;
+							mysqli_query($conn, "INSERT INTO galeri_foto (galeri_id, foto) VALUES ($id, '".esc($conn,$rel)."')");
+						}
+					}
+				}
+				$notice_success = 'Galeri berhasil diperbarui';
+			} else { $notice_error = 'Gagal memperbarui galeri'; }
+		}
+	}
+
+	// Delete individual photos
+	if ($action === 'delete_kegiatan_foto' && isset($_POST['foto_id'])) {
+		$foto_id = (int)$_POST['foto_id'];
+		$res = mysqli_query($conn, "SELECT foto FROM kegiatan_foto WHERE foto_id=$foto_id");
+		if ($res) { $r = mysqli_fetch_assoc($res); if ($r) { $p = '../'.ltrim($r['foto'],'/'); if (is_file($p)) { @unlink($p); } } }
+		if (mysqli_query($conn, "DELETE FROM kegiatan_foto WHERE foto_id=$foto_id")) { $notice_success = 'Foto kegiatan dihapus'; } else { $notice_error = 'Gagal menghapus foto'; }
+	}
+
+	if ($action === 'delete_galeri_foto' && isset($_POST['foto_id'])) {
+		$foto_id = (int)$_POST['foto_id'];
+		$res = mysqli_query($conn, "SELECT foto FROM galeri_foto WHERE foto_id=$foto_id");
+		if ($res) { $r = mysqli_fetch_assoc($res); if ($r) { $p = '../'.ltrim($r['foto'],'/'); if (is_file($p)) { @unlink($p); } } }
+		if (mysqli_query($conn, "DELETE FROM galeri_foto WHERE foto_id=$foto_id")) { $notice_success = 'Foto galeri dihapus'; } else { $notice_error = 'Gagal menghapus foto'; }
+	}
 }
 ?>
 <!DOCTYPE html>
@@ -157,6 +265,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
     <link rel="stylesheet" href="../assets/css/pages.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="stylesheet" href="css/berita.css">
 </head>
 
 <body>
@@ -174,7 +283,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
             
             <ul class="sidebar-menu">
                 <li><a href="dashboard.php"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
-                <li><a href="berita.php" class="active"><i class="fas fa-newspaper"></i> Kelola Berita</a></li>
+                <li><a href="berita.php" class="active"><i class="fas fa-newspaper"></i> Kelola Konten</a></li>
                 <li><a href="../index.php"><i class="fas fa-home"></i> Beranda</a></li>
                 <li><a href="../logout.php"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
             </ul>
@@ -182,7 +291,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
         
         <div class="main-content">
             <div class="dashboard-header">
-                <h1>Kelola Berita</h1>
+                <h1>Kelola Konten</h1>
                 <p>Tambah dan kelola Kegiatan, Webinar, Live Streaming, dan Galeri Foto</p>
             </div>
 
@@ -206,14 +315,34 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                 </div>
                 <div class="table-wrap">
                     <table>
-                        <thead><tr><th>Judul</th><th>Dibuat</th><th>Aksi</th></tr></thead>
+                        <thead><tr><th>Judul</th><th>Deskripsi</th><th>Foto</th><th>Dibuat</th><th>Aksi</th></tr></thead>
                         <tbody>
                             <?php $kg = mysqli_query($conn, "SELECT * FROM kegiatan ORDER BY created_at DESC"); ?>
                             <?php if ($kg && mysqli_num_rows($kg)>0): while ($row=mysqli_fetch_assoc($kg)): ?>
                             <tr>
                                 <td><?php echo htmlspecialchars($row['judul']); ?></td>
+                                <td><?php echo htmlspecialchars($row['deskripsi']); ?></td>
+                                <td>
+                                    <?php 
+                                    $fotos = mysqli_query($conn, "SELECT * FROM kegiatan_foto WHERE kegiatan_id=".(int)$row['kegiatan_id']);
+                                    if ($fotos && mysqli_num_rows($fotos) > 0): 
+                                        while ($foto = mysqli_fetch_assoc($fotos)): ?>
+                                            <div class="photo-item">
+                                                <img src="../<?php echo htmlspecialchars($foto['foto']); ?>" alt="Foto" style="height:40px; margin:2px;">
+                                                <form method="POST" class="inline" onsubmit="return confirm('Hapus foto ini?')">
+                                                    <input type="hidden" name="action" value="delete_kegiatan_foto">
+                                                    <input type="hidden" name="foto_id" value="<?php echo (int)$foto['foto_id']; ?>">
+                                                    <button type="submit" class="btn btn-danger btn-xs"><i class="fas fa-times"></i></button>
+                                                </form>
+                                            </div>
+                                        <?php endwhile; 
+                                    else: echo "-"; endif; ?>
+                                </td>
                                 <td><?php echo htmlspecialchars($row['created_at']); ?></td>
                                 <td>
+                                    <button type="button" class="btn btn-primary btn-sm" onclick="showEditForm('kegiatan', <?php echo (int)$row['kegiatan_id']; ?>, '<?php echo htmlspecialchars(addslashes($row['judul'])); ?>', '<?php echo htmlspecialchars(addslashes($row['deskripsi'])); ?>')">
+                                        <i class="fas fa-edit"></i> Edit
+                                    </button>
                                     <form method="POST" class="inline" onsubmit="return confirm('Hapus kegiatan ini?')">
                                         <input type="hidden" name="action" value="delete_kegiatan">
                                         <input type="hidden" name="id" value="<?php echo (int)$row['kegiatan_id']; ?>">
@@ -222,7 +351,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                                 </td>
                             </tr>
                             <?php endwhile; else: ?>
-                            <tr><td colspan="3" class="text-center">Belum ada kegiatan</td></tr>
+                            <tr><td colspan="5" class="text-center">Belum ada kegiatan</td></tr>
                             <?php endif; ?>
                         </tbody>
                     </table>
@@ -250,6 +379,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                                 <td><?php if (!empty($row['gambar'])): ?><img src="../<?php echo htmlspecialchars($row['gambar']); ?>" alt="thumb" style="height:40px"><?php else: ?>-<?php endif; ?></td>
                                 <td><?php echo htmlspecialchars($row['created_at']); ?></td>
                                 <td>
+                                    <button type="button" class="btn btn-primary btn-sm" onclick="showEditForm('webinar', <?php echo (int)$row['webinar_id']; ?>, '<?php echo htmlspecialchars(addslashes($row['judul'])); ?>')">
+                                        <i class="fas fa-edit"></i> Edit
+                                    </button>
                                     <form method="POST" class="inline" onsubmit="return confirm('Hapus webinar ini?')">
                                         <input type="hidden" name="action" value="delete_webinar">
                                         <input type="hidden" name="id" value="<?php echo (int)$row['webinar_id']; ?>">
@@ -289,6 +421,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                                 <td style="max-width:300px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; "><?php echo htmlspecialchars($row['url']); ?></td>
                                 <td><?php echo htmlspecialchars($row['created_at']); ?></td>
                                 <td>
+                                    <button type="button" class="btn btn-primary btn-sm" onclick="showEditForm('live', <?php echo (int)$row['streaming_id']; ?>, '<?php echo htmlspecialchars(addslashes($row['judul'])); ?>', '<?php echo htmlspecialchars(addslashes($row['url'])); ?>', '<?php echo htmlspecialchars($row['tipe']); ?>')">
+                                        <i class="fas fa-edit"></i> Edit
+                                    </button>
                                     <form method="POST" class="inline" onsubmit="return confirm('Hapus live streaming ini?')">
                                         <input type="hidden" name="action" value="delete_live">
                                         <input type="hidden" name="id" value="<?php echo (int)$row['streaming_id']; ?>">
@@ -316,15 +451,33 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                 </div>
                 <div class="table-wrap">
                     <table>
-                        <thead><tr><th>Judul</th><th>Jumlah Foto</th><th>Dibuat</th><th>Aksi</th></tr></thead>
+                        <thead><tr><th>Judul</th><th>Foto</th><th>Dibuat</th><th>Aksi</th></tr></thead>
                         <tbody>
                             <?php $gl = mysqli_query($conn, "SELECT g.*, (SELECT COUNT(*) FROM galeri_foto gf WHERE gf.galeri_id=g.galeri_id) AS jml FROM galeri g ORDER BY created_at DESC"); ?>
                             <?php if ($gl && mysqli_num_rows($gl)>0): while ($row=mysqli_fetch_assoc($gl)): ?>
                             <tr>
                                 <td><?php echo htmlspecialchars($row['judul']); ?></td>
-                                <td><?php echo (int)$row['jml']; ?></td>
+                                <td>
+                                    <?php 
+                                    $fotos = mysqli_query($conn, "SELECT * FROM galeri_foto WHERE galeri_id=".(int)$row['galeri_id']);
+                                    if ($fotos && mysqli_num_rows($fotos) > 0): 
+                                        while ($foto = mysqli_fetch_assoc($fotos)): ?>
+                                            <div class="photo-item">
+                                                <img src="../<?php echo htmlspecialchars($foto['foto']); ?>" alt="Foto" style="height:40px; margin:2px;">
+                                                <form method="POST" class="inline" onsubmit="return confirm('Hapus foto ini?')">
+                                                    <input type="hidden" name="action" value="delete_galeri_foto">
+                                                    <input type="hidden" name="foto_id" value="<?php echo (int)$foto['foto_id']; ?>">
+                                                    <button type="submit" class="btn btn-danger btn-xs"><i class="fas fa-times"></i></button>
+                                                </form>
+                                            </div>
+                                        <?php endwhile; 
+                                    else: echo "-"; endif; ?>
+                                </td>
                                 <td><?php echo htmlspecialchars($row['created_at']); ?></td>
                                 <td>
+                                    <button type="button" class="btn btn-primary btn-sm" onclick="showEditForm('galeri', <?php echo (int)$row['galeri_id']; ?>, '<?php echo htmlspecialchars(addslashes($row['judul'])); ?>')">
+                                        <i class="fas fa-edit"></i> Edit
+                                    </button>
                                     <form method="POST" class="inline" onsubmit="return confirm('Hapus galeri ini? Semua foto akan terhapus.')">
                                         <input type="hidden" name="action" value="delete_galeri">
                                         <input type="hidden" name="id" value="<?php echo (int)$row['galeri_id']; ?>">
@@ -342,6 +495,101 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
         </div>
     </div>
     
+    <!-- Edit Modal -->
+    <div id="editModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2 id="modalTitle">Edit Konten</h2>
+            
+            <!-- Edit Kegiatan Form -->
+            <form id="editKegiatanForm" method="POST" enctype="multipart/form-data" style="display: none;">
+                <input type="hidden" name="action" value="edit_kegiatan">
+                <input type="hidden" name="id" id="editKegiatanId">
+                <div class="form-group">
+                    <label>Judul</label>
+                    <input type="text" name="judul" id="editKegiatanJudul" required>
+                </div>
+                <div class="form-group">
+                    <label>Deskripsi</label>
+                    <textarea name="deskripsi" id="editKegiatanDeskripsi" rows="3"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Tambah Foto Baru (opsional)</label>
+                    <input type="file" name="foto[]" accept="image/*" multiple>
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
+                    <button type="button" class="btn btn-secondary" onclick="closeModal()">Batal</button>
+                </div>
+            </form>
+
+            <!-- Edit Webinar Form -->
+            <form id="editWebinarForm" method="POST" enctype="multipart/form-data" style="display: none;">
+                <input type="hidden" name="action" value="edit_webinar">
+                <input type="hidden" name="id" id="editWebinarId">
+                <div class="form-group">
+                    <label>Judul</label>
+                    <input type="text" name="judul" id="editWebinarJudul" required>
+                </div>
+                <div class="form-group">
+                    <label>Gambar Baru (opsional)</label>
+                    <input type="file" name="gambar" accept="image/*">
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
+                    <button type="button" class="btn btn-secondary" onclick="closeModal()">Batal</button>
+                </div>
+            </form>
+
+            <!-- Edit Live Streaming Form -->
+            <form id="editLiveForm" method="POST" enctype="multipart/form-data" style="display: none;">
+                <input type="hidden" name="action" value="edit_live">
+                <input type="hidden" name="id" id="editLiveId">
+                <div class="form-group">
+                    <label>Judul</label>
+                    <input type="text" name="judul" id="editLiveJudul" required>
+                </div>
+                <div class="form-group">
+                    <label>Tipe</label>
+                    <select name="tipe" id="editLiveTipe">
+                        <option value="youtube">YouTube (embed)</option>
+                        <option value="mp4">MP4 (upload)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>URL (YouTube)</label>
+                    <input type="text" name="url" id="editLiveUrl" placeholder="https://www.youtube.com/embed/...">
+                </div>
+                <div class="form-group">
+                    <label>File MP4 Baru (untuk MP4)</label>
+                    <input type="file" name="file_mp4" accept="video/mp4">
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
+                    <button type="button" class="btn btn-secondary" onclick="closeModal()">Batal</button>
+                </div>
+            </form>
+
+            <!-- Edit Galeri Form -->
+            <form id="editGaleriForm" method="POST" enctype="multipart/form-data" style="display: none;">
+                <input type="hidden" name="action" value="edit_galeri">
+                <input type="hidden" name="id" id="editGaleriId">
+                <div class="form-group">
+                    <label>Judul</label>
+                    <input type="text" name="judul" id="editGaleriJudul" required>
+                </div>
+                <div class="form-group">
+                    <label>Tambah Foto Baru (opsional)</label>
+                    <input type="file" name="foto[]" accept="image/*" multiple>
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
+                    <button type="button" class="btn btn-secondary" onclick="closeModal()">Batal</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <script src="../js/navbar.js"></script>
     <script>
         function toggleSidebar() {
@@ -358,6 +606,96 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                     sidebar.classList.remove('active');
                 }
             }
+        });
+
+        // Modal functionality
+        const modal = document.getElementById('editModal');
+        const span = document.getElementsByClassName('close')[0];
+
+        function showEditForm(type, id, judul, deskripsi = '', url = '', tipe = '') {
+            console.log('Opening modal for:', type, id, judul); // Debug log
+            
+            // Ensure modal exists
+            if (!modal) {
+                console.error('Modal element not found!');
+                return;
+            }
+
+            // Hide all forms first
+            const forms = ['editKegiatanForm', 'editWebinarForm', 'editLiveForm', 'editGaleriForm'];
+            forms.forEach(formId => {
+                const form = document.getElementById(formId);
+                if (form) form.style.display = 'none';
+            });
+
+            // Show appropriate form and set values
+            if (type === 'kegiatan') {
+                document.getElementById('modalTitle').textContent = 'Edit Kegiatan';
+                document.getElementById('editKegiatanForm').style.display = 'block';
+                document.getElementById('editKegiatanId').value = id;
+                document.getElementById('editKegiatanJudul').value = judul;
+                document.getElementById('editKegiatanDeskripsi').value = deskripsi;
+            } else if (type === 'webinar') {
+                document.getElementById('modalTitle').textContent = 'Edit Webinar';
+                document.getElementById('editWebinarForm').style.display = 'block';
+                document.getElementById('editWebinarId').value = id;
+                document.getElementById('editWebinarJudul').value = judul;
+            } else if (type === 'live') {
+                document.getElementById('modalTitle').textContent = 'Edit Live Streaming';
+                document.getElementById('editLiveForm').style.display = 'block';
+                document.getElementById('editLiveId').value = id;
+                document.getElementById('editLiveJudul').value = judul;
+                document.getElementById('editLiveUrl').value = url;
+                document.getElementById('editLiveTipe').value = tipe;
+            } else if (type === 'galeri') {
+                document.getElementById('modalTitle').textContent = 'Edit Galeri';
+                document.getElementById('editGaleriForm').style.display = 'block';
+                document.getElementById('editGaleriId').value = id;
+                document.getElementById('editGaleriJudul').value = judul;
+            }
+
+            // Show modal with animation
+            modal.style.display = 'block';
+            modal.style.opacity = '0';
+            setTimeout(() => {
+                modal.style.opacity = '1';
+            }, 10);
+            
+            // Prevent body scroll when modal is open
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+            if (!modal) return;
+            
+            modal.style.opacity = '0';
+            setTimeout(() => {
+                modal.style.display = 'none';
+                document.body.style.overflow = 'auto';
+            }, 300);
+        }
+
+        // Close modal when clicking on X or outside modal
+        if (span) {
+            span.onclick = closeModal;
+        }
+        
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                closeModal();
+            }
+        }
+
+        // Close modal with Escape key
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape' && modal.style.display === 'block') {
+                closeModal();
+            }
+        });
+
+        // Prevent modal close when clicking inside modal content
+        modal.addEventListener('click', function(event) {
+            event.stopPropagation();
         });
     </script>
 </body>

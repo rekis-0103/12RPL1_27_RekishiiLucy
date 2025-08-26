@@ -15,12 +15,13 @@ $full_name = $_SESSION['full_name'];
 $role = $_SESSION['role'];
 
 // Function to log activities
-function logActivity($conn, $admin_user_id, $action, $details = '') {
+function logActivity($conn, $admin_user_id, $action, $details = '')
+{
     $admin_user_id = (int)$admin_user_id;
     $action = mysqli_real_escape_string($conn, $action);
     $details = mysqli_real_escape_string($conn, $details);
     $ip_address = $_SERVER['REMOTE_ADDR'] ?? '::1';
-    
+
     $log_query = "INSERT INTO log_aktivitas (user_id, action) VALUES ($admin_user_id, '$action')";
     mysqli_query($conn, $log_query);
 }
@@ -35,10 +36,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 $full_name = mysqli_real_escape_string($conn, $_POST['full_name']);
                 $role = mysqli_real_escape_string($conn, $_POST['role']);
                 $password = md5($_POST['password']); // Using MD5 as per existing pattern
-                
+
                 $check_query = "SELECT user_id FROM users WHERE username = '$username' OR email = '$email'";
                 $check_result = mysqli_query($conn, $check_query);
-                
+
                 if (mysqli_num_rows($check_result) > 0) {
                     $error = "Username atau email sudah ada!";
                     logActivity($conn, $user_id, "Gagal menambah user: Username/email sudah ada", "Username: $username, Email: $email");
@@ -53,11 +54,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     }
                 }
                 break;
-                
+
             case 'update_role':
                 $update_user_id = (int)$_POST['user_id'];
                 $new_role = mysqli_real_escape_string($conn, $_POST['new_role']);
-                
+
                 // Get user info for logging
                 $get_user_query = "SELECT username, full_name, role FROM users WHERE user_id = $update_user_id";
                 $get_user_result = mysqli_query($conn, $get_user_query);
@@ -65,7 +66,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 $old_role = $user_data['role'];
                 $target_username = $user_data['username'];
                 $target_fullname = $user_data['full_name'];
-                
+
                 // Prevent admin from changing other admin roles
                 if ($user_data['role'] == 'admin' && $_SESSION['user_id'] != $update_user_id) {
                     $error = "Tidak dapat mengubah role admin lain!";
@@ -81,10 +82,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     }
                 }
                 break;
-                
+
             case 'delete_user':
                 $delete_user_id = (int)$_POST['user_id'];
-                
+
                 // Get user info for logging
                 $get_user_query = "SELECT username, full_name, role FROM users WHERE user_id = $delete_user_id";
                 $get_user_result = mysqli_query($conn, $get_user_query);
@@ -92,7 +93,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 $target_username = $user_data['username'];
                 $target_fullname = $user_data['full_name'];
                 $target_role = $user_data['role'];
-                
+
                 // Prevent admin from deleting other admins
                 if ($user_data['role'] == 'admin' && $_SESSION['user_id'] != $delete_user_id) {
                     $error = "Tidak dapat menghapus admin lain!";
@@ -144,7 +145,7 @@ $users_result = mysqli_query($conn, $users_query);
                 <h3>Kelola User</h3>
                 <p>Selamat datang, <?php echo htmlspecialchars($full_name); ?></p>
             </div>
-            
+
             <ul class="sidebar-menu">
                 <li><a href="dashboard.php"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
                 <li><a href="users.php" class="active"><i class="fas fa-users"></i> Kelola User</a></li>
@@ -170,8 +171,8 @@ $users_result = mysqli_query($conn, $users_query);
 
             <!-- Add User Form -->
             <div class="card">
-                <h3><i class="fas fa-plus"></i> Tambah User Baru</h3>
                 <form method="POST" class="add-user-form">
+                    <h3><i class="fas fa-plus"></i> Tambah User Baru</h3>
                     <input type="hidden" name="action" value="add_user">
                     <div class="form-row">
                         <div class="form-group">
@@ -202,6 +203,9 @@ $users_result = mysqli_query($conn, $users_query);
                         <div class="form-group">
                             <label for="password">Password *</label>
                             <input type="password" id="password" name="password" required>
+                            <button type="button" class="password-toggle" onclick="togglePassword()">
+                                <i class="fas fa-eye"></i>
+                            </button>
                         </div>
                     </div>
                     <button type="submit" class="btn btn-primary">Tambah User</button>
@@ -325,25 +329,40 @@ $users_result = mysqli_query($conn, $users_query);
             </form>
         </div>
     </div>
-    
+
     <script src="../js/navbar.js"></script>
     <script>
         function toggleSidebar() {
             const sidebar = document.getElementById('sidebar');
             sidebar.classList.toggle('active');
         }
-        
+
         // Close sidebar when clicking outside on mobile
         document.addEventListener('click', function(event) {
             const sidebar = document.getElementById('sidebar');
             const mobileToggle = document.querySelector('.mobile-toggle');
-            
+
             if (window.innerWidth <= 768) {
                 if (!sidebar.contains(event.target) && !mobileToggle.contains(event.target)) {
                     sidebar.classList.remove('active');
                 }
             }
         });
+
+        function togglePassword() {
+            const passwordInput = document.getElementById('password');
+            const toggleButton = document.querySelector('.password-toggle i');
+
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                toggleButton.classList.remove('fa-eye');
+                toggleButton.classList.add('fa-eye-slash');
+            } else {
+                passwordInput.type = 'password';
+                toggleButton.classList.remove('fa-eye-slash');
+                toggleButton.classList.add('fa-eye');
+            }
+        }
 
         // Modal functions
         function editRole(userId, currentRole) {

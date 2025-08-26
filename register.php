@@ -34,7 +34,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $full_name = mysqli_real_escape_string($conn, $_POST['full_name']);
     $password = $_POST['password'];
     $confirm_password = $_POST['confirm_password'];
-    
+
+    // Log activity
+    $ip_address = $_SERVER['REMOTE_ADDR'];
+    $log_query = "INSERT INTO log_aktivitas (user_id, action) VALUES (?, 'membuat User baru')";
+    $log_stmt = mysqli_prepare($conn, $log_query);
+    mysqli_stmt_bind_param($log_stmt, "i", $user['user_id']);
+    mysqli_stmt_execute($log_stmt);
+
     // Validation
     if (empty($username) || empty($email) || empty($full_name) || empty($password)) {
         $error_message = 'Semua field harus diisi!';
@@ -49,7 +56,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         mysqli_stmt_bind_param($stmt, "s", $username);
         mysqli_stmt_execute($stmt);
         $result = mysqli_stmt_get_result($stmt);
-        
+
         if (mysqli_num_rows($result) > 0) {
             $error_message = 'Username sudah digunakan!';
         } else {
@@ -59,7 +66,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             mysqli_stmt_bind_param($stmt, "s", $email);
             mysqli_stmt_execute($stmt);
             $result = mysqli_stmt_get_result($stmt);
-            
+
             if (mysqli_num_rows($result) > 0) {
                 $error_message = 'Email sudah digunakan!';
             } else {
@@ -68,7 +75,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 $insert_query = "INSERT INTO users (username, password, email, full_name, role, status) VALUES (?, ?, ?, ?, 'pelamar', 'active')";
                 $stmt = mysqli_prepare($conn, $insert_query);
                 mysqli_stmt_bind_param($stmt, "ssss", $username, $hashed_password, $email, $full_name);
-                
+
                 if (mysqli_stmt_execute($stmt)) {
                     $success_message = 'Registrasi berhasil! Silakan login.';
                     // Redirect to login after 2 seconds
@@ -100,7 +107,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             padding: 20px;
         }
-        
+
         .register-form {
             background: white;
             padding: 40px;
@@ -109,25 +116,25 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             width: 100%;
             max-width: 450px;
         }
-        
+
         .register-form h2 {
             text-align: center;
             margin-bottom: 30px;
             color: #333;
         }
-        
+
         .form-group {
             margin-bottom: 20px;
             position: relative;
         }
-        
+
         .form-group label {
             display: block;
             margin-bottom: 5px;
             color: #555;
             font-weight: 500;
         }
-        
+
         .form-group input {
             width: 100%;
             padding: 12px;
@@ -136,16 +143,16 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             font-size: 1rem;
             transition: border-color 0.3s ease;
         }
-        
+
         .form-group input:focus {
             outline: none;
             border-color: #667eea;
         }
-        
+
         .password-container {
             position: relative;
         }
-        
+
         .password-toggle {
             position: absolute;
             right: 12px;
@@ -157,11 +164,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             color: #666;
             font-size: 1.1rem;
         }
-        
+
         .password-toggle:hover {
             color: #333;
         }
-        
+
         .register-btn {
             width: 100%;
             background: linear-gradient(135deg, #667eea, #764ba2);
@@ -174,53 +181,53 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             cursor: pointer;
             transition: transform 0.3s ease;
         }
-        
+
         .register-btn:hover {
             transform: translateY(-2px);
         }
-        
+
         .login-link {
             text-align: center;
             margin-top: 20px;
         }
-        
+
         .login-link a {
             color: #667eea;
             text-decoration: none;
             font-weight: 500;
         }
-        
+
         .login-link a:hover {
             text-decoration: underline;
         }
-        
+
         .back-link {
             text-align: center;
             margin-top: 15px;
         }
-        
+
         .back-link a {
             color: #667eea;
             text-decoration: none;
         }
-        
+
         .back-link a:hover {
             text-decoration: underline;
         }
-        
+
         .alert {
             padding: 12px;
             border-radius: 6px;
             margin-bottom: 20px;
             font-weight: 500;
         }
-        
+
         .alert-error {
             background-color: #fee2e2;
             color: #dc2626;
             border: 1px solid #fecaca;
         }
-        
+
         .alert-success {
             background-color: #d1fae5;
             color: #059669;
@@ -235,19 +242,19 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <div class="register-container">
         <div class="register-form">
             <h2>Register</h2>
-            
+
             <?php if ($error_message): ?>
                 <div class="alert alert-error">
                     <?php echo $error_message; ?>
                 </div>
             <?php endif; ?>
-            
+
             <?php if ($success_message): ?>
                 <div class="alert alert-success">
                     <?php echo $success_message; ?>
                 </div>
             <?php endif; ?>
-            
+
             <form action="" method="POST">
                 <div class="form-group">
                     <label for="username">Username</label>
@@ -281,11 +288,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 </div>
                 <button type="submit" class="register-btn">Register</button>
             </form>
-            
+
             <div class="login-link">
                 <p>Sudah punya akun? <a href="login.php">Login disini</a></p>
             </div>
-            
+
             <div class="back-link">
                 <a href="index.php"><i class="fas fa-arrow-left"></i> Kembali ke Beranda</a>
             </div>
@@ -298,7 +305,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         function togglePassword(inputId) {
             const passwordInput = document.getElementById(inputId);
             const toggleButton = passwordInput.parentElement.querySelector('.password-toggle i');
-            
+
             if (passwordInput.type === 'password') {
                 passwordInput.type = 'text';
                 toggleButton.classList.remove('fa-eye');

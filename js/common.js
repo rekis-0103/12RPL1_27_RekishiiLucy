@@ -61,7 +61,7 @@ const observer = new IntersectionObserver((entries) => {
 // Observe elements that should animate
 document.addEventListener("DOMContentLoaded", () => {
   const animateElements = document.querySelectorAll(
-    ".feature-card, .service-card, .product-card, .news-card, .job-card, .team-member",
+    ".feature-card, .service-card, .product-card, .news-card, .job-card, .team-member, .berita-card",
   )
   animateElements.forEach((el) => observer.observe(el))
 })

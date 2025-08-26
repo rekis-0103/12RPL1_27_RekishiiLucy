@@ -79,7 +79,7 @@ const categoryProducts = {
         //detailUrl: 'produk-detail.php?id=enterprise-core-switch'
       },
       {
-        name: 'arcgisportal.jpg',
+        name: 'ArcGIS Enterprise',
         image: 'assets/arcgisportal.jpg',
         icon: 'fas fa-wifi',
         //detailUrl: 'produk-detail.php?id=wireless-access-point'

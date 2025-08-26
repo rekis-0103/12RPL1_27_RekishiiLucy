@@ -122,9 +122,20 @@ $galeri = mysqli_query($conn, $q_galeri);
 					<div class="gallery-grid">
 						<?php if ($galeri && mysqli_num_rows($galeri) > 0): ?>
 							<?php while ($row = mysqli_fetch_assoc($galeri)): ?>
-								<img src="<?php echo htmlspecialchars($row['cover'] ?: 'assets/slider1.jpeg'); ?>" alt="<?php echo htmlspecialchars($row['judul']); ?>">
-							<?php endwhile;
-						else: ?>
+								<article class="gallery-card fade-in-up">
+									<img src="<?php echo htmlspecialchars($row['cover'] ?: 'assets/slider1.jpeg'); ?>"
+										alt="<?php echo htmlspecialchars($row['judul']); ?>">
+									<div class="gallery-card-body">
+										<div class="news-card-title"><?php echo htmlspecialchars($row['judul']); ?></div>
+										<div class="news-card-meta">Tanggal : <?php echo date('d M Y', strtotime($row['created_at'])); ?></div>
+										<div class="card-actions">
+											<a href="galeri.php?type=galeri&id=<?php echo (int)$row['galeri_id']; ?>"
+												class="btn-secondary">Lihat Semua Foto</a>
+										</div>
+									</div>
+								</article>
+							<?php endwhile; ?>
+						<?php else: ?>
 							<p class="muted">Belum ada galeri.</p>
 						<?php endif; ?>
 					</div>

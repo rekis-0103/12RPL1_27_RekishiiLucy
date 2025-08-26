@@ -31,11 +31,6 @@ require_once 'connect/koneksi.php';
     $userId = $isLoggedIn ? (int)$_SESSION['user_id'] : null;
     $userRole = $isLoggedIn ? $_SESSION['role'] : null;
 
-    // Log page view for logged-in users
-    if ($isLoggedIn) {
-        logActivity($conn, $userId, 'Buka halaman Bergabung');
-    }
-
     // Handle application submission
     if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'apply_public') {
         if (!$isLoggedIn || $userRole !== 'pelamar') {
