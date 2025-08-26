@@ -15,8 +15,12 @@ $username = $_SESSION['username'];
 $full_name = $_SESSION['full_name'];
 $role = $_SESSION['role'];
 
-function esc($conn,$s){return mysqli_real_escape_string($conn,$s);}
-function logActivity($conn, $actor_user_id, $action) {
+function esc($conn, $s)
+{
+    return mysqli_real_escape_string($conn, $s);
+}
+function logActivity($conn, $actor_user_id, $action)
+{
     $actor_user_id = (int)$actor_user_id;
     $action = mysqli_real_escape_string($conn, $action);
     $ip = $_SERVER['REMOTE_ADDR'] ?? '::1';
@@ -29,40 +33,46 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && isset($_
     if ($_POST['action'] === 'accept_admin') {
         $reason = esc($conn, $_POST['reason']);
         $interview_date = !empty($_POST['interview_date']) ? esc($conn, $_POST['interview_date']) : NULL;
-        $q = "UPDATE applications SET status='lolos administrasi', updated_at=NOW(), reason='$reason'".
-             ($interview_date?", interview_date='$interview_date'":"").
-             " WHERE application_id=$application_id";
+        $q = "UPDATE applications SET status='lolos administrasi', updated_at=NOW(), reason='$reason'" .
+            ($interview_date ? ", interview_date='$interview_date'" : "") .
+            " WHERE application_id=$application_id";
         if (mysqli_query($conn, $q)) {
             $info = mysqli_query($conn, "SELECT a.*, u.email, u.full_name, l.title FROM applications a JOIN users u ON a.user_id=u.user_id JOIN lowongan l ON a.job_id=l.job_id WHERE a.application_id=$application_id");
-            if ($info) { $row = mysqli_fetch_assoc($info);
+            if ($info) {
+                $row = mysqli_fetch_assoc($info);
                 $to = $row['email'];
-                $subject = 'Hasil Seleksi Administrasi - '. $row['title'];
-                $msg = "Halo ".$row['full_name'].",\n\n".
-                       "Selamat, Anda LOLOS seleksi administrasi untuk posisi ".$row['title'].".\n".
-                       "Alasan: ".$reason."\n".
-                       ($interview_date?"Jadwal Wawancara: ".$interview_date."\n":"").
-                       "\nTerima kasih.\nHRD";
-                sendEmail($to,$subject,$msg);
-                logActivity($conn, $user_id, "HRD: terima administrasi application #$application_id (".$row['title'].")");
+                $subject = 'Hasil Seleksi Administrasi - ' . $row['title'];
+                $msg = "Halo " . $row['full_name'] . ",\n\n" .
+                    "Selamat, Anda LOLOS seleksi administrasi untuk posisi " . $row['title'] . ".\n" .
+                    "Alasan: " . $reason . "\n" .
+                    ($interview_date ? "Jadwal Wawancara: " . $interview_date . "\n" : "") .
+                    "\nTerima kasih.\nHRD";
+                sendEmail($to, $subject, $msg);
+                logActivity($conn, $user_id, "HRD: terima administrasi application #$application_id (" . $row['title'] . ")");
             }
             $success = 'Lamaran diterima pada seleksi administrasi';
-        } else { $error = 'Gagal memperbarui status'; }
+        } else {
+            $error = 'Gagal memperbarui status';
+        }
     } elseif ($_POST['action'] === 'reject_admin') {
         $reason = esc($conn, $_POST['reason']);
         $q = "UPDATE applications SET status='ditolak', updated_at=NOW(), reason='$reason' WHERE application_id=$application_id";
         if (mysqli_query($conn, $q)) {
             $info = mysqli_query($conn, "SELECT a.*, u.email, u.full_name, l.title FROM applications a JOIN users u ON a.user_id=u.user_id JOIN lowongan l ON a.job_id=l.job_id WHERE a.application_id=$application_id");
-            if ($info) { $row = mysqli_fetch_assoc($info);
+            if ($info) {
+                $row = mysqli_fetch_assoc($info);
                 $to = $row['email'];
-                $subject = 'Hasil Seleksi Administrasi - '. $row['title'];
-                $msg = "Halo ".$row['full_name'].",\n\n".
-                       "Mohon maaf, lamaran Anda TIDAK LOLOS seleksi administrasi untuk posisi ".$row['title'].".\n".
-                       "Alasan: ".$reason."\n\nTerima kasih.\nHRD";
-                sendEmail($to,$subject,$msg);
-                logActivity($conn, $user_id, "HRD: tolak administrasi application #$application_id (".$row['title'].")");
+                $subject = 'Hasil Seleksi Administrasi - ' . $row['title'];
+                $msg = "Halo " . $row['full_name'] . ",\n\n" .
+                    "Mohon maaf, lamaran Anda TIDAK LOLOS seleksi administrasi untuk posisi " . $row['title'] . ".\n" .
+                    "Alasan: " . $reason . "\n\nTerima kasih.\nHRD";
+                sendEmail($to, $subject, $msg);
+                logActivity($conn, $user_id, "HRD: tolak administrasi application #$application_id (" . $row['title'] . ")");
             }
             $success = 'Lamaran ditolak';
-        } else { $error = 'Gagal memperbarui status'; }
+        } else {
+            $error = 'Gagal memperbarui status';
+        }
     }
 }
 
@@ -84,7 +94,7 @@ if (isset($_GET['id'])) {
 }
 
 // List of new applications
-$list = mysqli_query($conn, "SELECT a.*, u.full_name, u.email, l.title FROM applications a JOIN users u ON a.user_id=u.user_id JOIN lowongan l ON a.job_id=l.job_id WHERE a.status='pendaftaran diterima' ORDER BY a.applied_at DESC");
+$list = mysqli_query($conn, "SELECT a.*, u.full_name, u.email, l.title FROM applications a JOIN users u ON a.user_id=u.user_id JOIN lowongan l ON a.job_id=l.job_id WHERE a.status IN ('pendaftaran diterima', 'seleksi administrasi') ORDER BY a.applied_at DESC");
 ?>
 <!DOCTYPE html>
 <html lang="id">
@@ -104,14 +114,14 @@ $list = mysqli_query($conn, "SELECT a.*, u.full_name, u.email, l.title FROM appl
     <button class="mobile-toggle" onclick="toggleSidebar()">
         <i class="fas fa-bars"></i>
     </button>
-    
+
     <div class="dashboard-container">
         <div class="sidebar" id="sidebar">
             <div class="sidebar-header">
                 <h3>Kelola Lamaran</h3>
                 <p>Selamat datang, <?php echo htmlspecialchars($full_name); ?></p>
             </div>
-            
+
             <ul class="sidebar-menu">
                 <li><a href="dashboard.php"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
                 <li><a href="lowongan.php"><i class="fas fa-briefcase"></i> Kelola Lowongan</a></li>
@@ -121,7 +131,7 @@ $list = mysqli_query($conn, "SELECT a.*, u.full_name, u.email, l.title FROM appl
                 <li><a href="../logout.php"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
             </ul>
         </div>
-        
+
         <div class="main-content">
             <div class="dashboard-header">
                 <h1>Kelola Lamaran</h1>
@@ -151,7 +161,7 @@ $list = mysqli_query($conn, "SELECT a.*, u.full_name, u.email, l.title FROM appl
                                 <div><strong>Tanggal Lamar</strong>: <?php echo date('d/m/Y H:i', strtotime($detail_row['applied_at'])); ?></div>
                             </div>
                             <div>
-                                <div><strong>CV</strong>: 
+                                <div><strong>CV</strong>:
                                     <?php if (!empty($detail_row['cv'])): ?>
                                         <a href="../<?php echo htmlspecialchars($detail_row['cv']); ?>" target="_blank">Lihat CV</a>
                                     <?php else: ?>
@@ -208,7 +218,7 @@ $list = mysqli_query($conn, "SELECT a.*, u.full_name, u.email, l.title FROM appl
                                 </tr>
                             </thead>
                             <tbody>
-                                <?php if ($list && mysqli_num_rows($list)>0): ?>
+                                <?php if ($list && mysqli_num_rows($list) > 0): ?>
                                     <?php while ($row = mysqli_fetch_assoc($list)): ?>
                                         <tr>
                                             <td><?php echo htmlspecialchars($row['full_name']); ?></td>
@@ -222,16 +232,97 @@ $list = mysqli_query($conn, "SELECT a.*, u.full_name, u.email, l.title FROM appl
                                         </tr>
                                     <?php endwhile; ?>
                                 <?php else: ?>
-                                    <tr><td colspan="4" class="text-center">Tidak ada lamaran baru</td></tr>
+                                    <tr>
+                                        <td colspan="4" class="text-center">Tidak ada lamaran baru</td>
+                                    </tr>
                                 <?php endif; ?>
                             </tbody>
                         </table>
                     </div>
                 </div>
             <?php endif; ?>
+            <!-- Tabel Semua Pelamar -->
+            <div class="card">
+                <div class="card-header">
+                    <h3>Semua Pelamar</h3>
+                    <form method="GET" style="display:flex; gap:10px;">
+                        <select name="status_filter" class="form-control">
+                            <option value="" <?= empty($_GET['status_filter']) ? 'selected' : '' ?>>-- Semua Status --</option>
+                            <option value="pendaftaran diterima" <?= ($_GET['status_filter'] ?? '') === 'pendaftaran diterima' ? 'selected' : '' ?>>Pendaftaran Diterima</option>
+                            <option value="seleksi administrasi" <?= ($_GET['status_filter'] ?? '') === 'seleksi administrasi' ? 'selected' : '' ?>>Seleksi Administrasi</option>
+                            <option value="lolos administrasi" <?= ($_GET['status_filter'] ?? '') === 'lolos administrasi' ? 'selected' : '' ?>>Lolos Administrasi</option>
+                            <option value="tes & wawancara" <?= ($_GET['status_filter'] ?? '') === 'tes & wawancara' ? 'selected' : '' ?>>Tes & Wawancara</option>
+                            <option value="diterima bekerja" <?= ($_GET['status_filter'] ?? '') === 'diterima bekerja' ? 'selected' : '' ?>>Diterima Bekerja</option>
+                            <option value="ditolak" <?= ($_GET['status_filter'] ?? '') === 'ditolak' ? 'selected' : '' ?>>Ditolak</option>
+                        </select>
+
+                        <button type="submit" class="btn btn-primary">Filter</button>
+                        <a href="export_pdf.php?status=<?= $_GET['status_filter'] ?? '' ?>"
+                            class="btn btn-danger">Export PDF</a>
+                    </form>
+                </div>
+                <div class="card-body table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>No</th>
+                                <th>Nama</th>
+                                <th>Nama Pekerjaan</th>
+                                <th>tempat</th>
+                                <th>Status</th>
+                                <th>Tanggal Lamar</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php
+                            $filter = "";
+                            if (!empty($_GET['status_filter'])) {
+                                $filter = "WHERE a.status = '" . mysqli_real_escape_string($conn, $_GET['status_filter']) . "'";
+                            }
+
+                            $sql = "SELECT u.full_name AS nama, 
+               l.title AS nama_pekerjaan, 
+               l.location AS tempat, 
+               a.status, 
+               a.applied_at AS tanggal_lamar
+        FROM applications a
+        JOIN users u ON u.user_id = a.user_id
+        JOIN lowongan l ON l.job_id = a.job_id
+        $filter
+        ORDER BY a.applied_at DESC";
+
+                            $result = mysqli_query($conn, $sql);
+
+                            if ($result && mysqli_num_rows($result) > 0) {
+                                $no = 1;
+                                while ($row = mysqli_fetch_assoc($result)) {
+                                    echo "<tr>
+                <td>{$no}</td>
+                <td>{$row['nama']}</td>
+                <td>{$row['nama_pekerjaan']}</td>
+                <td>{$row['tempat']}</td>
+                <td>{$row['status']}</td>
+                <td>{$row['tanggal_lamar']}</td>
+              </tr>";
+                                    $no++;
+                                }
+                            } else {
+                                echo "<tr>
+            <td colspan='6' class='text-center'>Tidak ada data untuk filter ini</td>
+          </tr>";
+                            }
+                            ?>
+                        </tbody>
+
+                    </table>
+                </div>
+            </div>
+
         </div>
     </div>
-    
+
+
+
     <script src="../js/navbar.js"></script>
     <script>
         function toggleSidebar() {
