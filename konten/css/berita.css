@@ -1,33 +1,144 @@
 /* Edit functionality styles for main-content area only */
 .main-content .photo-item {
-    display: inline-block;
+    display: inline-flex;
     position: relative;
-    margin: 2px;
+    margin: 3px;
+    align-items: center;
+    background: #f8f9fa;
+    border-radius: 6px;
+    padding: 2px;
 }
 
 .main-content .photo-item img {
     border-radius: 4px;
     border: 1px solid #ddd;
+    display: block;
 }
 
 .main-content .photo-item .btn-xs {
     position: absolute;
-    top: -5px;
-    right: -5px;
-    width: 20px;
-    height: 20px;
+    top: -8px;
+    right: -8px;
+    width: 24px;
+    height: 24px;
     border-radius: 50%;
     padding: 0;
-    font-size: 10px;
+    font-size: 12px;
     line-height: 1;
     background: #dc3545;
-    border: 1px solid #dc3545;
+    border: 2px solid #fff;
     color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
 }
 
 .main-content .photo-item .btn-xs:hover {
     background: #c82333;
-    border-color: #bd2130;
+    border-color: #fff;
+    transform: scale(1.1);
+}
+
+/* Table improvements */
+.main-content .table-wrap {
+    overflow-x: auto;
+    margin-top: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.main-content .table-wrap table {
+    width: 100%;
+    min-width: 800px;
+    border-collapse: collapse;
+    background: white;
+}
+
+.main-content .table-wrap table th {
+    background: #f8f9fa;
+    padding: 15px 12px;
+    font-weight: 600;
+    text-align: left;
+    border-bottom: 2px solid #dee2e6;
+    white-space: nowrap;
+}
+
+.main-content .table-wrap table td {
+    padding: 15px 12px;
+    border-bottom: 1px solid #dee2e6;
+    vertical-align: top;
+}
+
+/* Specific column widths */
+.main-content .table-wrap table th:nth-child(1), /* Judul */
+.main-content .table-wrap table td:nth-child(1) {
+    width: 25%;
+    min-width: 200px;
+}
+
+.main-content .table-wrap table th:nth-child(2), /* Deskripsi/Gambar */
+.main-content .table-wrap table td:nth-child(2) {
+    width: 30%;
+    min-width: 250px;
+}
+
+.main-content .table-wrap table th:nth-child(3), /* Foto/Tipe */
+.main-content .table-wrap table td:nth-child(3) {
+    width: 20%;
+    min-width: 150px;
+}
+
+.main-content .table-wrap table th:nth-child(4), /* Dibuat */
+.main-content .table-wrap table td:nth-child(4) {
+    width: 15%;
+    min-width: 120px;
+    white-space: nowrap;
+}
+
+.main-content .table-wrap table th:nth-child(5), /* Aksi */
+.main-content .table-wrap table td:nth-child(5) {
+    width: 10%;
+    min-width: 120px;
+    text-align: center;
+}
+
+/* Action buttons container */
+.main-content .table-wrap table td:last-child {
+    white-space: nowrap;
+}
+
+.main-content .table-wrap table td .btn {
+    margin: 2px 1px;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.main-content .table-wrap table td form.inline {
+    display: inline-block;
+    margin: 0 1px;
+}
+
+/* Photo gallery in table cells */
+.main-content .table-wrap table td .photo-item {
+    margin: 2px;
+    vertical-align: top;
+}
+
+.main-content .table-wrap table td .photo-item img {
+    max-height: 50px;
+    width: auto;
+}
+
+/* Text content improvements */
+.main-content .table-wrap table td {
+    word-wrap: break-word;
+    max-width: 0; /* This allows the table to respect our width settings */
+}
+
+.main-content .table-wrap table td:nth-child(2) {
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 /* Modal styles - Fixed for better compatibility */
@@ -171,17 +282,125 @@
     transform: translateY(-1px);
 }
 
-/* Table improvements for edit functionality */
-.main-content .table-wrap table td {
-    vertical-align: top;
-    padding: 12px 8px;
+/* Button improvements */
+.btn {
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+    display: inline-block;
+    text-align: center;
+    line-height: 1.2;
 }
 
-.main-content .table-wrap table td .btn {
-    margin: 2px;
+.btn-primary {
+    background-color: #007bff;
+    color: white;
+    border: 1px solid #007bff;
 }
 
-/* Responsive modal */
+.btn-primary:hover {
+    background-color: #0056b3;
+    border-color: #0056b3;
+    transform: translateY(-1px);
+    color: white;
+}
+
+.btn-danger {
+    background-color: #dc3545;
+    color: white;
+    border: 1px solid #dc3545;
+}
+
+.btn-danger:hover {
+    background-color: #c82333;
+    border-color: #c82333;
+    transform: translateY(-1px);
+    color: white;
+}
+
+.btn-sm {
+    padding: 6px 12px;
+    font-size: 13px;
+}
+
+.btn-xs {
+    padding: 4px 8px;
+    font-size: 11px;
+}
+
+/* Card styling improvements */
+.card {
+    margin-bottom: 30px;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    border: 1px solid #e9ecef;
+}
+
+.card-header {
+    background: #f8f9fa;
+    padding: 15px 20px;
+    border-bottom: 1px solid #dee2e6;
+}
+
+.card-header h3 {
+    margin: 0;
+    color: #333;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.card-body {
+    padding: 20px;
+    background: white;
+}
+
+/* Form styling */
+.action-form {
+    background: #f8f9fa;
+    padding: 20px;
+    border-radius: 6px;
+    margin-bottom: 20px;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 600;
+    color: #555;
+}
+
+.form-group input,
+.form-group textarea,
+.form-group select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+    box-sizing: border-box;
+}
+
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group select:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.1);
+}
+
+/* Responsive improvements */
 @media (max-width: 768px) {
     .modal-content {
         width: 95%;
@@ -205,6 +424,21 @@
         top: 10px;
         font-size: 28px;
     }
+
+    .main-content .table-wrap {
+        border-radius: 0;
+        margin: 0 -20px;
+    }
+
+    .main-content .table-wrap table td:last-child {
+        white-space: normal;
+    }
+
+    .main-content .table-wrap table td .btn {
+        margin: 2px 0;
+        width: 100%;
+        max-width: 80px;
+    }
 }
 
 /* Photo grid improvements */
@@ -213,18 +447,102 @@
 }
 
 .main-content .photo-item:hover {
+    transform: scale(1.02);
+}
+
+.main-content .photo-item img {
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.main-content .photo-item img:hover {
+    opacity: 0.8;
     transform: scale(1.05);
 }
 
-/* Form validation styles */
-.modal .form-group input:invalid,
-.modal .form-group textarea:invalid {
-    border-color: #dc3545;
+/* Image Lightbox Modal */
+.image-modal {
+    display: none;
+    position: fixed;
+    z-index: 10000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.9);
+    backdrop-filter: blur(3px);
 }
 
-.modal .form-group input:invalid:focus,
-.modal .form-group textarea:invalid:focus {
-    box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.1);
+.image-modal-content {
+    position: relative;
+    margin: auto;
+    padding: 20px;
+    width: 90%;
+    max-width: 900px;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.image-modal img {
+    max-width: 100%;
+    max-height: 90vh;
+    object-fit: contain;
+    border-radius: 8px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+}
+
+.image-modal .close {
+    position: absolute;
+    top: 20px;
+    right: 30px;
+    color: #fff;
+    font-size: 40px;
+    font-weight: bold;
+    cursor: pointer;
+    z-index: 10001;
+    background: rgba(0, 0, 0, 0.5);
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+.image-modal .close:hover {
+    background: rgba(0, 0, 0, 0.8);
+    transform: scale(1.1);
+}
+
+.image-modal .image-info {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 0, 0, 0.7);
+    color: white;
+    padding: 10px 20px;
+    border-radius: 20px;
+    font-size: 14px;
+    text-align: center;
+    max-width: 80%;
+}
+
+/* Loading spinner for images */
+.image-loading {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid #007bff;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    animation: spin 1s linear infinite;
 }
 
 /* Loading state for forms */
@@ -271,42 +589,40 @@
     background: #a8a8a8;
 }
 
-/* Button improvements */
-.btn {
-    border: none;
-    padding: 8px 16px;
+/* Alert messages */
+.alert {
+    padding: 15px;
+    margin-bottom: 20px;
+    border: 1px solid transparent;
     border-radius: 4px;
-    cursor: pointer;
-    font-size: 14px;
-    transition: all 0.3s ease;
 }
 
-.btn-primary {
-    background-color: #007bff;
-    color: white;
+.alert-success {
+    color: #155724;
+    background-color: #d4edda;
+    border-color: #c3e6cb;
 }
 
-.btn-primary:hover {
-    background-color: #0056b3;
-    transform: translateY(-1px);
+.alert-danger {
+    color: #721c24;
+    background-color: #f8d7da;
+    border-color: #f5c6cb;
 }
 
-.btn-danger {
-    background-color: #dc3545;
-    color: white;
+/* Utility classes */
+.text-center {
+    text-align: center;
 }
 
-.btn-danger:hover {
-    background-color: #c82333;
-    transform: translateY(-1px);
+.inline {
+    display: inline;
 }
 
-.btn-sm {
-    padding: 6px 12px;
-    font-size: 12px;
+/* Table striping */
+.main-content .table-wrap table tbody tr:nth-child(even) {
+    background-color: #f8f9fa;
 }
 
-.btn-xs {
-    padding: 4px 8px;
-    font-size: 10px;
+.main-content .table-wrap table tbody tr:hover {
+    background-color: #e8f4f8;
 }

@@ -2,44 +2,72 @@
 session_start();
 require_once 'connect/koneksi.php';
 
-// Query untuk mengambil 3 berita terbaru dari semua kategori
+// Function untuk mendapatkan YouTube thumbnail
+function getYoutubeThumbnail($url) {
+    $patterns = [
+        '/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([a-zA-Z0-9_-]{11})/',
+        '/youtube\.com\/watch\?.*v=([a-zA-Z0-9_-]{11})/'
+    ];
+    
+    foreach ($patterns as $pattern) {
+        if (preg_match($pattern, $url, $matches)) {
+            return "https://img.youtube.com/vi/{$matches[1]}/maxresdefault.jpg";
+        }
+    }
+    return '';
+}
+
 $query_berita_terbaru = "
     SELECT * FROM (
         SELECT 
             'kegiatan' as kategori,
-            kegiatan_id as id,
-            judul,
-            COALESCE(deskripsi, '') as deskripsi,
-            created_at,
-            '' as gambar
-        FROM kegiatan
+            k.kegiatan_id as id,
+            k.judul,
+            COALESCE(k.deskripsi, '') as deskripsi,
+            k.created_at,
+            COALESCE(
+                (SELECT kf.foto FROM kegiatan_foto kf WHERE kf.kegiatan_id = k.kegiatan_id LIMIT 1), 
+                ''
+            ) as gambar,
+            '' as url,
+            '' as tipe
+        FROM kegiatan k
         UNION ALL
         SELECT 
             'webinar' as kategori,
-            webinar_id as id,
-            judul,
+            w.webinar_id as id,
+            w.judul,
             '' as deskripsi,
-            created_at,
-            COALESCE(gambar, '') as gambar
-        FROM webinar
+            w.created_at,
+            COALESCE(w.gambar, '') as gambar,
+            '' as url,
+            '' as tipe
+        FROM webinar w
         UNION ALL
         SELECT 
             'live' as kategori,
-            streaming_id as id,
-            judul,
+            ls.streaming_id as id,
+            ls.judul,
             '' as deskripsi,
-            created_at,
-            '' as gambar
-        FROM live_streaming
+            ls.created_at,
+            '' as gambar,
+            ls.url,
+            ls.tipe
+        FROM live_streaming ls
         UNION ALL
         SELECT 
             'galeri' as kategori,
-            galeri_id as id,
-            judul,
+            g.galeri_id as id,
+            g.judul,
             '' as deskripsi,
-            created_at,
-            '' as gambar
-        FROM galeri
+            g.created_at,
+            COALESCE(
+                (SELECT gf.foto FROM galeri_foto gf WHERE gf.galeri_id = g.galeri_id LIMIT 1), 
+                ''
+            ) as gambar,
+            '' as url,
+            '' as tipe
+        FROM galeri g
     ) as combined_news
     ORDER BY created_at DESC
     LIMIT 3
@@ -119,13 +147,67 @@ $berita_terbaru = mysqli_query($conn, $query_berita_terbaru);
                 <div class="berita-grid">
                     <?php if ($berita_terbaru && mysqli_num_rows($berita_terbaru) > 0): ?>
                         <?php while ($berita = mysqli_fetch_assoc($berita_terbaru)): ?>
+                            <?php
+                            $link = '';
+                            switch($berita['kategori']) {
+                                case 'kegiatan':
+                                    $link = "kegiatan-detail.php?type=kegiatan&id={$berita['id']}";
+                                    break;
+                                case 'webinar':
+                                case 'live':
+                                case 'galeri':
+                                    $link = "berita.php";
+                                    break;
+                            }
+                            
+                            // Determine image source
+                            $image_src = '';
+                            $show_video_overlay = false;
+                            
+                            if ($berita['kategori'] == 'live') {
+                                if ($berita['tipe'] == 'youtube' && !empty($berita['url'])) {
+                                    $image_src = getYoutubeThumbnail($berita['url']);
+                                    $show_video_overlay = true;
+                                } elseif ($berita['tipe'] == 'mp4' && !empty($berita['url'])) {
+                                    // For MP4, use a default video placeholder
+                                    $image_src = 'assets/video-placeholder.png';
+                                    $show_video_overlay = true;
+                                }
+                            } else {
+                                $image_src = $berita['gambar'];
+                            }
+                            ?>
                             <div class="berita-card fade-in-up">
                                 <div class="berita-image">
-                                    <?php if (!empty($berita['gambar'])): ?>
-                                        <img src="<?php echo htmlspecialchars($berita['gambar']); ?>" alt="<?php echo htmlspecialchars($berita['judul']); ?>">
+                                    <?php if (!empty($image_src)): ?>
+                                        <img src="<?php echo htmlspecialchars($image_src); ?>" 
+                                             alt="<?php echo htmlspecialchars($berita['judul']); ?>"
+                                             onerror="this.parentElement.innerHTML='<div class=\'placeholder-image\'><i class=\'fas fa-image\'></i></div>'">
+                                        <?php if ($show_video_overlay): ?>
+                                            <div class="video-overlay">
+                                                <i class="fas fa-play"></i>
+                                            </div>
+                                        <?php endif; ?>
                                     <?php else: ?>
                                         <div class="placeholder-image">
-                                            <i class="fas fa-image"></i>
+                                            <?php
+                                            $placeholder_icon = 'fas fa-image';
+                                            switch($berita['kategori']) {
+                                                case 'kegiatan':
+                                                    $placeholder_icon = 'fas fa-calendar';
+                                                    break;
+                                                case 'webinar':
+                                                    $placeholder_icon = 'fas fa-chalkboard-teacher';
+                                                    break;
+                                                case 'live':
+                                                    $placeholder_icon = 'fas fa-video';
+                                                    break;
+                                                case 'galeri':
+                                                    $placeholder_icon = 'fas fa-images';
+                                                    break;
+                                            }
+                                            ?>
+                                            <i class="<?php echo $placeholder_icon; ?>"></i>
                                         </div>
                                     <?php endif; ?>
                                     <div class="kategori-badge">

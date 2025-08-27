@@ -61,6 +61,7 @@ $galeri = mysqli_query($conn, $q_galeri);
 										<div class="card-actions">
 											<span class="badge">Kegiatan</span>
 											<a href="galeri.php?type=kegiatan&id=<?php echo (int)$row['kegiatan_id']; ?>" class="btn-secondary">Lihat Galeri</a>
+											<a href="kegiatan-detail.php?type=kegiatan&id=<?php echo (int)$row['kegiatan_id']; ?>" class="btn-secondary">Detail</a>
 										</div>
 									</div>
 								</article>
@@ -82,7 +83,7 @@ $galeri = mysqli_query($conn, $q_galeri);
 									<?php if (!empty($row['gambar'])): ?>
 										<p class="webinar-desc"><img src="<?php echo htmlspecialchars($row['gambar']); ?>" alt="<?php echo htmlspecialchars($row['judul']); ?>" style="max-width:100%; height:auto"></p>
 									<?php endif; ?>
-									<p class="muted">Diterbitkan: <?php echo date('d M Y', strtotime($row['created_at'])); ?></p>
+									<p class="muted">Dibuat : <?php echo date('d M Y', strtotime($row['created_at'])); ?></p>
 								</div>
 							<?php endwhile;
 						else: ?>

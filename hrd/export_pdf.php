@@ -26,7 +26,7 @@ $printedBy = $_SESSION['full_name'] ?? 'Administrator';
 class PDF extends FPDF {
     function Header() {
         // Logo - diperbesar ukurannya
-        $this->Image('../assets/logo.png', 15, 13, 45); // ukuran logo diperbesar dari 20 ke 30
+        $this->Image('../assets/logo.png', 15, 13, 45); 
         // Nama Perusahaan
         $this->SetFont('Arial','B',14);
         $this->Cell(0,7,'PT Waindo Specterra',0,1,'C');
