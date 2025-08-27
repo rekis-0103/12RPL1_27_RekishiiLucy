@@ -14,17 +14,48 @@ $username = $_SESSION['username'];
 $full_name = $_SESSION['full_name'];
 $role = $_SESSION['role'];
 
+// Predefined action options for filtering
+$predefined_actions = [
+    'login' => 'Login',
+    'logout' => 'Logout',
+    'tambah user' => 'Tambah User',
+    'edit user' => 'Edit user',
+    'hapus user' => 'Hapus user',
+    'tambah kegiatan' => 'Tambah kegiatan',
+    'edit kegiatan' => 'Edit kegiatan',
+    'hapus kegiatan' => 'Hapus kegiatan',
+    'tambah webinar' => 'Tambah webinar',
+    'edit webinar' => 'Edit webinar',
+    'hapus webiinar' => 'Hapus webinar',
+    'tambah live_stream' => 'Tambah live stream',
+    'edit live_stream' => 'Edit live stream',
+    'hapus live_stream' => 'Hapus live stream',
+    'tambah galeri' => 'Tambah galeri',
+    'edit galeri' => 'Edit galeri',
+    'hapus galeri' => 'Hapus galeri',
+];
+
 // Get filter parameters
 $action_filter = isset($_GET['action']) ? mysqli_real_escape_string($conn, $_GET['action']) : '';
 $date_from = isset($_GET['date_from']) ? mysqli_real_escape_string($conn, $_GET['date_from']) : '';
 $date_to = isset($_GET['date_to']) ? mysqli_real_escape_string($conn, $_GET['date_to']) : '';
+$user_filter = isset($_GET['user_id']) ? mysqli_real_escape_string($conn, $_GET['user_id']) : '';
+
+// Ambil daftar user yang pernah ada di log
+$user_query = "SELECT DISTINCT u.user_id, u.username, u.full_name
+               FROM log_aktivitas l
+               LEFT JOIN users u ON l.user_id = u.user_id
+               ORDER BY u.full_name ASC";
+$user_result = mysqli_query($conn, $user_query);
+
 
 // Build query with filters
 $where_conditions = [];
 $where_conditions[] = "1=1"; // Base condition
 
 if ($action_filter) {
-    $where_conditions[] = "l.action = '$action_filter'";
+    // Use LIKE operator to find actions containing the selected filter
+    $where_conditions[] = "l.action LIKE '%$action_filter%'";
 }
 
 if ($date_from) {
@@ -33,6 +64,10 @@ if ($date_from) {
 
 if ($date_to) {
     $where_conditions[] = "DATE(l.log_time) <= '$date_to'";
+}
+
+if ($user_filter) {
+    $where_conditions[] = "l.user_id = '$user_filter'";
 }
 
 $where_clause = implode(' AND ', $where_conditions);
@@ -44,10 +79,6 @@ $logs_query = "SELECT l.*, u.username, u.full_name
                ORDER BY l.log_time DESC";
 
 $logs_result = mysqli_query($conn, $logs_query);
-
-// Get unique actions for filter dropdown
-$actions_query = "SELECT DISTINCT action FROM log_aktivitas ORDER BY action";
-$actions_result = mysqli_query($conn, $actions_query);
 ?>
 <!DOCTYPE html>
 <html lang="id">
@@ -96,10 +127,22 @@ $actions_result = mysqli_query($conn, $actions_query);
                             <label for="action">Aksi</label>
                             <select id="action" name="action">
                                 <option value="">Semua Aksi</option>
-                                <?php while ($action = mysqli_fetch_assoc($actions_result)): ?>
-                                    <option value="<?php echo htmlspecialchars($action['action']); ?>" 
-                                            <?php echo ($action_filter == $action['action']) ? 'selected' : ''; ?>>
-                                        <?php echo htmlspecialchars($action['action']); ?>
+                                <?php foreach ($predefined_actions as $value => $label): ?>
+                                    <option value="<?php echo htmlspecialchars($value); ?>"
+                                        <?php echo ($action_filter == $value) ? 'selected' : ''; ?>>
+                                        <?php echo htmlspecialchars($label); ?>
+                                    </option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="user_id">Filter User</label>
+                            <select id="user_id" name="user_id">
+                                <option value="">Semua User</option>
+                                <?php while ($user = mysqli_fetch_assoc($user_result)): ?>
+                                    <option value="<?php echo htmlspecialchars($user['user_id']); ?>"
+                                        <?php echo ($user_filter == $user['user_id']) ? 'selected' : ''; ?>>
+                                        <?php echo htmlspecialchars($user['full_name'] ?: $user['username']); ?>
                                     </option>
                                 <?php endwhile; ?>
                             </select>
@@ -168,7 +211,7 @@ $actions_result = mysqli_query($conn, $actions_query);
                                         </td>
                                         <td>
                                             <span class="action-badge action-<?php echo strtolower($log['action']); ?>">
-                                                <i class="fas fa-<?php echo ($log['action'] == 'Login') ? 'sign-in-alt' : (($log['action'] == 'Logout') ? 'sign-out-alt' : 'user'); ?>"></i>
+                                                <i class="fas fa-<?php echo getActionIcon($log['action']); ?>"></i>
                                                 <?php echo htmlspecialchars($log['action']); ?>
                                             </span>
                                         </td>
@@ -192,12 +235,12 @@ $actions_result = mysqli_query($conn, $actions_query);
             const sidebar = document.getElementById('sidebar');
             sidebar.classList.toggle('active');
         }
-        
+
         // Close sidebar when clicking outside on mobile
         document.addEventListener('click', function(event) {
             const sidebar = document.getElementById('sidebar');
             const mobileToggle = document.querySelector('.mobile-toggle');
-            
+
             if (window.innerWidth <= 768) {
                 if (!sidebar.contains(event.target) && !mobileToggle.contains(event.target)) {
                     sidebar.classList.remove('active');
@@ -211,13 +254,13 @@ $actions_result = mysqli_query($conn, $actions_query);
             const action = urlParams.get('action') || '';
             const dateFrom = urlParams.get('date_from') || '';
             const dateTo = urlParams.get('date_to') || '';
-            
+
             // Create export URL
             let exportUrl = 'export_logs.php?';
             if (action) exportUrl += 'action=' + action + '&';
             if (dateFrom) exportUrl += 'date_from=' + dateFrom + '&';
             if (dateTo) exportUrl += 'date_to=' + dateTo;
-            
+
             // Download the file
             window.location.href = exportUrl;
         }
@@ -225,3 +268,22 @@ $actions_result = mysqli_query($conn, $actions_query);
 </body>
 
 </html>
+
+<?php
+// Helper function to get appropriate icon for action
+function getActionIcon($action)
+{
+    $action_lower = strtolower($action);
+
+    if (strpos($action_lower, 'login') !== false) return 'sign-in-alt';
+    if (strpos($action_lower, 'logout') !== false) return 'sign-out-alt';
+    if (strpos($action_lower, 'create') !== false || strpos($action_lower, 'tambah') !== false) return 'plus';
+    if (strpos($action_lower, 'update') !== false || strpos($action_lower, 'edit') !== false) return 'edit';
+    if (strpos($action_lower, 'delete') !== false || strpos($action_lower, 'hapus') !== false) return 'trash';
+    if (strpos($action_lower, 'view') !== false || strpos($action_lower, 'lihat') !== false) return 'eye';
+    if (strpos($action_lower, 'export') !== false) return 'download';
+    if (strpos($action_lower, 'import') !== false) return 'upload';
+
+    return 'user'; // default icon
+}
+?>

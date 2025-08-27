@@ -193,21 +193,6 @@
     text-transform: uppercase;
 }
 
-.action-login {
-    background: #d1fae5;
-    color: #065f46;
-}
-
-.action-logout {
-    background: #fee2e2;
-    color: #991b1b;
-}
-
-.action-user {
-    background: #dbeafe;
-    color: #1e40af;
-}
-
 /* IP Address Display */
 .ip-address {
     font-family: 'Courier New', monospace;
