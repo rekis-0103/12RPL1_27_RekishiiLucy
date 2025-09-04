@@ -84,7 +84,6 @@ if ($type === 'kegiatan') {
 			display: block;
 		}
 
-		/* Lightbox Styles */
 		.lightbox {
 			display: none;
 			position: fixed;
