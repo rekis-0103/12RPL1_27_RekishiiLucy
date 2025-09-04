@@ -1,14 +1,18 @@
-/* Navbar Container Improvements */
+/* Navbar Container Improvements - Fixed Responsive */
 .nav-container {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  width: 100%;
   max-width: 1200px;
   padding: 0 20px;
-  overflow: visible;
+  overflow: hidden;
   margin-top: 7px;
   margin-bottom: 7px;
-  margin-left: 175px;
+  margin-left: auto;
+  margin-right: auto;
+  box-sizing: border-box;
+  min-width: 0;
 }
 
 /* Logo Improvements */
@@ -30,6 +34,7 @@
   justify-content: center;
   list-style: none;
   margin-left: 20px;
+  padding: 0;
 }
 
 .nav-menu li {
@@ -61,6 +66,8 @@
   align-items: center;
   margin-left: auto;
   padding-left: 1.5rem;
+  flex-shrink: 0;
+  min-width: 0;
 }
 
 /* Login Button Improvements */
@@ -75,6 +82,7 @@
   display: inline-block !important;
   text-align: center !important;
   min-width: 80px !important;
+  text-decoration: none !important;
 }
 
 .login-btn:hover {
@@ -169,7 +177,7 @@
   }
 }
 
-/* Active state for mobile - PENTING! */
+/* Active state for mobile */
 .user-dropdown.active .user-dropdown-content {
   display: block !important;
   animation: slideDown 0.3s ease;
@@ -198,23 +206,68 @@
   border-radius: 2px;
 }
 
-/* Mobile Responsive - Improved */
-@media (max-width: 1024px) {
-  .nav-menu {
-    gap: 1rem;
-  }
-
-  .nav-menu a {
-    padding: 0.5rem 0.75rem;
-    font-size: 0.9rem;
+/* Large Desktop Responsive - Minor adjustments */
+@media (min-width: 1400px) {
+  .nav-container {
+    max-width: 1400px;
+    padding: 0 40px;
   }
 }
 
-@media (max-width: 768px) {
+/* Desktop Responsive - Tighter spacing for smaller screens */
+@media (min-width: 1024px) and (max-width: 1199px) {
+  .nav-menu {
+    gap: 0.75rem;
+    margin-left: 15px;
+  }
+
+  .nav-menu a {
+    padding: 0.75rem 0.875rem;
+    font-size: 0.9rem;
+  }
+
+  .nav-right {
+    padding-left: 1rem;
+  }
+}
+
+/* Tablet Landscape - Keep original menu structure */
+@media (min-width: 768px) and (max-width: 1023px) {
   .nav-container {
     padding: 0 15px;
-    gap: 1rem;
+  }
+
+  .nav-logo img {
+    max-width: 160px;
+  }
+
+  .nav-menu {
+    gap: 0.5rem;
+    margin-left: 10px;
+  }
+
+  .nav-menu a {
+    padding: 0.625rem 0.75rem;
+    font-size: 0.85rem;
+  }
+
+  .nav-right {
+    padding-left: 0.75rem;
+  }
+
+  .user-dropdown-btn,
+  .login-btn {
+    padding: 0.625rem 1rem !important;
+    font-size: 0.85rem !important;
+  }
+}
+
+/* Mobile and Tablet Portrait - Original mobile menu */
+@media (max-width: 767px) {
+  .nav-container {
+    padding: 0 15px;
     margin-left: 0;
+    margin-right: 0;
   }
 
   .nav-logo img {
@@ -237,6 +290,7 @@
     height: calc(100vh - 70px);
     overflow-y: auto;
     z-index: 999;
+    margin-left: 0;
   }
 
   .nav-menu.active {
@@ -264,7 +318,6 @@
     color: #2563eb;
   }
 
-  /* PERBAIKAN UTAMA: Dropdown di Mobile */
   .user-dropdown {
     width: 100%;
     margin: 1rem 0 0 0;
@@ -278,15 +331,14 @@
     border-radius: 6px;
     margin: 0 2rem;
     box-sizing: border-box;
-    border-bottom: none; /* Remove border that might interfere */
   }
 
   .user-dropdown-content {
-    position: static !important; /* PENTING: Static positioning untuk mobile */
+    position: static !important;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     border: 1px solid #e5e7eb;
-    margin: 0.5rem 2rem 0 2rem; /* Add margin for proper spacing */
-    width: calc(100% - 4rem); /* Match button width */
+    margin: 0.5rem 2rem 0 2rem;
+    width: calc(100% - 4rem);
     display: none;
     border-radius: 6px;
     background-color: white;
@@ -295,14 +347,13 @@
     right: auto !important;
   }
 
-  /* Mobile dropdown active state - PENTING! */
   .user-dropdown.active .user-dropdown-content {
     display: block !important;
     animation: slideDown 0.3s ease;
   }
 
   .user-dropdown-content a {
-    justify-content: flex-start; /* Align text to left */
+    justify-content: flex-start;
     padding: 0.875rem 1.5rem;
     border-bottom: 1px solid #e5e7eb;
     background-color: white;
@@ -331,12 +382,16 @@
     justify-content: center;
     box-sizing: border-box;
   }
+
+  .nav-right {
+    padding-left: 0;
+    margin-left: 0;
+  }
 }
 
 @media (max-width: 480px) {
   .nav-container {
     padding: 0 10px;
-    margin-left: 0;
   }
 
   .nav-logo img {
@@ -394,10 +449,15 @@
   transform: rotate(45deg) translate(-5px, -6px);
 }
 
-.user-dropdown.active {
-  background-color: rgba(255, 255, 255, 0.1);
+/* Hide hamburger on desktop and tablet landscape */
+@media (min-width: 768px) {
+  .hamburger {
+    display: none !important;
+  }
 }
 
-.user-dropdown-content {
-  border: 2px solid black !important;
+/* Ensure proper stacking context */
+.nav-container {
+  position: relative;
+  z-index: 1000;
 }
