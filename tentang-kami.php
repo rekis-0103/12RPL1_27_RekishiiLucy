@@ -105,7 +105,8 @@ Pekerjaan tematik membuat sebutan thematic spesialist cocok untuk gambaran karir
                         <p>Thematic Specialist</p>
                     </div>
                     <div class="team-member"
-                        data-description="Gunawan Jaya adalah pendiri sekaligus Direktur Utama PT Waindo Specterra dengan pengalaman lebih dari 25 tahun di bidang geospasial.">
+                        data-description="Rian dilahirkan di Samarinda tanggal 15 Juni 1987 dan menempuh pendidikan Sarjana Teknik Geodesi di Universitas Gadjah Mada tahun 2009.
+Keahliannya dalam bidang survey dan pekerjaan Lidar sudah banyak yang dapat selesaikan dengan baik dan membuat karirnya di posisikan sebagai manager fotogrametri di waindo dan banyak yang menyebutnya sebagaiu Fotogrametri Spesialist.">
                         <img src="assets/rian.jpeg" alt="Perdana Rian Juniarta">
                         <h3>Perdana Rian Juniarta</h3>
                         <p>Fotogrametri Specialist</p>

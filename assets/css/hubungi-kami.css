@@ -1,4 +1,3 @@
-/* Contact Section */
 .contact-section {
     padding: 80px 0;
     background-color: #f8fafc;
@@ -84,7 +83,6 @@
     min-height: 150px;
 }
 
-/* Map Section */
 .map-container {
     margin-top: 40px;
 }
@@ -98,7 +96,7 @@
 
 .map-wrapper {
     position: relative;
-    padding-bottom: 56.25%; /* 16:9 aspect ratio */
+    padding-bottom: 56.25%; 
     height: 0;
     overflow: hidden;
     border-radius: 10px;
@@ -114,7 +112,6 @@
     border: none;
 }
 
-/* Responsive Design */
 @media (max-width: 992px) {
     .contact-grid {
         grid-template-columns: 1fr;

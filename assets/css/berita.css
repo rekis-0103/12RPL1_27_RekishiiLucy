@@ -1,5 +1,3 @@
-/* Berita Page Specific Styles */
-
 .berita-wrapper {
   margin-top: 20px;
 }
@@ -45,7 +43,6 @@
   display: block;
 }
 
-/* News/Kegiatan Grid */
 .news-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -113,7 +110,6 @@
   border-radius: 999px;
 }
 
-/* Webinar */
 .webinar-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -184,7 +180,6 @@
   font-size: 0.9rem;
 }
 
-/* Live streaming */
 .live-wrapper {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -209,7 +204,6 @@
   padding: 14px 16px;
 }
 
-/* Gallery */
 .gallery-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -223,7 +217,6 @@
   border-radius: 8px;
 }
 
-/* Utilities */
 .section-title {
   font-size: 1.6rem;
   font-weight: 800;
@@ -237,7 +230,6 @@
   margin-bottom: 20px;
 }
 
-/* Responsive */
 @media (max-width: 1024px) {
   .news-grid {
     grid-template-columns: repeat(2, 1fr);
