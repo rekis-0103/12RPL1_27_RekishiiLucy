@@ -298,7 +298,6 @@ $berita_terbaru = mysqli_query($conn, $query_berita_terbaru);
 
     <script src="js/common.js"></script>
     <script src="js/beranda.js"></script>
-    <script src="js/navbar.js"></script>
 </body>
 
 </html>

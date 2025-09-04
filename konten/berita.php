@@ -790,7 +790,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
     <script>
         function toggleSidebar() {
             const sidebar = document.getElementById('sidebar');
+            const toggleBtn = document.querySelector('.mobile-toggle');
+
             sidebar.classList.toggle('active');
+
+            // Sembunyikan tombol ketika sidebar muncul
+            if (sidebar.classList.contains('active')) {
+                toggleBtn.style.display = "none";
+            } else {
+                toggleBtn.style.display = "block";
+            }
         }
 
         document.addEventListener('click', function(event) {
@@ -971,7 +980,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
         // Panggil fungsi setelah DOM selesai dimuat
         document.addEventListener('DOMContentLoaded', function() {
             addWebinarImageHandlers();
-            
+
             // Juga panggil untuk gambar lainnya jika diperlukan
             const images = document.querySelectorAll('.photo-item img');
             images.forEach(function(img) {
@@ -988,7 +997,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
         // Panggil ulang setelah ada perubahan AJAX/dynamic content
         function refreshImageHandlers() {
             addWebinarImageHandlers();
-            
+
             const images = document.querySelectorAll('.photo-item img');
             images.forEach(function(img) {
                 if (!img.dataset.clickable) {

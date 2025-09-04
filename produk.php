@@ -8,7 +8,7 @@ session_start();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PT Waindo Specterra</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+        
     <link rel="stylesheet" href="assets/css/common.css">
     <link rel="stylesheet" href="assets/css/navbar.css">
     <link rel="stylesheet" href="assets/css/pages.css">
@@ -101,7 +101,6 @@ session_start();
 
     <script src="js/produk.js"></script>
     <script src="js/common.js"></script>
-    <script src="js/navbar.js"></script>
 </body>
 
 </html>

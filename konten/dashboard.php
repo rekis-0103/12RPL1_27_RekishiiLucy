@@ -137,7 +137,16 @@ $konten_terbaru = mysqli_query($conn, "SELECT * FROM `log_aktivitas` WHERE actio
     <script>
         function toggleSidebar() {
             const sidebar = document.getElementById('sidebar');
+            const toggleBtn = document.querySelector('.mobile-toggle');
+
             sidebar.classList.toggle('active');
+
+            // Sembunyikan tombol ketika sidebar muncul
+            if (sidebar.classList.contains('active')) {
+                toggleBtn.style.display = "none";
+            } else {
+                toggleBtn.style.display = "block";
+            }
         }
 
         // Close sidebar when clicking outside on mobile

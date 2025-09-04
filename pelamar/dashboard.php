@@ -15,15 +15,26 @@ $full_name = $_SESSION['full_name'];
 $role = $_SESSION['role'];
 
 // Stats
-$open_jobs = 0; $sent_apps = 0; $waiting = 0; $accepted = 0;
+$open_jobs = 0;
+$sent_apps = 0;
+$waiting = 0;
+$accepted = 0;
 $r1 = mysqli_query($conn, "SELECT COUNT(*) c FROM lowongan WHERE status='open' AND hapus=0");
-if ($r1) { $open_jobs = (int)mysqli_fetch_assoc($r1)['c']; }
+if ($r1) {
+    $open_jobs = (int)mysqli_fetch_assoc($r1)['c'];
+}
 $r2 = mysqli_query($conn, "SELECT COUNT(*) c FROM applications WHERE user_id=$user_id");
-if ($r2) { $sent_apps = (int)mysqli_fetch_assoc($r2)['c']; }
+if ($r2) {
+    $sent_apps = (int)mysqli_fetch_assoc($r2)['c'];
+}
 $r3 = mysqli_query($conn, "SELECT COUNT(*) c FROM applications WHERE user_id=$user_id AND status IN ('pendaftaran diterima','seleksi administrasi')");
-if ($r3) { $waiting = (int)mysqli_fetch_assoc($r3)['c']; }
+if ($r3) {
+    $waiting = (int)mysqli_fetch_assoc($r3)['c'];
+}
 $r4 = mysqli_query($conn, "SELECT COUNT(*) c FROM applications WHERE user_id=$user_id AND status='diterima bekerja'");
-if ($r4) { $accepted = (int)mysqli_fetch_assoc($r4)['c']; }
+if ($r4) {
+    $accepted = (int)mysqli_fetch_assoc($r4)['c'];
+}
 
 // Recent applications (5)
 $recent = mysqli_query($conn, "SELECT a.*, l.title FROM applications a JOIN lowongan l ON a.job_id=l.job_id WHERE a.user_id=$user_id ORDER BY a.applied_at DESC LIMIT 5");
@@ -43,6 +54,9 @@ $recent = mysqli_query($conn, "SELECT a.*, l.title FROM applications a JOIN lowo
 </head>
 
 <body>
+    <button class="mobile-toggle" onclick="toggleSidebar()">
+        <i class="fas fa-bars"></i>
+    </button>
     <div class="dashboard-container">
         <div class="sidebar" id="sidebar">
             <div class="sidebar-header">
@@ -101,7 +115,7 @@ $recent = mysqli_query($conn, "SELECT a.*, l.title FROM applications a JOIN lowo
                                 <h4><?php echo htmlspecialchars($app['title']); ?></h4>
                                 <p>Status: <?php echo htmlspecialchars(ucfirst($app['status'])); ?></p>
                             </div>
-                            <span class="status-badge <?php echo $app['status']==='diterima bekerja'?'status-accepted':($app['status']==='ditolak'?'status-rejected':'status-pending'); ?>">
+                            <span class="status-badge <?php echo $app['status'] === 'diterima bekerja' ? 'status-accepted' : ($app['status'] === 'ditolak' ? 'status-rejected' : 'status-pending'); ?>">
                                 <?php echo date('d/m/Y', strtotime($app['applied_at'])); ?>
                             </span>
                         </div>
@@ -126,10 +140,19 @@ $recent = mysqli_query($conn, "SELECT a.*, l.title FROM applications a JOIN lowo
     <script>
         function toggleSidebar() {
             const sidebar = document.getElementById('sidebar');
+            const toggleBtn = document.querySelector('.mobile-toggle');
+
             sidebar.classList.toggle('active');
+
+            // Sembunyikan tombol ketika sidebar muncul
+            if (sidebar.classList.contains('active')) {
+                toggleBtn.style.display = "none";
+            } else {
+                toggleBtn.style.display = "block";
+            }
         }
 
-        // Close sidebar when clicking outside on mobile
+        // Tutup sidebar kalau klik di luar
         document.addEventListener('click', function(event) {
             const sidebar = document.getElementById('sidebar');
             const mobileToggle = document.querySelector('.mobile-toggle');
@@ -137,6 +160,7 @@ $recent = mysqli_query($conn, "SELECT a.*, l.title FROM applications a JOIN lowo
             if (window.innerWidth <= 768) {
                 if (!sidebar.contains(event.target) && !mobileToggle.contains(event.target)) {
                     sidebar.classList.remove('active');
+                    mobileToggle.style.display = "block"; // tampilkan kembali tombol
                 }
             }
         });

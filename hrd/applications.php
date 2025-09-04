@@ -325,9 +325,18 @@ $list = mysqli_query($conn, "SELECT a.*, u.full_name, u.email, l.title FROM appl
 
     <script src="../js/navbar.js"></script>
     <script>
-        function toggleSidebar() {
+                function toggleSidebar() {
             const sidebar = document.getElementById('sidebar');
+            const toggleBtn = document.querySelector('.mobile-toggle');
+
             sidebar.classList.toggle('active');
+
+            // Sembunyikan tombol ketika sidebar muncul
+            if (sidebar.classList.contains('active')) {
+                toggleBtn.style.display = "none";
+            } else {
+                toggleBtn.style.display = "block";
+            }
         }
         document.addEventListener('click', function(event) {
             const sidebar = document.getElementById('sidebar');

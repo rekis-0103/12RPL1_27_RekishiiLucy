@@ -48,13 +48,19 @@ $recent_activity_result = mysqli_query($conn, $recent_activity_query);
 </head>
 
 <body>
+    <!-- Tombol hamburger -->
+    <button class="mobile-toggle" onclick="toggleSidebar()">
+        <i class="fas fa-bars"></i>
+    </button>
+
     <div class="dashboard-container">
+        <!-- Sidebar -->
         <div class="sidebar" id="sidebar">
             <div class="sidebar-header">
                 <h3>Admin Dashboard</h3>
                 <p>Selamat datang, <?php echo htmlspecialchars($full_name); ?></p>
             </div>
-            
+
             <ul class="sidebar-menu">
                 <li><a href="dashboard.php" class="active"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
                 <li><a href="users.php"><i class="fas fa-users"></i> Kelola User</a></li>
@@ -63,13 +69,14 @@ $recent_activity_result = mysqli_query($conn, $recent_activity_query);
                 <li><a href="../logout.php"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
             </ul>
         </div>
-        
+
+        <!-- Main content -->
         <div class="main-content">
             <div class="dashboard-header">
                 <h1>Dashboard Admin</h1>
                 <p>Kelola sistem dan monitor aktivitas pengguna</p>
             </div>
-            
+
             <div class="stats-grid">
                 <div class="stat-card">
                     <i class="fas fa-users"></i>
@@ -87,7 +94,7 @@ $recent_activity_result = mysqli_query($conn, $recent_activity_query);
                     <p>Lamaran Masuk</p>
                 </div>
             </div>
-            
+
             <div class="recent-activity">
                 <h3>Aktivitas Terbaru</h3>
                 <?php if (mysqli_num_rows($recent_activity_result) > 0): ?>
@@ -112,22 +119,31 @@ $recent_activity_result = mysqli_query($conn, $recent_activity_query);
             </div>
         </div>
     </div>
-    
-    <script src="../js/navbar.js"></script>
+
     <script>
         function toggleSidebar() {
             const sidebar = document.getElementById('sidebar');
+            const toggleBtn = document.querySelector('.mobile-toggle');
+
             sidebar.classList.toggle('active');
+
+            // Sembunyikan tombol ketika sidebar muncul
+            if (sidebar.classList.contains('active')) {
+                toggleBtn.style.display = "none";
+            } else {
+                toggleBtn.style.display = "block";
+            }
         }
-        
-        // Close sidebar when clicking outside on mobile
+
+        // Tutup sidebar kalau klik di luar
         document.addEventListener('click', function(event) {
             const sidebar = document.getElementById('sidebar');
             const mobileToggle = document.querySelector('.mobile-toggle');
-            
+
             if (window.innerWidth <= 768) {
                 if (!sidebar.contains(event.target) && !mobileToggle.contains(event.target)) {
                     sidebar.classList.remove('active');
+                    mobileToggle.style.display = "block"; // tampilkan kembali tombol
                 }
             }
         });

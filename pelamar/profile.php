@@ -14,7 +14,8 @@ $username = $_SESSION['username'];
 $full_name = $_SESSION['full_name'];
 $role = $_SESSION['role'];
 
-function logActivity($conn, $actor_user_id, $action) {
+function logActivity($conn, $actor_user_id, $action)
+{
     $actor_user_id = (int)$actor_user_id;
     $action = mysqli_real_escape_string($conn, $action);
     $ip = $_SERVER['REMOTE_ADDR'] ?? '::1';
@@ -25,14 +26,14 @@ function logActivity($conn, $actor_user_id, $action) {
 $profile_q = mysqli_query($conn, "SELECT username, email, full_name FROM users WHERE user_id=$user_id AND hapus=0 LIMIT 1");
 $profile = $profile_q ? mysqli_fetch_assoc($profile_q) : null;
 
-if ($_SERVER['REQUEST_METHOD']==='POST') {
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $new_full_name = mysqli_real_escape_string($conn, $_POST['full_name']);
     $new_email = mysqli_real_escape_string($conn, $_POST['email']);
     $new_password = isset($_POST['password']) ? trim($_POST['password']) : '';
 
     // Unique email check
     $chk = mysqli_query($conn, "SELECT user_id FROM users WHERE email='$new_email' AND user_id<>$user_id AND hapus=0 LIMIT 1");
-    if ($chk && mysqli_num_rows($chk)>0) {
+    if ($chk && mysqli_num_rows($chk) > 0) {
         $error = 'Email sudah digunakan.';
         logActivity($conn, $user_id, 'Gagal update profil (email sudah digunakan)');
     } else {
@@ -46,7 +47,7 @@ if ($_SERVER['REQUEST_METHOD']==='POST') {
             $success = 'Profil berhasil diperbarui';
             $_SESSION['full_name'] = $new_full_name;
             // refresh loaded profile
-            $profile = ['username'=>$username,'email'=>$new_email,'full_name'=>$new_full_name];
+            $profile = ['username' => $username, 'email' => $new_email, 'full_name' => $new_full_name];
             logActivity($conn, $user_id, 'Update profil');
         } else {
             $error = 'Gagal memperbarui profil';
@@ -70,6 +71,9 @@ if ($_SERVER['REQUEST_METHOD']==='POST') {
 </head>
 
 <body>
+    <button class="mobile-toggle" onclick="toggleSidebar()">
+        <i class="fas fa-bars"></i>
+    </button>
     <div class="dashboard-container">
         <div class="sidebar" id="sidebar">
             <div class="sidebar-header">

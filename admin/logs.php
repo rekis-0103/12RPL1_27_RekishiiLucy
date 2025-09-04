@@ -94,6 +94,10 @@ $logs_result = mysqli_query($conn, $logs_query);
 </head>
 
 <body>
+    <button class="mobile-toggle" onclick="toggleSidebar()">
+        <i class="fas fa-bars"></i>
+    </button>
+
     <div class="dashboard-container">
         <div class="sidebar" id="sidebar">
             <div class="sidebar-header">
@@ -233,10 +237,19 @@ $logs_result = mysqli_query($conn, $logs_query);
     <script>
         function toggleSidebar() {
             const sidebar = document.getElementById('sidebar');
+            const toggleBtn = document.querySelector('.mobile-toggle');
+
             sidebar.classList.toggle('active');
+
+            // Sembunyikan tombol ketika sidebar muncul
+            if (sidebar.classList.contains('active')) {
+                toggleBtn.style.display = "none";
+            } else {
+                toggleBtn.style.display = "block";
+            }
         }
 
-        // Close sidebar when clicking outside on mobile
+        // Tutup sidebar kalau klik di luar
         document.addEventListener('click', function(event) {
             const sidebar = document.getElementById('sidebar');
             const mobileToggle = document.querySelector('.mobile-toggle');
@@ -244,6 +257,7 @@ $logs_result = mysqli_query($conn, $logs_query);
             if (window.innerWidth <= 768) {
                 if (!sidebar.contains(event.target) && !mobileToggle.contains(event.target)) {
                     sidebar.classList.remove('active');
+                    mobileToggle.style.display = "block"; // tampilkan kembali tombol
                 }
             }
         });

@@ -15,8 +15,12 @@ $full_name = $_SESSION['full_name'];
 $role = $_SESSION['role'];
 
 // Helpers
-function esc($conn, $str) { return mysqli_real_escape_string($conn, $str); }
-function logActivity($conn, $actor_user_id, $action) {
+function esc($conn, $str)
+{
+    return mysqli_real_escape_string($conn, $str);
+}
+function logActivity($conn, $actor_user_id, $action)
+{
     $actor_user_id = (int)$actor_user_id;
     $action = mysqli_real_escape_string($conn, $action);
     $ip = $_SERVER['REMOTE_ADDR'] ?? '::1';
@@ -99,14 +103,14 @@ $list = mysqli_query($conn, "SELECT l.*, u.full_name AS poster FROM lowongan l L
     <button class="mobile-toggle" onclick="toggleSidebar()">
         <i class="fas fa-bars"></i>
     </button>
-    
+
     <div class="dashboard-container">
         <div class="sidebar" id="sidebar">
             <div class="sidebar-header">
                 <h3>Kelola Lowongan</h3>
                 <p>Selamat datang, <?php echo htmlspecialchars($full_name); ?></p>
             </div>
-            
+
             <ul class="sidebar-menu">
                 <li><a href="dashboard.php"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
                 <li><a href="lowongan.php" class="active"><i class="fas fa-briefcase"></i> Kelola Lowongan</a></li>
@@ -116,7 +120,7 @@ $list = mysqli_query($conn, "SELECT l.*, u.full_name AS poster FROM lowongan l L
                 <li><a href="../logout.php"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
             </ul>
         </div>
-        
+
         <div class="main-content">
             <div class="dashboard-header">
                 <h1>Kelola Lowongan</h1>
@@ -217,7 +221,9 @@ $list = mysqli_query($conn, "SELECT l.*, u.full_name AS poster FROM lowongan l L
                                     </tr>
                                 <?php endwhile; ?>
                             <?php else: ?>
-                                <tr><td colspan="7" class="text-center">Belum ada lowongan</td></tr>
+                                <tr>
+                                    <td colspan="7" class="text-center">Belum ada lowongan</td>
+                                </tr>
                             <?php endif; ?>
                         </tbody>
                     </table>
@@ -225,7 +231,7 @@ $list = mysqli_query($conn, "SELECT l.*, u.full_name AS poster FROM lowongan l L
             </div>
         </div>
     </div>
-    
+
     <div id="editModal" class="modal">
         <div class="modal-content">
             <span class="close" onclick="closeModal()">&times;</span>
@@ -274,7 +280,16 @@ $list = mysqli_query($conn, "SELECT l.*, u.full_name AS poster FROM lowongan l L
     <script>
         function toggleSidebar() {
             const sidebar = document.getElementById('sidebar');
+            const toggleBtn = document.querySelector('.mobile-toggle');
+
             sidebar.classList.toggle('active');
+
+            // Sembunyikan tombol ketika sidebar muncul
+            if (sidebar.classList.contains('active')) {
+                toggleBtn.style.display = "none";
+            } else {
+                toggleBtn.style.display = "block";
+            }
         }
         document.addEventListener('click', function(event) {
             const sidebar = document.getElementById('sidebar');
@@ -285,6 +300,7 @@ $list = mysqli_query($conn, "SELECT l.*, u.full_name AS poster FROM lowongan l L
                 }
             }
         });
+
         function openEdit(jobId, data) {
             document.getElementById('edit_job_id').value = jobId;
             document.getElementById('edit_title').value = data.title || '';
@@ -295,8 +311,13 @@ $list = mysqli_query($conn, "SELECT l.*, u.full_name AS poster FROM lowongan l L
             document.getElementById('edit_requirements').value = data.requirements || '';
             document.getElementById('editModal').style.display = 'block';
         }
-        function closeModal(){ document.getElementById('editModal').style.display = 'none'; }
-        window.onclick = function(e){ if(e.target.classList.contains('modal')) closeModal(); }
+
+        function closeModal() {
+            document.getElementById('editModal').style.display = 'none';
+        }
+        window.onclick = function(e) {
+            if (e.target.classList.contains('modal')) closeModal();
+        }
     </script>
 </body>
 

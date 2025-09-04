@@ -32,6 +32,9 @@ $list = mysqli_query($conn, "SELECT a.*, l.title FROM applications a JOIN lowong
 </head>
 
 <body>
+    <button class="mobile-toggle" onclick="toggleSidebar()">
+        <i class="fas fa-bars"></i>
+    </button>
     <div class="dashboard-container">
         <div class="sidebar" id="sidebar">
             <div class="sidebar-header">
@@ -73,7 +76,7 @@ $list = mysqli_query($conn, "SELECT a.*, l.title FROM applications a JOIN lowong
                             </tr>
                         </thead>
                         <tbody>
-                            <?php if ($list && mysqli_num_rows($list)>0): ?>
+                            <?php if ($list && mysqli_num_rows($list) > 0): ?>
                                 <?php while ($row = mysqli_fetch_assoc($list)): ?>
                                     <tr>
                                         <td><?php echo htmlspecialchars($row['title']); ?></td>
@@ -92,7 +95,9 @@ $list = mysqli_query($conn, "SELECT a.*, l.title FROM applications a JOIN lowong
                                     </tr>
                                 <?php endwhile; ?>
                             <?php else: ?>
-                                <tr><td colspan="7" class="text-center">Belum ada lamaran</td></tr>
+                                <tr>
+                                    <td colspan="7" class="text-center">Belum ada lamaran</td>
+                                </tr>
                             <?php endif; ?>
                         </tbody>
                     </table>

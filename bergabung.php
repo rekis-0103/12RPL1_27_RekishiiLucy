@@ -150,7 +150,6 @@ require_once 'connect/koneksi.php';
     </footer>
 
     <script src="js/common.js"></script>
-    <script src="js/navbar.js"></script>
 </body>
 
 </html>

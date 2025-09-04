@@ -60,7 +60,6 @@ session_start();
     </footer>
 
     <script src="js/common.js"></script>
-    <script src="js/navbar.js"></script>
     <script>
         const data = {
     pemerintahan: [

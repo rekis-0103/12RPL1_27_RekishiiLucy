@@ -45,6 +45,7 @@ if ($type === 'kegiatan') {
 	<link rel="stylesheet" href="assets/css/common.css">
 	<link rel="stylesheet" href="assets/css/berita.css">
 	<link rel="stylesheet" href="assets/css/navbar.css">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 	<style>
 		.gallery-page {
 			margin: 24px auto;

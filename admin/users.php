@@ -88,10 +88,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                         role = '$edit_role',
                                         status = '$edit_status'
                                         WHERE user_id = $edit_user_id";
-                        
+
                         if (mysqli_query($conn, $update_query)) {
                             $success = "Data user berhasil diupdate!";
-                            
+
                             // Log detailed changes
                             $changes = [];
                             if ($current_data['username'] != $edit_username) $changes[] = "Username: {$current_data['username']} → $edit_username";
@@ -99,7 +99,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                             if ($current_data['full_name'] != $edit_full_name) $changes[] = "Nama: {$current_data['full_name']} → $edit_full_name";
                             if ($current_data['role'] != $edit_role) $changes[] = "Role: {$current_data['role']} → $edit_role";
                             if ($current_data['status'] != $edit_status) $changes[] = "Status: {$current_data['status']} → $edit_status";
-                            
+
                             $change_details = implode(", ", $changes);
                             logActivity($conn, $user_id, "Mengedit data user", "User: $edit_username, Perubahan: $change_details");
                         } else {
@@ -207,6 +207,10 @@ $stats = mysqli_fetch_assoc($stats_result);
 </head>
 
 <body>
+    <button class="mobile-toggle" onclick="toggleSidebar()">
+        <i class="fas fa-bars"></i>
+    </button>
+
     <div class="dashboard-container">
         <div class="sidebar" id="sidebar">
             <div class="sidebar-header">
@@ -390,7 +394,7 @@ $stats = mysqli_fetch_assoc($stats_result);
             <form method="POST">
                 <input type="hidden" name="action" value="edit_user">
                 <input type="hidden" name="user_id" id="edit_user_id">
-                
+
                 <div class="form-row">
                     <div class="form-group">
                         <label for="edit_username">Username *</label>
@@ -401,7 +405,7 @@ $stats = mysqli_fetch_assoc($stats_result);
                         <input type="email" id="edit_email" name="email" required>
                     </div>
                 </div>
-                
+
                 <div class="form-row">
                     <div class="form-group">
                         <label for="edit_full_name">Nama Lengkap *</label>
@@ -417,7 +421,7 @@ $stats = mysqli_fetch_assoc($stats_result);
                         </select>
                     </div>
                 </div>
-                
+
                 <div class="form-row">
                     <div class="form-group">
                         <label for="edit_status">Status *</label>
@@ -427,7 +431,7 @@ $stats = mysqli_fetch_assoc($stats_result);
                         </select>
                     </div>
                 </div>
-                
+
                 <div class="modal-buttons">
                     <button type="button" class="btn btn-secondary" onclick="closeModal('editUserModal')">Batal</button>
                     <button type="submit" class="btn btn-primary">
@@ -497,10 +501,19 @@ $stats = mysqli_fetch_assoc($stats_result);
     <script>
         function toggleSidebar() {
             const sidebar = document.getElementById('sidebar');
+            const toggleBtn = document.querySelector('.mobile-toggle');
+
             sidebar.classList.toggle('active');
+
+            // Sembunyikan tombol ketika sidebar muncul
+            if (sidebar.classList.contains('active')) {
+                toggleBtn.style.display = "none";
+            } else {
+                toggleBtn.style.display = "block";
+            }
         }
 
-        // Close sidebar when clicking outside on mobile
+        // Tutup sidebar kalau klik di luar
         document.addEventListener('click', function(event) {
             const sidebar = document.getElementById('sidebar');
             const mobileToggle = document.querySelector('.mobile-toggle');
@@ -508,6 +521,7 @@ $stats = mysqli_fetch_assoc($stats_result);
             if (window.innerWidth <= 768) {
                 if (!sidebar.contains(event.target) && !mobileToggle.contains(event.target)) {
                     sidebar.classList.remove('active');
+                    mobileToggle.style.display = "block"; // tampilkan kembali tombol
                 }
             }
         });

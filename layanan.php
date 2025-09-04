@@ -204,7 +204,6 @@ session_start();
     </footer>
 
     <script src="js/common.js"></script>
-    <script src="js/navbar.js"></script>
     <script>
         // Tab functionality
         const tabButtons = document.querySelectorAll('.tab-button');

@@ -279,7 +279,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     </div>
 
     <script src="js/common.js"></script>
-    <script src="js/navbar.js"></script>
     <script>
         function togglePassword() {
             const passwordInput = document.getElementById('password');

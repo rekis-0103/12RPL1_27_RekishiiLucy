@@ -1,31 +1,5 @@
-// Mobile Navigation Toggle
-document.addEventListener("DOMContentLoaded", () => {
-  const hamburger = document.querySelector(".hamburger")
-  const navMenu = document.querySelector(".nav-menu")
-
-  if (hamburger && navMenu) {
-    hamburger.addEventListener("click", () => {
-      hamburger.classList.toggle("active")
-      navMenu.classList.toggle("active")
-    })
-
-    // Close menu when clicking on a link
-    document.querySelectorAll(".nav-menu a").forEach((link) => {
-      link.addEventListener("click", () => {
-        hamburger.classList.remove("active")
-        navMenu.classList.remove("active")
-      })
-    })
-
-    // Close menu when clicking outside
-    document.addEventListener("click", (event) => {
-      if (!hamburger.contains(event.target) && !navMenu.contains(event.target)) {
-        hamburger.classList.remove("active")
-        navMenu.classList.remove("active")
-      }
-    })
-  }
-})
+// Mobile Navigation Toggle - REMOVED TO AVOID CONFLICT WITH navbar.js
+// The navbar functionality is now handled entirely by navbar.js
 
 document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
   anchor.addEventListener("click", function (e) {
@@ -42,7 +16,6 @@ document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
     }
   })
 })
-
 
 // Add fade-in animation to elements when they come into view
 const observerOptions = {

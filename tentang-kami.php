@@ -142,7 +142,6 @@ Pekerjaan tematik membuat sebutan thematic spesialist cocok untuk gambaran karir
     </footer>
 
     <script src="js/common.js"></script>
-    <script src="js/navbar.js"></script>
     <script>
         document.querySelectorAll('.team-member').forEach(member => {
             member.addEventListener('click', function() {
