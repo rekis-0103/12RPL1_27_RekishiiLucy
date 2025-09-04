@@ -223,7 +223,7 @@
 
   .nav-menu {
     position: fixed;
-    left: -100%;
+    left: -120%;
     top: 70px;
     flex-direction: column;
     background-color: white;
@@ -240,7 +240,7 @@
   }
 
   .nav-menu.active {
-    left: 0;
+    left: -20px;
   }
 
   .nav-menu li {
@@ -394,16 +394,10 @@
   transform: rotate(45deg) translate(-5px, -6px);
 }
 
-/* Debug styles - Hapus setelah testing */
 .user-dropdown.active {
-  background-color: rgba(
-    255,
-    255,
-    255,
-    0.1
-  ); /* Temporary red background untuk debug */
+  background-color: rgba(255, 255, 255, 0.1);
 }
 
 .user-dropdown-content {
-  border: 2px solid black !important; /* Temporary red border untuk debug */
+  border: 2px solid black !important;
 }

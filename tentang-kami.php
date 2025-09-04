@@ -88,7 +88,7 @@ Karena banyak mengikuti berbagai kegiatan dan keahliannya tentang IT dan pengeta
                         data-description="Faik terlahir di Kebumen tanggal 6 Agustus 1973, Meraih gelar Sarjana di fakultas Geografi Universitas Gadjah Mada tahun 1999.
 Pengalamannya sebagai GIS Product Spesialist menjadikannya sangat mengenal kondisi perkembangan software dan mempertahankan waindo sebagai patner ESRI.">
                         <img src="assets/faik.jpeg" alt="Faik Sofyan">
-                        <h3>Fail Sofyan</h3>
+                        <h3>Faik Sofyan</h3>
                         <p>GIS Product Specialist</p>
                     </div>
                     <div class="team-member"
