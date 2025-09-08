@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Aug 21, 2025 at 07:11 AM
+-- Generation Time: Sep 08, 2025 at 01:15 AM
 -- Server version: 8.0.30
 -- PHP Version: 8.1.10
 
@@ -45,7 +45,7 @@ CREATE TABLE `applications` (
 --
 
 INSERT INTO `applications` (`application_id`, `job_id`, `user_id`, `cv`, `status`, `reason`, `interview_date`, `start_date`, `applied_at`, `updated_at`) VALUES
-(1, 1, 2, 'uploads/cv/cv_2_1_1755673380.pdf', 'diterima bekerja', 'wjijdwjidjidwjiijwdji', '2025-08-20 14:49:00', '2025-08-22', '2025-08-20 07:03:00', '2025-08-21 04:54:48');
+(1, 1, 2, 'uploads/cv/cv_2_1_1755673380.pdf', 'seleksi administrasi', 'wjijdwjidjidwjiijwdji', '2025-08-20 14:49:00', '2025-08-22', '2025-08-20 07:03:00', '2025-08-26 04:45:06');
 
 -- --------------------------------------------------------
 
@@ -59,6 +59,13 @@ CREATE TABLE `galeri` (
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
+--
+-- Dumping data for table `galeri`
+--
+
+INSERT INTO `galeri` (`galeri_id`, `judul`, `created_at`) VALUES
+(1, 'Acara Kemerdekaan Indonesia', '2025-08-26 02:21:27');
+
 -- --------------------------------------------------------
 
 --
@@ -70,6 +77,15 @@ CREATE TABLE `galeri_foto` (
   `galeri_id` int DEFAULT NULL,
   `foto` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Dumping data for table `galeri_foto`
+--
+
+INSERT INTO `galeri_foto` (`foto_id`, `galeri_id`, `foto`) VALUES
+(1, 1, 'uploads/galeri/1756174887_3.jpeg'),
+(2, 1, 'uploads/galeri/1756174887_2.jpeg'),
+(3, 1, 'uploads/galeri/1756174887_1.jpeg');
 
 -- --------------------------------------------------------
 
@@ -84,6 +100,16 @@ CREATE TABLE `kegiatan` (
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
+--
+-- Dumping data for table `kegiatan`
+--
+
+INSERT INTO `kegiatan` (`kegiatan_id`, `judul`, `deskripsi`, `created_at`) VALUES
+(1, 'Kegiatan Outing dan Family Gathering', 'PT. Waindo SpecTerra membuat kegiatan yang dapat mengajak seluruh karyawan dan keluarga, yang tentunya melibatkan suami atau istri serta anak-anak mereka dalam suasana yang penuh keakraban. Rekreasi seluruh karyawan dan keluarganya ini dikemas dalam acara family day. Family day diselenggarakan perusahaan sebagai salah satu bentuk penghargaan perusahaan terhadap karyawan dan keluarganya atas kerja keras dan dukungan yang telah diberikan. Family day ini bertujuan untuk mempererat hubungan antara karyawan dan keluarganya, serta untuk meningkatkan kinerja para karyawan.\r\n\r\nTujuan :\r\n1.Untuk mempererat hubungan dan menghilangkan kepenatan selama bekerja\r\n2.Untuk mengembalikan optimalisasi kinerja karyawan\r\n3.Agar karyawan dan keluarga bisa dapat saling mengenal satu sama lain dan memperkokoh tali silaturahmi\r\n4.Untuk mewujudkan rasa kebersamaan dan kerukunan antar keluarga', '2025-08-21 09:19:16'),
+(2, 'Halal Bihalal Virtual saat Pandemi COVID-19', 'Pada Hari Raya Idul Fitri walaupun Tangan Tak Bisa Berjabat dan Tidak Bisa Betatap muka langsung tidak melunturkan semangat untuk saling bermaafan dan kembali fitri,Waindo tetap melaksanakan Halal Bi Halal secara virtual dengan mendengarkan tauziyah yang sangat bermanfaat saat pandemi oleh Ustadzah Bunda Yati', '2025-08-27 03:35:06'),
+(3, 'Kegiatan Pembagian Sembako Saat Pandemi Covid-19', 'Program ini dilakukan PT Waindo SpecTerra untuk support dan mengembalikan semangat karyawan dan keluarganya menghadapi Pandemi Covid 19 untuk pembagian sembako bagi yang berkeluarga dan ada voucher belanja bagi yang masih belum menikah. pembagian sembako, diantarkan langsung ke rumah masing - masing dengan menggunakan fasilitas mobil operasional kantor.', '2025-08-29 01:21:53'),
+(4, 'Kegiatan Berbagi Saat Ramadhan dan Santunan Anak Yatim', 'Program ini memang biasa dilakukan PT Waindo SpecTerra setiap tahunnya untuk membagikan makanan berbuka untuk anak-anak yatim piatu dan untuk masjid di lokasi tinggal para karyawan atau karyawan membagikan makanan untuk berbuka ke anak jalanan dengan cara membagikan dari dalam mobil karena situasi Covid19.\r\n', '2025-08-29 01:24:26');
+
 -- --------------------------------------------------------
 
 --
@@ -95,6 +121,23 @@ CREATE TABLE `kegiatan_foto` (
   `kegiatan_id` int DEFAULT NULL,
   `foto` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Dumping data for table `kegiatan_foto`
+--
+
+INSERT INTO `kegiatan_foto` (`foto_id`, `kegiatan_id`, `foto`) VALUES
+(4, 1, 'uploads/kegiatan/1756260233_3__1_.jpeg'),
+(5, 1, 'uploads/kegiatan/1756260233_2__1_.jpeg'),
+(6, 1, 'uploads/kegiatan/1756260233_1__1_.jpeg'),
+(7, 2, 'uploads/kegiatan/1756265706_6.jpeg'),
+(9, 2, 'uploads/kegiatan/1756265895_1__2_.jpeg'),
+(10, 3, 'uploads/kegiatan/1756430513_3__2_.jpeg'),
+(11, 3, 'uploads/kegiatan/1756430513_2__2_.jpeg'),
+(12, 3, 'uploads/kegiatan/1756430513_1__3_.jpeg'),
+(13, 4, 'uploads/kegiatan/1756430666_3.jpg'),
+(14, 4, 'uploads/kegiatan/1756430666_2.jpg'),
+(15, 4, 'uploads/kegiatan/1756430666_1__4_.jpeg');
 
 -- --------------------------------------------------------
 
@@ -110,6 +153,13 @@ CREATE TABLE `live_streaming` (
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
+--
+-- Dumping data for table `live_streaming`
+--
+
+INSERT INTO `live_streaming` (`streaming_id`, `judul`, `tipe`, `url`, `created_at`) VALUES
+(1, 'Live Streaming #1', 'mp4', 'uploads/live/1756174758_1.mp4', '2025-08-26 02:19:18');
+
 -- --------------------------------------------------------
 
 --
@@ -120,95 +170,184 @@ CREATE TABLE `log_aktivitas` (
   `log_id` int NOT NULL,
   `user_id` int DEFAULT NULL,
   `action` varchar(255) NOT NULL,
-  `log_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-  `ip_address` varchar(50) DEFAULT NULL
+  `log_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `log_aktivitas`
 --
 
-INSERT INTO `log_aktivitas` (`log_id`, `user_id`, `action`, `log_time`, `ip_address`) VALUES
-(1, 1, 'Login', '2025-08-19 04:10:41', '::1'),
-(2, 1, 'Logout', '2025-08-19 04:12:20', '::1'),
-(3, 1, 'Login', '2025-08-19 04:13:24', '::1'),
-(4, 1, 'Logout', '2025-08-19 04:22:58', '::1'),
-(5, 2, 'Login', '2025-08-19 04:24:16', '::1'),
-(6, 2, 'Logout', '2025-08-19 06:14:57', '::1'),
-(7, 1, 'Login', '2025-08-19 06:20:22', '::1'),
-(8, 1, 'Logout', '2025-08-19 07:09:14', '::1'),
-(9, 1, 'Login', '2025-08-19 07:15:49', '::1'),
-(10, 1, 'Logout', '2025-08-19 07:26:14', '::1'),
-(11, 1, 'Login', '2025-08-19 07:26:29', '::1'),
-(12, 1, 'Logout', '2025-08-19 07:33:27', '::1'),
-(13, 1, 'Login', '2025-08-19 07:33:42', '::1'),
-(14, 1, 'Logout', '2025-08-19 08:23:16', '::1'),
-(15, 2, 'Login', '2025-08-19 08:23:49', '::1'),
-(16, 2, 'Logout', '2025-08-19 08:25:53', '::1'),
-(17, 2, 'Login', '2025-08-19 08:56:07', '::1'),
-(18, 1, 'Login', '2025-08-20 01:15:41', '::1'),
-(19, 1, 'Logout', '2025-08-20 01:16:43', '::1'),
-(20, 2, 'Login', '2025-08-20 01:17:02', '::1'),
-(21, 2, 'Logout', '2025-08-20 01:17:08', '::1'),
-(22, 3, 'Login', '2025-08-20 01:18:09', '::1'),
-(23, 3, 'Logout', '2025-08-20 01:52:17', '::1'),
-(24, 4, 'Login', '2025-08-20 01:52:52', '::1'),
-(25, 4, 'Logout', '2025-08-20 02:18:27', '::1'),
-(26, 1, 'Login', '2025-08-20 04:19:24', '::1'),
-(27, 1, 'Logout', '2025-08-20 06:05:00', '::1'),
-(28, 3, 'Login', '2025-08-20 06:06:09', '::1'),
-(29, 3, 'Logout', '2025-08-20 06:46:39', '::1'),
-(30, 2, 'Login', '2025-08-20 06:46:48', '::1'),
-(31, 2, 'Buka halaman Bergabung', '2025-08-20 06:57:54', '::1'),
-(32, 2, 'Buka halaman Bergabung', '2025-08-20 06:57:55', '::1'),
-(33, 2, 'Buka halaman Bergabung', '2025-08-20 06:57:56', '::1'),
-(34, 2, 'Buka halaman Bergabung', '2025-08-20 06:57:56', '::1'),
-(35, 2, 'Buka halaman Bergabung', '2025-08-20 06:58:09', '::1'),
-(36, 2, 'Logout', '2025-08-20 06:58:51', '::1'),
-(37, 3, 'Login', '2025-08-20 06:59:05', '::1'),
-(38, 3, 'HRD: tambah lowongan #1 - Programmer Frontend', '2025-08-20 07:01:47', '::1'),
-(39, 3, 'Buka halaman Bergabung', '2025-08-20 07:02:05', '::1'),
-(40, 3, 'Logout', '2025-08-20 07:02:23', '::1'),
-(41, 2, 'Login', '2025-08-20 07:02:36', '::1'),
-(42, 2, 'Kirim lamaran (job #1)', '2025-08-20 07:03:00', '::1'),
-(43, 2, 'Buka halaman Bergabung', '2025-08-20 07:06:06', '::1'),
-(44, 2, 'Buka halaman Bergabung', '2025-08-20 07:09:30', '::1'),
-(45, 2, 'Update profil', '2025-08-20 07:12:11', '::1'),
-(46, 2, 'Update profil', '2025-08-20 07:12:15', '::1'),
-(47, 2, 'Update profil', '2025-08-20 07:12:19', '::1'),
-(48, 2, 'Logout', '2025-08-20 07:12:25', '::1'),
-(49, 3, 'Login', '2025-08-20 07:12:35', '::1'),
-(50, 3, 'HRD: buka detail application #1 => seleksi administrasi', '2025-08-20 07:12:44', '::1'),
-(51, 3, 'HRD: terima administrasi application #1 (Programmer Frontend)', '2025-08-20 07:13:34', '::1'),
-(52, 3, 'HRD: buka detail application #1 => seleksi administrasi', '2025-08-20 07:15:02', '::1'),
-(53, 3, 'HRD: terima administrasi application #1 (Programmer Frontend)', '2025-08-20 07:15:13', '::1'),
-(54, 3, 'HRD: buka detail application #1 => seleksi administrasi', '2025-08-20 07:28:43', '::1'),
-(55, 3, 'HRD: terima administrasi application #1 (Programmer Frontend)', '2025-08-20 07:28:59', '::1'),
-(56, 3, 'HRD: terima bekerja application #1 (Programmer Frontend)', '2025-08-20 07:34:32', '::1'),
-(57, 3, 'HRD: terima bekerja application #1 (Programmer Frontend)', '2025-08-20 07:37:40', '::1'),
-(58, 3, 'HRD: buka detail application #1 => seleksi administrasi', '2025-08-20 07:38:14', '::1'),
-(59, 3, 'HRD: terima administrasi application #1 (Programmer Frontend)', '2025-08-20 07:38:22', '::1'),
-(60, 3, 'HRD: terima administrasi application #1 (Programmer Frontend)', '2025-08-20 07:40:32', '::1'),
-(61, 3, 'HRD: terima administrasi application #1 (Programmer Frontend)', '2025-08-20 07:41:15', '::1'),
-(62, 3, 'HRD: terima administrasi application #1 (Programmer Frontend)', '2025-08-20 07:45:06', '::1'),
-(63, 3, 'Logout', '2025-08-20 07:45:35', '::1'),
-(64, 3, 'Login', '2025-08-20 07:45:45', '::1'),
-(65, 3, 'HRD: terima bekerja application #1 (Programmer Frontend)', '2025-08-20 07:45:56', '::1'),
-(66, 3, 'HRD: terima bekerja application #1 (Programmer Frontend)', '2025-08-20 07:47:18', '::1'),
-(67, 3, 'Logout', '2025-08-20 07:48:46', '127.0.0.1'),
-(68, 3, 'Login', '2025-08-20 07:49:06', '::1'),
-(69, 3, 'HRD: buka detail application #1 => seleksi administrasi', '2025-08-20 07:49:37', '::1'),
-(70, 3, 'HRD: terima administrasi application #1 (Programmer Frontend)', '2025-08-20 07:49:48', '::1'),
-(71, 3, 'HRD: terima administrasi application #1 (Programmer Frontend)', '2025-08-20 07:53:25', '::1'),
-(72, 3, 'HRD: terima administrasi application #1 (Programmer Frontend)', '2025-08-20 07:58:06', '::1'),
-(73, 1, 'Login', '2025-08-21 04:31:21', '::1'),
-(74, 1, 'Logout', '2025-08-21 04:32:55', '::1'),
-(75, 3, 'Login', '2025-08-21 04:33:11', '::1'),
-(76, 3, 'HRD: terima bekerja application #1 (Programmer Frontend)', '2025-08-21 04:54:52', '::1'),
-(77, 3, 'Logout', '2025-08-21 06:35:52', '::1'),
-(78, 2, 'Login', '2025-08-21 06:36:07', '::1'),
-(79, 2, 'Buka halaman Bergabung', '2025-08-21 06:52:16', '::1'),
-(80, 2, 'Buka halaman Bergabung', '2025-08-21 06:56:12', '::1');
+INSERT INTO `log_aktivitas` (`log_id`, `user_id`, `action`, `log_time`) VALUES
+(1, 1, 'Login', '2025-08-19 04:10:41'),
+(2, 1, 'Logout', '2025-08-19 04:12:20'),
+(3, 1, 'Login', '2025-08-19 04:13:24'),
+(4, 1, 'Logout', '2025-08-19 04:22:58'),
+(5, 2, 'Login', '2025-08-19 04:24:16'),
+(6, 2, 'Logout', '2025-08-19 06:14:57'),
+(7, 1, 'Login', '2025-08-19 06:20:22'),
+(8, 1, 'Logout', '2025-08-19 07:09:14'),
+(9, 1, 'Login', '2025-08-19 07:15:49'),
+(10, 1, 'Logout', '2025-08-19 07:26:14'),
+(11, 1, 'Login', '2025-08-19 07:26:29'),
+(12, 1, 'Logout', '2025-08-19 07:33:27'),
+(13, 1, 'Login', '2025-08-19 07:33:42'),
+(14, 1, 'Logout', '2025-08-19 08:23:16'),
+(15, 2, 'Login', '2025-08-19 08:23:49'),
+(16, 2, 'Logout', '2025-08-19 08:25:53'),
+(17, 2, 'Login', '2025-08-19 08:56:07'),
+(18, 1, 'Login', '2025-08-20 01:15:41'),
+(19, 1, 'Logout', '2025-08-20 01:16:43'),
+(20, 2, 'Login', '2025-08-20 01:17:02'),
+(21, 2, 'Logout', '2025-08-20 01:17:08'),
+(22, 3, 'Login', '2025-08-20 01:18:09'),
+(23, 3, 'Logout', '2025-08-20 01:52:17'),
+(24, 4, 'Login', '2025-08-20 01:52:52'),
+(25, 4, 'Logout', '2025-08-20 02:18:27'),
+(26, 1, 'Login', '2025-08-20 04:19:24'),
+(27, 1, 'Logout', '2025-08-20 06:05:00'),
+(28, 3, 'Login', '2025-08-20 06:06:09'),
+(29, 3, 'Logout', '2025-08-20 06:46:39'),
+(30, 2, 'Login', '2025-08-20 06:46:48'),
+(31, 2, 'Buka halaman Bergabung', '2025-08-20 06:57:54'),
+(32, 2, 'Buka halaman Bergabung', '2025-08-20 06:57:55'),
+(33, 2, 'Buka halaman Bergabung', '2025-08-20 06:57:56'),
+(34, 2, 'Buka halaman Bergabung', '2025-08-20 06:57:56'),
+(35, 2, 'Buka halaman Bergabung', '2025-08-20 06:58:09'),
+(36, 2, 'Logout', '2025-08-20 06:58:51'),
+(37, 3, 'Login', '2025-08-20 06:59:05'),
+(38, 3, 'HRD: tambah lowongan #1 - Programmer Frontend', '2025-08-20 07:01:47'),
+(39, 3, 'Buka halaman Bergabung', '2025-08-20 07:02:05'),
+(40, 3, 'Logout', '2025-08-20 07:02:23'),
+(41, 2, 'Login', '2025-08-20 07:02:36'),
+(42, 2, 'Kirim lamaran (job #1)', '2025-08-20 07:03:00'),
+(43, 2, 'Buka halaman Bergabung', '2025-08-20 07:06:06'),
+(44, 2, 'Buka halaman Bergabung', '2025-08-20 07:09:30'),
+(45, 2, 'Update profil', '2025-08-20 07:12:11'),
+(46, 2, 'Update profil', '2025-08-20 07:12:15'),
+(47, 2, 'Update profil', '2025-08-20 07:12:19'),
+(48, 2, 'Logout', '2025-08-20 07:12:25'),
+(49, 3, 'Login', '2025-08-20 07:12:35'),
+(50, 3, 'HRD: buka detail application #1 => seleksi administrasi', '2025-08-20 07:12:44'),
+(51, 3, 'HRD: terima administrasi application #1 (Programmer Frontend)', '2025-08-20 07:13:34'),
+(52, 3, 'HRD: buka detail application #1 => seleksi administrasi', '2025-08-20 07:15:02'),
+(53, 3, 'HRD: terima administrasi application #1 (Programmer Frontend)', '2025-08-20 07:15:13'),
+(54, 3, 'HRD: buka detail application #1 => seleksi administrasi', '2025-08-20 07:28:43'),
+(55, 3, 'HRD: terima administrasi application #1 (Programmer Frontend)', '2025-08-20 07:28:59'),
+(56, 3, 'HRD: terima bekerja application #1 (Programmer Frontend)', '2025-08-20 07:34:32'),
+(57, 3, 'HRD: terima bekerja application #1 (Programmer Frontend)', '2025-08-20 07:37:40'),
+(58, 3, 'HRD: buka detail application #1 => seleksi administrasi', '2025-08-20 07:38:14'),
+(59, 3, 'HRD: terima administrasi application #1 (Programmer Frontend)', '2025-08-20 07:38:22'),
+(60, 3, 'HRD: terima administrasi application #1 (Programmer Frontend)', '2025-08-20 07:40:32'),
+(61, 3, 'HRD: terima administrasi application #1 (Programmer Frontend)', '2025-08-20 07:41:15'),
+(62, 3, 'HRD: terima administrasi application #1 (Programmer Frontend)', '2025-08-20 07:45:06'),
+(63, 3, 'Logout', '2025-08-20 07:45:35'),
+(64, 3, 'Login', '2025-08-20 07:45:45'),
+(65, 3, 'HRD: terima bekerja application #1 (Programmer Frontend)', '2025-08-20 07:45:56'),
+(66, 3, 'HRD: terima bekerja application #1 (Programmer Frontend)', '2025-08-20 07:47:18'),
+(67, 3, 'Logout', '2025-08-20 07:48:46'),
+(68, 3, 'Login', '2025-08-20 07:49:06'),
+(69, 3, 'HRD: buka detail application #1 => seleksi administrasi', '2025-08-20 07:49:37'),
+(70, 3, 'HRD: terima administrasi application #1 (Programmer Frontend)', '2025-08-20 07:49:48'),
+(71, 3, 'HRD: terima administrasi application #1 (Programmer Frontend)', '2025-08-20 07:53:25'),
+(72, 3, 'HRD: terima administrasi application #1 (Programmer Frontend)', '2025-08-20 07:58:06'),
+(73, 1, 'Login', '2025-08-21 04:31:21'),
+(74, 1, 'Logout', '2025-08-21 04:32:55'),
+(75, 3, 'Login', '2025-08-21 04:33:11'),
+(76, 3, 'HRD: terima bekerja application #1 (Programmer Frontend)', '2025-08-21 04:54:52'),
+(77, 3, 'Logout', '2025-08-21 06:35:52'),
+(78, 2, 'Login', '2025-08-21 06:36:07'),
+(79, 2, 'Buka halaman Bergabung', '2025-08-21 06:52:16'),
+(80, 2, 'Buka halaman Bergabung', '2025-08-21 06:56:12'),
+(81, 2, 'Logout', '2025-08-21 07:31:47'),
+(82, 4, 'Login', '2025-08-21 07:59:53'),
+(83, 4, 'Konten: tambah kegiatan #1 (Kegiatan test 123)', '2025-08-21 09:19:16'),
+(84, 4, 'Buka halaman Bergabung', '2025-08-21 09:20:22'),
+(85, 1, 'Login', '2025-08-22 00:50:54'),
+(86, 1, 'Logout', '2025-08-22 03:58:08'),
+(87, 1, 'Logout', '2025-08-22 04:35:02'),
+(88, 1, 'Login', '2025-08-25 01:30:58'),
+(89, 1, 'Menambah user baru', '2025-08-25 01:34:19'),
+(90, 1, 'Mengubah role user', '2025-08-25 01:35:00'),
+(91, 1, 'Mengubah role user', '2025-08-25 01:35:31'),
+(92, 1, 'Logout', '2025-08-25 01:37:12'),
+(93, 6, 'Login', '2025-08-25 01:37:29'),
+(94, 6, 'Logout', '2025-08-25 01:38:06'),
+(95, 2, 'Login', '2025-08-25 01:38:14'),
+(96, 2, 'Logout', '2025-08-25 01:38:21'),
+(97, 7, 'Login', '2025-08-25 01:49:06'),
+(98, 7, 'Logout', '2025-08-25 03:46:45'),
+(99, 1, 'Login', '2025-08-25 03:46:54'),
+(100, 1, 'Logout', '2025-08-25 03:49:16'),
+(101, 3, 'Login', '2025-08-25 03:49:29'),
+(102, 3, 'Logout', '2025-08-25 03:55:06'),
+(103, 2, 'Login', '2025-08-25 03:55:21'),
+(104, 2, 'Logout', '2025-08-25 03:56:00'),
+(105, 7, 'Login', '2025-08-25 03:56:07'),
+(106, 7, 'Logout', '2025-08-25 03:58:05'),
+(107, 4, 'Login', '2025-08-25 03:58:20'),
+(108, 4, 'Logout', '2025-08-25 04:04:18'),
+(109, 1, 'Login', '2025-08-25 04:04:25'),
+(110, 1, 'Logout', '2025-08-25 04:10:30'),
+(111, 2, 'Login', '2025-08-25 04:10:38'),
+(112, 2, 'Logout', '2025-08-25 04:15:59'),
+(113, 4, 'Login', '2025-08-25 04:16:07'),
+(114, 4, 'Logout', '2025-08-25 04:17:09'),
+(115, 3, 'Login', '2025-08-25 04:17:18'),
+(116, 3, 'Logout', '2025-08-25 09:27:16'),
+(117, 4, 'Login', '2025-08-25 09:27:32'),
+(118, 4, 'Login', '2025-08-26 01:46:20'),
+(119, 4, 'Konten: tambah webinar #1 (Webinar Waindo Series #1 GIS Enterprise & Dashboard Operation, CSRT, Airbone LiDAR dan Aplikasi Pemanfaatannya)', '2025-08-26 02:09:03'),
+(120, 4, 'Logout', '2025-08-26 02:13:34'),
+(121, 4, 'Login', '2025-08-26 02:13:44'),
+(122, 4, 'Konten: tambah live_streaming #1 (mp4)', '2025-08-26 02:19:18'),
+(123, 4, 'Konten: tambah galeri #1 (Acara Kemerdekaan Indonesia)', '2025-08-26 02:21:27'),
+(124, 4, 'Logout', '2025-08-26 02:44:29'),
+(125, 1, 'Login', '2025-08-26 02:44:35'),
+(126, 1, 'Logout', '2025-08-26 02:46:09'),
+(127, 4, 'Login', '2025-08-26 02:46:17'),
+(128, 4, 'Logout', '2025-08-26 03:51:50'),
+(129, 1, 'Login', '2025-08-26 04:04:47'),
+(130, 1, 'Logout', '2025-08-26 04:07:21'),
+(131, 4, 'Login', '2025-08-26 04:07:32'),
+(132, 4, 'Logout', '2025-08-26 04:23:43'),
+(133, 3, 'Login', '2025-08-26 04:23:54'),
+(134, 3, 'HRD: buka detail application #1 => seleksi administrasi', '2025-08-26 04:45:06'),
+(135, 3, 'Logout', '2025-08-26 07:29:57'),
+(136, 3, 'Login', '2025-08-26 07:30:05'),
+(137, 3, 'Logout', '2025-08-26 07:30:41'),
+(138, 3, 'Login', '2025-08-26 07:30:51'),
+(139, 3, 'Logout', '2025-08-26 07:31:19'),
+(140, 3, 'Login', '2025-08-26 07:31:29'),
+(141, 4, 'Login', '2025-08-27 01:54:15'),
+(142, 4, 'Konten: edit kegiatan #1 (Kegiatan Outing dan Family Gathering)', '2025-08-27 02:03:53'),
+(143, 4, 'Konten: edit webinar #1 (Webinar Waindo Series #1 GIS Enterprise & Dashboard Operation, CSRT, Airbone LiDAR dan Aplikasi Pemanfaatannyaa)', '2025-08-27 02:18:21'),
+(144, 4, 'Konten: edit webinar #1 (Webinar Waindo Series #1 GIS Enterprise & Dashboard Operation, CSRT, Airbone LiDAR dan Aplikasi Pemanfaatannya)', '2025-08-27 02:18:29'),
+(145, 4, 'Konten: edit webinar #1 (Webinar Waindo Series #1 GIS Enterprise & Dashboard Operation, CSRT, Airbone LiDAR dan Aplikasi Pemanfaatannya)', '2025-08-27 02:19:17'),
+(146, 4, 'Konten: edit webinar #1 (Webinar Waindo Series #1 GIS Enterprise & Dashboard Operation, CSRT, Airbone LiDAR dan Aplikasi Pemanfaatannya)', '2025-08-27 02:19:45'),
+(147, 4, 'Konten: edit webinar #1 (Webinar Waindo Series #1 GIS Enterprise & Dashboard Operation, CSRT, Airbone LiDAR dan Aplikasi Pemanfaatannya)', '2025-08-27 02:19:47'),
+(148, 4, 'Konten: edit webinar #1 (Webinar Waindo Series #1 GIS Enterprise & Dashboard Operation, CSRT, Airbone LiDAR dan Aplikasi Pemanfaatannya)', '2025-08-27 02:19:50'),
+(149, 4, 'Konten: tambah kegiatan #2 (Halal Bihalal Virtual saat Pandemi COVID-19)', '2025-08-27 03:35:06'),
+(150, 4, 'Konten: tambah webinar #2 (Webinar 2 *Webinar Waindo Series #2 Pembuatan Peta 3D Menggunakan ArcGIS PRO)', '2025-08-27 03:36:38'),
+(151, 4, 'Konten: edit kegiatan #2 (Halal Bihalal Virtual saat Pandemi COVID-19)', '2025-08-27 03:38:15'),
+(152, 4, 'Konten: tambah galeri #2 (Acara test)', '2025-08-27 03:39:56'),
+(153, 4, 'Konten: hapus galeri #2', '2025-08-27 03:40:33'),
+(154, 4, 'Logout', '2025-08-27 03:44:14'),
+(155, 1, 'Login', '2025-08-27 03:44:21'),
+(156, 1, 'Logout', '2025-08-27 07:03:30'),
+(157, 2, 'Login', '2025-08-27 07:03:40'),
+(158, 4, 'Login', '2025-08-29 01:18:52'),
+(159, 4, 'Konten: edit webinar #2 (Webinar Waindo Series #2 Pembuatan Peta 3D Menggunakan ArcGIS PRO)', '2025-08-29 01:19:20'),
+(160, 4, 'Konten: tambah webinar #3 (Webinar Waindo Series #3 Technology Updates Low Cost GNSS for Surveying dan Monitoring)', '2025-08-29 01:20:18'),
+(161, 4, 'Konten: tambah kegiatan #3 (Kegiatan Pembagian Sembako Saat Pandemi Covid-19)', '2025-08-29 01:21:53'),
+(162, 4, 'Konten: tambah kegiatan #4 (Kegiatan Berbagi Saat Ramadhan dan Santunan Anak Yatim)', '2025-08-29 01:24:26'),
+(163, 1, 'Login', '2025-09-04 03:20:43'),
+(164, 1, 'Logout', '2025-09-04 03:21:43'),
+(165, 2, 'Login', '2025-09-04 03:22:12'),
+(166, 2, 'Logout', '2025-09-04 03:28:00'),
+(167, 3, 'Login', '2025-09-04 03:29:45'),
+(168, 3, 'Logout', '2025-09-04 03:36:48'),
+(169, 4, 'Login', '2025-09-04 03:36:58'),
+(170, 4, 'Logout', '2025-09-04 07:56:36');
 
 -- --------------------------------------------------------
 
@@ -263,7 +402,9 @@ INSERT INTO `users` (`user_id`, `username`, `password`, `email`, `full_name`, `r
 (1, 'admin01', '0192023a7bbd73250516f069df18b500', 'admin@gmail.com', 'Admin', 'admin', 'active', '2025-08-19 03:54:54', 0),
 (2, 'pelamar01', '9c5fa085ce256c7c598f6710584ab25d', 'rekishiilucy123@gmail.com', 'Budi Santoso', 'pelamar', 'active', '2025-08-19 03:54:54', 0),
 (3, 'hrd01', '5c2e4a2563f9f4427955422fe1402762', 'siti@gmail.com', 'Siti', 'hrd', 'active', '2025-08-19 03:54:54', 0),
-(4, 'konten01', '26ed30f28908645239254ff4f88c1b75', 'rian@gmail.com', 'Rian', 'konten', 'active', '2025-08-19 03:54:54', 0);
+(4, 'konten01', '26ed30f28908645239254ff4f88c1b75', 'rian@gmail.com', 'Rian', 'konten', 'active', '2025-08-19 03:54:54', 0),
+(6, 'agus01', '01c3c766ce47082b1b130daedd347ffd', 'agus123@gmail.com', 'Agus Agus', 'hrd', 'active', '2025-08-25 01:34:19', 0),
+(7, 'rekis', 'ef14d8aeff3c7255004a18508133b8ad', 'weioewhifewhuifwhui@gmail.com', 'rekishii lucy', 'pelamar', 'active', '2025-08-25 01:48:43', 0);
 
 -- --------------------------------------------------------
 
@@ -277,6 +418,15 @@ CREATE TABLE `webinar` (
   `gambar` varchar(255) DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Dumping data for table `webinar`
+--
+
+INSERT INTO `webinar` (`webinar_id`, `judul`, `gambar`, `created_at`) VALUES
+(1, 'Webinar Waindo Series #1 GIS Enterprise & Dashboard Operation, CSRT, Airbone LiDAR dan Aplikasi Pemanfaatannya', 'uploads/webinar/1756174143_webinar1.jpeg', '2025-08-26 02:09:03'),
+(2, 'Webinar Waindo Series #2 Pembuatan Peta 3D Menggunakan ArcGIS PRO', 'uploads/webinar/1756265798_webinar2.jpeg', '2025-08-27 03:36:38'),
+(3, 'Webinar Waindo Series #3 Technology Updates Low Cost GNSS for Surveying dan Monitoring', 'uploads/webinar/1756430418_webinar3.jpeg', '2025-08-29 01:20:18');
 
 --
 -- Indexes for dumped tables
@@ -365,37 +515,37 @@ ALTER TABLE `applications`
 -- AUTO_INCREMENT for table `galeri`
 --
 ALTER TABLE `galeri`
-  MODIFY `galeri_id` int NOT NULL AUTO_INCREMENT;
+  MODIFY `galeri_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `galeri_foto`
 --
 ALTER TABLE `galeri_foto`
-  MODIFY `foto_id` int NOT NULL AUTO_INCREMENT;
+  MODIFY `foto_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `kegiatan`
 --
 ALTER TABLE `kegiatan`
-  MODIFY `kegiatan_id` int NOT NULL AUTO_INCREMENT;
+  MODIFY `kegiatan_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `kegiatan_foto`
 --
 ALTER TABLE `kegiatan_foto`
-  MODIFY `foto_id` int NOT NULL AUTO_INCREMENT;
+  MODIFY `foto_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 
 --
 -- AUTO_INCREMENT for table `live_streaming`
 --
 ALTER TABLE `live_streaming`
-  MODIFY `streaming_id` int NOT NULL AUTO_INCREMENT;
+  MODIFY `streaming_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `log_aktivitas`
 --
 ALTER TABLE `log_aktivitas`
-  MODIFY `log_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=81;
+  MODIFY `log_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=171;
 
 --
 -- AUTO_INCREMENT for table `lowongan`
@@ -407,13 +557,13 @@ ALTER TABLE `lowongan`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `user_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `user_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT for table `webinar`
 --
 ALTER TABLE `webinar`
-  MODIFY `webinar_id` int NOT NULL AUTO_INCREMENT;
+  MODIFY `webinar_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- Constraints for dumped tables
