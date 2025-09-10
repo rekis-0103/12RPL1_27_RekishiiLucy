@@ -1,43 +1,244 @@
-/* Cards & Alerts */
-.card{background:#fff;border-radius:10px;box-shadow:0 2px 4px rgba(0,0,0,.1);margin-bottom:20px;overflow:hidden}
-.card-header{padding:20px;border-bottom:1px solid #e5e7eb;display:flex;justify-content:space-between;align-items:center}
-.card-body{padding:20px}
-.alert{padding:12px 16px;border-radius:6px;margin-bottom:20px;font-weight:500}
-.alert-success{background:#d1fae5;color:#065f46;border:1px solid #a7f3d0}
-.alert-danger{background:#fee2e2;color:#991b1b;border:1px solid #fca5a5}
 
-/* Table */
-.table-wrap{overflow-x:auto}
-table{width:100%;border-collapse:collapse}
-th,td{padding:12px;border-bottom:1px solid #e5e7eb;text-align:left}
-th{background:#f9fafb;color:#374151}
-.text-center{text-align:center}
 
-/* Forms */
-.form-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
-.form-group{display:flex;flex-direction:column}
-.form-group label{margin-bottom:6px;color:#374151;font-weight:500}
-.form-group input,.form-group textarea,.form-group select{padding:10px;border:1px solid #d1d5db;border-radius:6px;font-size:14px}
+/* Enhanced Cards */
+.card {
+  background: #ffffff;
+  border-radius: 20px;
+  box-shadow: 
+    0 10px 25px rgba(0, 0, 0, 0.08),
+    0 4px 10px rgba(0, 0, 0, 0.03);
+  margin-bottom: 30px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+  transition: all 0.3s ease;
+  position: relative;
+}
 
-/* Buttons */
-.btn{padding:10px 14px;border:none;border-radius:6px;cursor:pointer;display:inline-flex;align-items:center;gap:8px}
-.btn-primary{background:#2563eb;color:#fff}
-.btn-secondary{background:#6b7280;color:#fff}
-.btn-danger{background:#dc2626;color:#fff}
-.btn-sm{padding:6px 10px;font-size:12px}
+.card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #3b82f6, #8b5cf6, #06b6d4);
+}
 
-/* Jobs on pelamar lowongan */
-.job-item{padding:16px 0;border-bottom:1px solid #e5e7eb}
-.job-item:last-child{border-bottom:none}
-.job-title{font-weight:600;color:#1e293b}
-.job-meta{color:#64748b;font-size:14px;margin:6px 0}
-.job-desc{color:#374151;margin-bottom:10px}
-.apply-form{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 
+    0 20px 40px rgba(0, 0, 0, 0.12),
+    0 8px 20px rgba(0, 0, 0, 0.08);
+}
 
-/* Status badges (dashboard) */
-.status-badge{padding:4px 8px;border-radius:4px;font-size:12px;font-weight:500;margin-left:auto}
-.status-pending{background:#fef3c7;color:#d97706}
-.status-accepted{background:#d1fae5;color:#059669}
-.status-rejected{background:#fee2e2;color:#dc2626}
+.card-header {
+  padding: 24px 28px;
+  border-bottom: 1px solid #f1f5f9;
+  background: linear-gradient(135deg, #fafafa 0%, #f8fafc 100%);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
 
-@media(max-width:768px){.form-grid{grid-template-columns:1fr}}
+.card-header h3 {
+  color: #1e293b;
+  font-size: 1.25rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.card-header h3 i {
+  color: #3b82f6;
+  font-size: 1.1rem;
+}
+
+/* Enhanced Table */
+.table-wrap {
+  overflow-x: auto;
+  border-radius: 0 0 20px 20px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+th {
+  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+  color: #475569;
+  font-weight: 600;
+  padding: 16px 20px;
+  text-align: left;
+  border-bottom: 2px solid #e2e8f0;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+td {
+  padding: 16px 20px;
+  border-bottom: 1px solid #f1f5f9;
+  color: #334155;
+  font-weight: 500;
+  transition: background-color 0.2s ease;
+}
+
+tr:hover td {
+  background-color: #f8fafc;
+}
+
+/* Enhanced Status Styling */
+td:nth-child(2) {
+  font-weight: 600;
+}
+
+/* Status color coding */
+tr:has(td:nth-child(2):contains("pending")) td:nth-child(2) {
+  color: #d97706;
+  background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+  padding: 6px 12px;
+  border-radius: 20px;
+  text-align: center;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+tr:has(td:nth-child(2):contains("accepted")) td:nth-child(2) {
+  color: #059669;
+  background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+  padding: 6px 12px;
+  border-radius: 20px;
+  text-align: center;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+tr:has(td:nth-child(2):contains("rejected")) td:nth-child(2) {
+  color: #dc2626;
+  background: linear-gradient(135deg, #fee2e2 0%, #fca5a5 100%);
+  padding: 6px 12px;
+  border-radius: 20px;
+  text-align: center;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Enhanced Links */
+td a {
+  color: #3b82f6;
+  text-decoration: none;
+  font-weight: 600;
+  padding: 6px 12px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+  transition: all 0.2s ease;
+  display: inline-block;
+}
+
+td a:hover {
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+  color: white;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(59, 130, 246, 0.3);
+}
+
+/* Enhanced Empty State */
+.text-center {
+  text-align: center;
+  color: #64748b;
+  font-style: italic;
+  padding: 40px 20px;
+  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+}
+
+.text-center::before {
+  content: '📄';
+  display: block;
+  font-size: 3rem;
+  margin-bottom: 16px;
+  opacity: 0.5;
+}
+
+/* Enhanced Date Formatting */
+td:nth-child(3),
+td:nth-child(5),
+td:nth-child(6) {
+  font-family: 'Courier New', monospace;
+  color: #6b7280;
+  background: #f9fafb;
+  border-radius: 6px;
+  padding: 8px 12px;
+  font-size: 13px;
+}
+
+/* Enhanced Job Title */
+td:first-child {
+  font-weight: 700;
+  color: #1e293b;
+  font-size: 15px;
+}
+
+/* Responsive Enhancements */
+@media (max-width: 768px) {
+  .main-content {
+    padding: 16px;
+  }
+  
+  .dashboard-header h1 {
+    font-size: 2rem;
+  }
+  
+  .card {
+    border-radius: 16px;
+    margin-bottom: 20px;
+  }
+  
+  .card-header {
+    padding: 20px;
+  }
+  
+  th, td {
+    padding: 12px 8px;
+    font-size: 13px;
+  }
+  
+  .table-wrap {
+    border-radius: 0 0 16px 16px;
+  }
+}
+
+/* Loading Animation */
+@keyframes shimmer {
+  0% { background-position: -200px 0; }
+  100% { background-position: calc(200px + 100%) 0; }
+}
+
+.card.loading {
+  background: linear-gradient(90deg, #f0f0f0 0px, #e0e0e0 40px, #f0f0f0 80px);
+  background-size: 400px;
+  animation: shimmer 1.2s ease-in-out infinite;
+}
+
+/* Print Styles */
+@media print {
+  .main-content {
+    background: white;
+    box-shadow: none;
+  }
+  
+  .card {
+    box-shadow: none;
+    border: 1px solid #ddd;
+  }
+  
+  .card:hover {
+    transform: none;
+  }
+}
