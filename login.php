@@ -165,7 +165,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             color: #333;
         }
         
-        .login-btn {
+        .login-btnn {
             width: 100%;
             background: linear-gradient(135deg, #667eea, #764ba2);
             color: white;
@@ -178,7 +178,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             transition: transform 0.3s ease;
         }
         
-        .login-btn:hover {
+        .login-btnn:hover {
             transform: translateY(-2px);
         }
         
@@ -265,7 +265,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                         </button>
                     </div>
                 </div>
-                <button type="submit" class="login-btn">Login</button>
+                <button type="submit" class="login-btnn">Login</button>
             </form>
             
             <div class="register-link">
