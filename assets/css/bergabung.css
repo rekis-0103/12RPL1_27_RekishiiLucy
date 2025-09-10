@@ -1,20 +1,41 @@
+/* ===== ALERT STYLING ===== */
 .alert {
   padding: 12px 16px;
   border-radius: 6px;
   margin: 12px 0;
   font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
+
+.alert::before {
+  font-family: "Font Awesome 6 Free";
+  font-weight: 900;
+  font-size: 16px;
+}
+
 .alert-success {
   background: #d1fae5;
   color: #065f46;
   border: 1px solid #a7f3d0;
 }
+
+.alert-success::before {
+  content: "\f058"; /* fa-check-circle */
+}
+
 .alert-danger {
   background: #fee2e2;
   color: #991b1b;
   border: 1px solid #fca5a5;
 }
 
+.alert-danger::before {
+  content: "\f06a"; /* fa-exclamation-triangle */
+}
+
+/* ===== CARD STYLING ===== */
 .card {
   background: #fff;
   border-radius: 10px;
@@ -22,50 +43,177 @@
   margin-top: 16px;
   overflow: hidden;
 }
+
 .card-header {
   padding: 16px 20px;
   border-bottom: 1px solid #e5e7eb;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  background: #f8fafc;
 }
+
+.card-header h3 {
+  margin: 0;
+  color: #1e293b;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
 .card-body {
   padding: 16px 20px;
 }
 
+/* ===== JOB LISTING STYLING ===== */
 .job-item {
   padding: 16px 0;
   border-bottom: 1px solid #e5e7eb;
+  transition: background-color 0.2s ease;
 }
+
 .job-item:last-child {
   border-bottom: none;
 }
+
+.job-item:hover {
+  background-color: #f8fafc;
+  border-radius: 6px;
+  margin: 0 -8px;
+  padding-left: 8px;
+  padding-right: 8px;
+}
+
+/* Styling for closed jobs */
+.job-item.job-closed {
+  background: #f8f9fa;
+  opacity: 0.8;
+  border-radius: 6px;
+  margin: 8px -8px;
+  padding-left: 8px;
+  padding-right: 8px;
+}
+
+.job-item.job-closed:hover {
+  background-color: #f1f5f9;
+}
+
+/* Job header with title and status */
+.job-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 8px;
+  gap: 15px;
+}
+
 .job-title {
   margin: 0 0 6px 0;
   color: #1e293b;
+  font-size: 18px;
+  font-weight: 600;
+  flex: 1;
 }
+
+.job-closed .job-title {
+  color: #64748b;
+}
+
+/* Status badges */
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.status-open {
+  background-color: #dcfce7;
+  color: #166534;
+  border: 1px solid #bbf7d0;
+}
+
+.status-closed {
+  background-color: #fee2e2;
+  color: #991b1b;
+  border: 1px solid #fca5a5;
+}
+
 .job-meta {
   color: #64748b;
   font-size: 14px;
   margin-bottom: 8px;
-}
-.job-desc {
-  color: #374151;
-  margin-bottom: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
 }
 
+.job-closed .job-meta {
+  color: #94a3b8;
+}
+
+.job-desc {
+  color: #374151;
+  margin-bottom: 12px;
+  line-height: 1.6;
+  white-space: pre-line;
+}
+
+.job-closed .job-desc {
+  color: #64748b;
+}
+
+/* ===== FORM STYLING ===== */
 .apply-form {
   display: flex;
   gap: 10px;
   align-items: center;
   flex-wrap: wrap;
+  margin-top: 12px;
 }
+
+.apply-form-disabled {
+  background-color: #f8f9fa;
+  border: 1px dashed #dee2e6;
+  border-radius: 6px;
+  padding: 12px;
+  margin-top: 12px;
+}
+
+.apply-form label {
+  font-weight: 500;
+  color: #374151;
+  margin-bottom: 0;
+}
+
+.apply-form label.disabled {
+  color: #6b7280;
+}
+
 .apply-form input[type="file"] {
   border: 1px solid #d1d5db;
   border-radius: 6px;
   padding: 6px 8px;
+  background: #fff;
+  min-width: 200px;
+  flex: 1;
 }
 
+.apply-form input[type="file"].disabled {
+  background-color: #f3f4f6;
+  border-color: #d1d5db;
+  color: #6b7280;
+  cursor: not-allowed;
+}
+
+/* ===== BUTTON STYLING ===== */
 .btn {
   padding: 10px 14px;
   border: none;
@@ -74,15 +222,153 @@
   display: inline-flex;
   align-items: center;
   gap: 8px;
+  font-weight: 500;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  font-size: 14px;
 }
+
 .btn-primary {
   background: #2563eb;
   color: #fff;
 }
+
 .btn-primary:hover {
   background: #1d4ed8;
+  transform: translateY(-1px);
 }
 
+.btn-disabled {
+  background-color: #6b7280;
+  color: #fff;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.btn-disabled:hover {
+  background-color: #6b7280;
+  transform: none;
+}
+
+/* Closure notice */
+.closure-notice {
+  margin-top: 10px;
+  color: #92400e;
+  background-color: #fef3c7;
+  border: 1px solid #fde047;
+  border-radius: 4px;
+  padding: 8px 12px;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+}
+
+.closure-notice i {
+  color: #92400e;
+  flex-shrink: 0;
+}
+
+/* ===== UTILITY CLASSES ===== */
 .text-muted {
   color: #6b7280;
+  text-align: center;
+  padding: 20px;
+  font-style: italic;
+}
+
+/* ===== RESPONSIVE STYLING ===== */
+@media (max-width: 768px) {
+  .job-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  
+  .status-badge {
+    align-self: flex-start;
+  }
+  
+  .apply-form {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+  }
+  
+  .apply-form label {
+    margin-bottom: 4px;
+  }
+  
+  .apply-form input[type="file"] {
+    min-width: auto;
+  }
+  
+  .job-meta {
+    flex-direction: column;
+    gap: 4px;
+  }
+  
+  .job-title {
+    font-size: 16px;
+  }
+  
+  .closure-notice {
+    font-size: 11px;
+    padding: 6px 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .card-header,
+  .card-body {
+    padding: 12px 16px;
+  }
+  
+  .job-item {
+    padding: 12px 0;
+  }
+  
+  .apply-form-disabled {
+    padding: 10px;
+  }
+  
+  .btn {
+    padding: 8px 12px;
+    font-size: 13px;
+  }
+  
+  .status-badge {
+    font-size: 10px;
+    padding: 3px 8px;
+  }
+}
+
+/* ===== ANIMATION ENHANCEMENTS ===== */
+.job-item {
+  animation: fadeInUp 0.3s ease-out;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.status-badge {
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.8;
+  }
 }

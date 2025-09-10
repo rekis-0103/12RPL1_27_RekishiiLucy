@@ -26,46 +26,55 @@ function logActivity($conn, $actor_user_id, $action)
     mysqli_query($conn, "INSERT INTO log_aktivitas (user_id, action) VALUES ($actor_user_id, '$action')");
 }
 
-// Handle apply
+// Handle apply (only for open jobs)
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'apply') {
     $job_id = (int)$_POST['job_id'];
 
-    // Ensure cv upload dir
-    $uploadDir = __DIR__ . '/../uploads/cv/';
-    if (!is_dir($uploadDir)) {
-        @mkdir($uploadDir, 0775, true);
-    }
-
-    if (!isset($_FILES['cv']) || $_FILES['cv']['error'] !== UPLOAD_ERR_OK) {
-        $error = 'Unggah CV gagal. Pastikan file dipilih.';
-        logActivity($conn, $user_id, 'Gagal kirim lamaran (CV tidak valid)');
+    // Check if job is still open
+    $checkJob = mysqli_query($conn, "SELECT status FROM lowongan WHERE job_id = $job_id");
+    $jobData = mysqli_fetch_assoc($checkJob);
+    
+    if ($jobData['status'] !== 'open') {
+        $error = 'Lowongan sudah ditutup, tidak dapat mengirim lamaran.';
+        logActivity($conn, $user_id, 'Gagal kirim lamaran (lowongan sudah ditutup)');
     } else {
-        $ext = pathinfo($_FILES['cv']['name'], PATHINFO_EXTENSION);
-        $safeName = 'cv_' . $user_id . '_' . $job_id . '_' . time() . '.' . strtolower($ext);
-        $targetPath = $uploadDir . $safeName;
-        $relPath = 'uploads/cv/' . $safeName;
-        $allowed = ['pdf', 'doc', 'docx'];
-        if (!in_array(strtolower($ext), $allowed)) {
-            $error = 'Format CV harus PDF/DOC/DOCX';
-            logActivity($conn, $user_id, 'Gagal kirim lamaran (format CV salah)');
-        } elseif (move_uploaded_file($_FILES['cv']['tmp_name'], $targetPath)) {
-            $q = "INSERT INTO applications (job_id, user_id, cv, status, applied_at) VALUES ($job_id, $user_id, '" . esc($conn, $relPath) . "', 'pendaftaran diterima', NOW())";
-            if (mysqli_query($conn, $q)) {
-                $success = 'Lamaran berhasil dikirim';
-                logActivity($conn, $user_id, "Kirim lamaran (job #$job_id)");
-            } else {
-                $error = 'Gagal mengirim lamaran';
-                logActivity($conn, $user_id, 'Gagal kirim lamaran (database error)');
-            }
+        // Ensure cv upload dir
+        $uploadDir = __DIR__ . '/../uploads/cv/';
+        if (!is_dir($uploadDir)) {
+            @mkdir($uploadDir, 0775, true);
+        }
+
+        if (!isset($_FILES['cv']) || $_FILES['cv']['error'] !== UPLOAD_ERR_OK) {
+            $error = 'Unggah CV gagal. Pastikan file dipilih.';
+            logActivity($conn, $user_id, 'Gagal kirim lamaran (CV tidak valid)');
         } else {
-            $error = 'Gagal menyimpan file CV';
-            logActivity($conn, $user_id, 'Gagal kirim lamaran (simpan CV gagal)');
+            $ext = pathinfo($_FILES['cv']['name'], PATHINFO_EXTENSION);
+            $safeName = 'cv_' . $user_id . '_' . $job_id . '_' . time() . '.' . strtolower($ext);
+            $targetPath = $uploadDir . $safeName;
+            $relPath = 'uploads/cv/' . $safeName;
+            $allowed = ['pdf', 'doc', 'docx'];
+            if (!in_array(strtolower($ext), $allowed)) {
+                $error = 'Format CV harus PDF/DOC/DOCX';
+                logActivity($conn, $user_id, 'Gagal kirim lamaran (format CV salah)');
+            } elseif (move_uploaded_file($_FILES['cv']['tmp_name'], $targetPath)) {
+                $q = "INSERT INTO applications (job_id, user_id, cv, status, applied_at) VALUES ($job_id, $user_id, '" . esc($conn, $relPath) . "', 'pendaftaran diterima', NOW())";
+                if (mysqli_query($conn, $q)) {
+                    $success = 'Lamaran berhasil dikirim';
+                    logActivity($conn, $user_id, "Kirim lamaran (job #$job_id)");
+                } else {
+                    $error = 'Gagal mengirim lamaran';
+                    logActivity($conn, $user_id, 'Gagal kirim lamaran (database error)');
+                }
+            } else {
+                $error = 'Gagal menyimpan file CV';
+                logActivity($conn, $user_id, 'Gagal kirim lamaran (simpan CV gagal)');
+            }
         }
     }
 }
 
-// List open jobs
-$list = mysqli_query($conn, "SELECT * FROM lowongan WHERE status='open' AND hapus=0 ORDER BY posted_at DESC");
+// List all jobs (both open and closed) that are not deleted
+$list = mysqli_query($conn, "SELECT * FROM lowongan WHERE hapus=0 ORDER BY status ASC, posted_at DESC");
 ?>
 <!DOCTYPE html>
 <html lang="id">
@@ -118,28 +127,62 @@ $list = mysqli_query($conn, "SELECT * FROM lowongan WHERE status='open' AND hapu
 
             <div class="card">
                 <div class="card-header">
-                    <h3><i class="fas fa-briefcase"></i> Lowongan Aktif</h3>
+                    <h3><i class="fas fa-briefcase"></i> Daftar Lowongan</h3>
                 </div>
                 <div class="card-body">
                     <?php if ($list && mysqli_num_rows($list) > 0): ?>
                         <?php while ($row = mysqli_fetch_assoc($list)): ?>
-                            <div class="job-item">
-                                <div class="job-title"><?php echo htmlspecialchars($row['title']); ?></div>
-                                <div class="job-meta">Lokasi: <?php echo htmlspecialchars($row['location'] ?: '-'); ?> | Gaji: <?php echo htmlspecialchars($row['salary_range'] ?: '-'); ?></div>
-                                <div class="job-desc"><?php echo nl2br(htmlspecialchars($row['description'])); ?></div>
-                                <form method="POST" enctype="multipart/form-data" class="apply-form">
-                                    <input type="hidden" name="action" value="apply">
-                                    <input type="hidden" name="job_id" value="<?php echo (int)$row['job_id']; ?>">
-                                    <div class="form-inline">
-                                        <label>CV (PDF/DOC/DOCX): </label>
-                                        <input type="file" name="cv" accept=".pdf,.doc,.docx" required>
-                                        <button type="submit" class="btn btn-primary btn-sm">Kirim Lamaran</button>
+                            <div class="job-item <?php echo $row['status'] === 'closed' ? 'job-closed' : ''; ?>">
+                                <div class="job-header">
+                                    <div class="job-title"><?php echo htmlspecialchars($row['title']); ?></div>
+                                    <div class="job-status">
+                                        <?php if ($row['status'] === 'open'): ?>
+                                            <span class="status-badge status-open">
+                                                <i class="fas fa-check-circle"></i> Aktif
+                                            </span>
+                                        <?php else: ?>
+                                            <span class="status-badge status-closed">
+                                                <i class="fas fa-times-circle"></i> Ditutup
+                                            </span>
+                                        <?php endif; ?>
                                     </div>
-                                </form>
+                                </div>
+                                <div class="job-meta">
+                                    Lokasi: <?php echo htmlspecialchars($row['location'] ?: '-'); ?> | 
+                                    Gaji: <?php echo htmlspecialchars($row['salary_range'] ?: '-'); ?> |
+                                    Diposting: <?php echo date('d M Y', strtotime($row['posted_at'])); ?>
+                                </div>
+                                <div class="job-desc"><?php echo nl2br(htmlspecialchars($row['description'])); ?></div>
+                                
+                                <?php if ($row['status'] === 'open'): ?>
+                                    <form method="POST" enctype="multipart/form-data" class="apply-form">
+                                        <input type="hidden" name="action" value="apply">
+                                        <input type="hidden" name="job_id" value="<?php echo (int)$row['job_id']; ?>">
+                                        <div class="form-inline">
+                                            <label>CV (PDF/DOC/DOCX): </label>
+                                            <input type="file" name="cv" accept=".pdf,.doc,.docx" required>
+                                            <button type="submit" class="btn btn-primary btn-sm">Kirim Lamaran</button>
+                                        </div>
+                                    </form>
+                                <?php else: ?>
+                                    <div class="apply-form apply-form-disabled">
+                                        <div class="form-inline">
+                                            <label class="disabled">CV (PDF/DOC/DOCX): </label>
+                                            <input type="file" disabled class="disabled">
+                                            <button type="button" class="btn btn-disabled btn-sm" disabled>
+                                                <i class="fas fa-lock"></i> Lowongan Ditutup
+                                            </button>
+                                        </div>
+                                        <p class="closure-notice">
+                                            <i class="fas fa-info-circle"></i> 
+                                            Lowongan ini sudah ditutup dan tidak menerima lamaran baru.
+                                        </p>
+                                    </div>
+                                <?php endif; ?>
                             </div>
                         <?php endwhile; ?>
                     <?php else: ?>
-                        <p class="text-muted">Belum ada lowongan aktif.</p>
+                        <p class="text-muted">Belum ada lowongan tersedia.</p>
                     <?php endif; ?>
                 </div>
             </div>
