@@ -16,23 +16,21 @@ session_start();
 
 <body>
     <?php include 'includes/navbar.php'; ?>
+    <main>
+        <div class="container">
+            <h1>Mitra Kerja</h1>
 
-    <div class="page-container">
-        <main class="page-content">
-            <div class="container">
-                <h1>Mitra Kerja</h1>
-
-                <div class="buttons">
-                    <button onclick="showCategory('pemerintahan')">Pemerintahan</button>
-                    <button onclick="showCategory('non')">Non Pemerintahan</button>
-                </div>
-
-                <div id="card-container" class="card-container">
-                </div>
+            <div class="buttons">
+                <button id="btn-pemerintahan" onclick="showCategory('pemerintahan')">Pemerintahan</button>
+                <button id="btn-non" onclick="showCategory('non')">Non Pemerintahan</button>
             </div>
-        </main>
-    </div>
 
+            <div id="category-title" class="category-title"></div>
+
+            <div id="card-container" class="card-container">
+            </div>
+        </div>
+    </main>
     <footer class="footer">
         <div class="container">
             <div class="footer-content">
@@ -41,13 +39,11 @@ session_start();
                     <p>Total Solution for Digital Information</p>
                 </div>
                 <div class="footer-section">
-                    <ul>
-                        <h4>Kontak</h4>
-                        <p>Alamat : Kompleks Perkantoran Pejaten Raya #7-8 Jl. Pejaten Raya No.2 Jakarta Selatan 12510</p>
-                        <p>Telepon : 021 7986816; 7986405</p>
-                        <p>Fax : 021 7995539</p>
-                        <p>Email : marketing@waindo.co.id</p>
-                    </ul>
+                    <h4>Kontak</h4>
+                    <p>Alamat : Kompleks Perkantoran Pejaten Raya #7-8 Jl. Pejaten Raya No.2 Jakarta Selatan 12510</p>
+                    <p>Telepon : 021 7986816; 7986405</p>
+                    <p>Fax : 021 7995539</p>
+                    <p>Email : marketing@waindo.co.id</p>
                 </div>
                 <div class="footer-section">
                     <h4>Social</h4>
@@ -59,9 +55,8 @@ session_start();
         </div>
     </footer>
 
-    <script src="js/common.js"></script>
     <script>
-        const data = {
+         const data = {
     pemerintahan: [
         { nama: "Kementrian ATR/BPN", gambar: "assets/atr.png" },
         { nama: "BIG", gambar: "assets/BIG.png" },
@@ -96,35 +91,67 @@ session_start();
     ]
 };
 
-function showCategory(kategori) {
-    const container = document.getElementById('card-container');
+        let currentCategory = '';
 
-    // Animasi keluar
-    const currentCards = container.querySelectorAll('.card');
-    currentCards.forEach(card => {
-        card.classList.add('fade-out');
-    });
+        function setActiveButton(category) {
+            // Remove active class from all buttons
+            document.querySelectorAll('button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Add active class to current button
+            document.getElementById(`btn-${category}`).classList.add('active');
+        }
 
-    setTimeout(() => {
-        container.innerHTML = '';
-        
-        data[kategori].forEach(item => {
-            const card = document.createElement('div');
-            card.classList.add('card');
+        function updateCategoryTitle(category) {
+            const titleElement = document.getElementById('category-title');
+            const titles = {
+                'pemerintahan': 'Mitra Pemerintahan',
+                'non': 'Mitra Non-Pemerintahan'
+            };
+            titleElement.textContent = titles[category] || '';
+        }
 
-            card.innerHTML = `
-                <img src="${item.gambar}" alt="${item.nama}">
-                <h3>${item.nama}</h3>
-            `;
+        function showCategory(kategori) {
+            if (currentCategory === kategori) return;
+            
+            currentCategory = kategori;
+            setActiveButton(kategori);
+            updateCategoryTitle(kategori);
+            
+            const container = document.getElementById('card-container');
 
-            container.appendChild(card);
+            // Animasi keluar untuk kartu yang ada
+            const currentCards = container.querySelectorAll('.card');
+            currentCards.forEach((card, index) => {
+                setTimeout(() => {
+                    card.classList.add('fade-out');
+                }, index * 50);
+            });
+
+            setTimeout(() => {
+                container.innerHTML = '';
+                
+                data[kategori].forEach((item, index) => {
+                    const card = document.createElement('div');
+                    card.classList.add('card');
+                    card.style.animationDelay = `${index * 0.1}s`;
+
+                    card.innerHTML = `
+                        <img src="${item.gambar}" alt="${item.nama}" onerror="this.src='https://via.placeholder.com/180x120/95a5a6/white?text=NO+IMAGE'">
+                        <h3>${item.nama}</h3>
+                    `;
+
+                    container.appendChild(card);
+                });
+            }, 300); 
+        }
+
+        // Tampilkan default kategori saat halaman dimuat
+        window.addEventListener('DOMContentLoaded', function() {
+            showCategory('pemerintahan');
         });
-    }, 500); 
-}
-
-// Tampilkan default kategori
-showCategory('pemerintahan');
     </script>
+    <script src="js/common.js"></script>
 </body>
-
 </html>
