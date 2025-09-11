@@ -218,14 +218,6 @@
 
 /* Responsive */
 @media (max-width: 768px) {
-  .nav-menu {
-    display: none;
-  }
-
-  .hamburger {
-    display: flex;
-  }
-
   .hero-section h1 {
     font-size: 2rem;
   }

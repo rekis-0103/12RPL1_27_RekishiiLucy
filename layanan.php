@@ -204,13 +204,15 @@ session_start();
     </footer>
 
     <script src="js/common.js"></script>
-    <script>
+   <script>
         // Tab functionality
         const tabButtons = document.querySelectorAll('.tab-button');
         const tabContents = document.querySelectorAll('.tab-content');
 
         tabButtons.forEach(button => {
-            button.addEventListener('click', () => {
+            button.addEventListener('click', function(e) {
+                e.stopPropagation();
+                
                 // Remove active class from all buttons and contents
                 tabButtons.forEach(btn => btn.classList.remove('active'));
                 tabContents.forEach(content => content.classList.remove('active'));
@@ -220,35 +222,13 @@ session_start();
 
                 // Show corresponding content
                 const tabId = button.getAttribute('data-tab');
-                document.getElementById(tabId).classList.add('active');
-            });
-        });
-
-        // Smooth scrolling for anchor links
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function(e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({
-                        behavior: 'smooth'
-                    });
+                const targetContent = document.getElementById(tabId);
+                if (targetContent) {
+                    targetContent.classList.add('active');
                 }
             });
         });
-
-        // Add scroll effect to navbar
-        window.addEventListener('scroll', () => {
-            const navbar = document.querySelector('.navbar');
-            if (window.scrollY > 100) {
-                navbar.style.background = 'rgba(255, 255, 255, 0.95)';
-                navbar.style.backdropFilter = 'blur(10px)';
-            } else {
-                navbar.style.background = '#fff';
-                navbar.style.backdropFilter = 'none';
-            }
-        });
-    </script>
+</script>
 </body>
 
 </html>
