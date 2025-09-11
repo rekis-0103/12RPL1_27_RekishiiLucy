@@ -149,7 +149,7 @@ $konten_terbaru = mysqli_query($conn, "SELECT * FROM `log_aktivitas` WHERE actio
             }
         }
 
-        // Close sidebar when clicking outside on mobile
+        // Tutup sidebar kalau klik di luar
         document.addEventListener('click', function(event) {
             const sidebar = document.getElementById('sidebar');
             const mobileToggle = document.querySelector('.mobile-toggle');
@@ -157,6 +157,7 @@ $konten_terbaru = mysqli_query($conn, "SELECT * FROM `log_aktivitas` WHERE actio
             if (window.innerWidth <= 768) {
                 if (!sidebar.contains(event.target) && !mobileToggle.contains(event.target)) {
                     sidebar.classList.remove('active');
+                    mobileToggle.style.display = "block"; // tampilkan kembali tombol
                 }
             }
         });
