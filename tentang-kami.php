@@ -57,9 +57,13 @@ session_start();
             <div id="teamModal" class="modal">
                 <div class="modal-content">
                     <span class="close">&times;</span>
-                    <h3 id="modalName"></h3>
-                    <p id="modalRole"></p>
-                    <p id="modalDescription"></p>
+                    <div class="modal-header">
+                        <h3 id="modalName"></h3>
+                        <p id="modalRole" class="modal-role"></p>
+                    </div>
+                    <div class="modal-body">
+                        <p id="modalDescription"></p>
+                    </div>
                 </div>
             </div>
             <div class="container">
@@ -78,15 +82,13 @@ session_start();
                         <p>Fotogrametri Specialist</p>
                     </div>
                     <div class="team-member"
-                        data-description="Pria yang akrab disapa Hanny ini Lahir di Jeddah, pada tanggal 25 Mei 1980. Ia meraih gelar sarjana Fakultas Teknik Informatika di Universitas Bina Nusantara tahun 2003.
-Karena banyak mengikuti berbagai kegiatan dan keahliannya tentang IT dan pengetahuan tentang banyak software dan dipercaya menjadi Team Leader dan menjabat sebagai Manager menjadikan PT Waindo SpecTerra dapat di percaya membangun aplikasi di pemerintahan dan menjadikannya sebagai Software Development Spesialist.">
+                        data-description="Pria yang akrab disapa Hanny ini Lahir di Jeddah, pada tanggal 25 Mei 1980. Ia meraih gelar sarjana Fakultas Teknik Informatika di Universitas Bina Nusantara tahun 2003. Karena banyak mengikuti berbagai kegiatan dan keahliannya tentang IT dan pengetahuan tentang banyak software dan dipercaya menjadi Team Leader dan menjabat sebagai Manager menjadikan PT Waindo SpecTerra dapat di percaya membangun aplikasi di pemerintahan dan menjadikannya sebagai Software Development Spesialist.">
                         <img src="assets/hanny.jpeg" alt="Mahfuz Djamaluddin">
                         <h3>Mahfuz Djamaluddin</h3>
                         <p>Software Development Specialist</p>
                     </div>
                     <div class="team-member"
-                        data-description="Faik terlahir di Kebumen tanggal 6 Agustus 1973, Meraih gelar Sarjana di fakultas Geografi Universitas Gadjah Mada tahun 1999.
-Pengalamannya sebagai GIS Product Spesialist menjadikannya sangat mengenal kondisi perkembangan software dan mempertahankan waindo sebagai patner ESRI.">
+                        data-description="Faik terlahir di Kebumen tanggal 6 Agustus 1973, Meraih gelar Sarjana di fakultas Geografi Universitas Gadjah Mada tahun 1999. Pengalamannya sebagai GIS Product Spesialist menjadikannya sangat mengenal kondisi perkembangan software dan mempertahankan waindo sebagai patner ESRI.">
                         <img src="assets/faik.jpeg" alt="Faik Sofyan">
                         <h3>Faik Sofyan</h3>
                         <p>GIS Product Specialist</p>
@@ -98,15 +100,13 @@ Pengalamannya sebagai GIS Product Spesialist menjadikannya sangat mengenal kondi
                         <p>GIS Specialist</p>
                     </div>
                     <div class="team-member"
-                        data-description="Luwin kelahiran Bekasi tanggal 5 April 1978, selama menempuh pendidikan sarjana Fakultas Kehutanan di IPB tahun 2003 dan keahliannya sebagai team leader di berbagai.
-Pekerjaan tematik membuat sebutan thematic spesialist cocok untuk gambaran karirnya dan pernah mempunyai karya buku yaitu Pemetaan Karakteristik Perairan Dangkal Teluk Tomini. Jakarta. 2013 dan Evaluasi Jaringan Jalan di Hutan Pendidikan Gunung Walat. Bogor. 2003 .">
+                        data-description="Luwin kelahiran Bekasi tanggal 5 April 1978, selama menempuh pendidikan sarjana Fakultas Kehutanan di IPB tahun 2003 dan keahliannya sebagai team leader di berbagai. Pekerjaan tematik membuat sebutan thematic spesialist cocok untuk gambaran karirnya dan pernah mempunyai karya buku yaitu Pemetaan Karakteristik Perairan Dangkal Teluk Tomini. Jakarta. 2013 dan Evaluasi Jaringan Jalan di Hutan Pendidikan Gunung Walat. Bogor. 2003 .">
                         <img src="assets/luwin.jpeg" alt="Luwin Eska Darwini">
                         <h3>Luwin Eska Darwini</h3>
                         <p>Thematic Specialist</p>
                     </div>
                     <div class="team-member"
-                        data-description="Rian dilahirkan di Samarinda tanggal 15 Juni 1987 dan menempuh pendidikan Sarjana Teknik Geodesi di Universitas Gadjah Mada tahun 2009.
-Keahliannya dalam bidang survey dan pekerjaan Lidar sudah banyak yang dapat selesaikan dengan baik dan membuat karirnya di posisikan sebagai manager fotogrametri di waindo dan banyak yang menyebutnya sebagaiu Fotogrametri Spesialist.">
+                        data-description="Rian dilahirkan di Samarinda tanggal 15 Juni 1987 dan menempuh pendidikan Sarjana Teknik Geodesi di Universitas Gadjah Mada tahun 2009. Keahliannya dalam bidang survey dan pekerjaan Lidar sudah banyak yang dapat selesaikan dengan baik dan membuat karirnya di posisikan sebagai manager fotogrametri di waindo dan banyak yang menyebutnya sebagaiu Fotogrametri Spesialist.">
                         <img src="assets/rian.jpeg" alt="Perdana Rian Juniarta">
                         <h3>Perdana Rian Juniarta</h3>
                         <p>Fotogrametri Specialist</p>
