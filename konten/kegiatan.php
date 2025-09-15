@@ -129,6 +129,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
 ?>
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -139,11 +140,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
     <link rel="stylesheet" href="css/dashboard.css">
     <link rel="stylesheet" href="css/berita.css">
     <style>
-        .tabs { display:flex; gap:8px; margin:10px 0; flex-wrap: wrap; }
-        .tabs a { padding:8px 12px; border:1px solid #ddd; border-radius:6px; text-decoration:none; }
-        .tabs a.active { background:#007bff; color:#fff; border-color:#007bff; }
+        .tabs {
+            display: flex;
+            gap: 8px;
+            margin: 10px 0;
+            flex-wrap: wrap;
+        }
+
+        .tabs a {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            text-decoration: none;
+        }
+
+        .tabs a.active {
+            background: #007bff;
+            color: #fff;
+            border-color: #007bff;
+        }
     </style>
-    </head>
+</head>
+
 <body>
     <button class="mobile-toggle" onclick="toggleSidebar()">
         <i class="fas fa-bars"></i>
@@ -208,38 +226,44 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                         <tbody>
                             <?php $kg = mysqli_query($conn, "SELECT * FROM kegiatan ORDER BY created_at DESC"); ?>
                             <?php if ($kg && mysqli_num_rows($kg) > 0): while ($row = mysqli_fetch_assoc($kg)): ?>
+                                    <tr>
+                                        <td><?php echo htmlspecialchars($row['judul']); ?></td>
+                                        <td><?php echo htmlspecialchars($row['deskripsi']); ?></td>
+                                        <td>
+                                            <?php
+                                            $fotos = mysqli_query($conn, "SELECT * FROM kegiatan_foto WHERE kegiatan_id=" . (int)$row['kegiatan_id']);
+                                            if ($fotos && mysqli_num_rows($fotos) > 0):
+                                                while ($foto = mysqli_fetch_assoc($fotos)): ?>
+                                                    <div class="photo-item">
+                                                        <img src="../<?php echo htmlspecialchars($foto['foto']); ?>" alt="Foto Kegiatan" style="height:40px; margin:2px;">
+                                                        <form method="POST" class="inline" onsubmit="return confirm('Hapus foto ini?')">
+                                                            <input type="hidden" name="action" value="delete_kegiatan_foto">
+                                                            <input type="hidden" name="foto_id" value="<?php echo (int)$foto['foto_id']; ?>">
+                                                            <button type="submit" class="btn btn-danger btn-xs"><i class="fas fa-times"></i></button>
+                                                        </form>
+                                                    </div>
+                                            <?php endwhile;
+                                            else: echo "-";
+                                            endif; ?>
+                                        </td>
+                                        <td><?php echo htmlspecialchars($row['created_at']); ?></td>
+                                        <td>
+                                            <button type="button" class="btn btn-primary btn-sm"
+                                                onclick="showEditForm('kegiatan', <?php echo (int)$row['kegiatan_id']; ?>, '<?php echo htmlspecialchars(addslashes($row['judul'])); ?>', '<?php echo htmlspecialchars(addslashes($row['deskripsi'])); ?>')">
+                                                <i class="fas fa-edit"></i> Edit
+                                            </button>
+                                            <form method="POST" class="inline" onsubmit="return confirm('Hapus kegiatan ini?')">
+                                                <input type="hidden" name="action" value="delete_kegiatan">
+                                                <input type="hidden" name="id" value="<?php echo (int)$row['kegiatan_id']; ?>">
+                                                <button type="submit" class="btn btn-danger btn-sm"><i class="fas fa-trash"></i> Hapus</button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                <?php endwhile;
+                            else: ?>
                                 <tr>
-                                    <td><?php echo htmlspecialchars($row['judul']); ?></td>
-                                    <td><?php echo htmlspecialchars($row['deskripsi']); ?></td>
-                                    <td>
-                                        <?php
-                                        $fotos = mysqli_query($conn, "SELECT * FROM kegiatan_foto WHERE kegiatan_id=" . (int)$row['kegiatan_id']);
-                                        if ($fotos && mysqli_num_rows($fotos) > 0):
-                                            while ($foto = mysqli_fetch_assoc($fotos)): ?>
-                                                <div class="photo-item">
-                                                    <img src="../<?php echo htmlspecialchars($foto['foto']); ?>" alt="Foto Kegiatan" style="height:40px; margin:2px;">
-                                                    <form method="POST" class="inline" onsubmit="return confirm('Hapus foto ini?')">
-                                                        <input type="hidden" name="action" value="delete_kegiatan_foto">
-                                                        <input type="hidden" name="foto_id" value="<?php echo (int)$foto['foto_id']; ?>">
-                                                        <button type="submit" class="btn btn-danger btn-xs"><i class="fas fa-times"></i></button>
-                                                    </form>
-                                                </div>
-                                        <?php endwhile; else: echo "-"; endif; ?>
-                                    </td>
-                                    <td><?php echo htmlspecialchars($row['created_at']); ?></td>
-                                    <td>
-                                        <button type="button" class="btn btn-primary btn-sm" onclick="showEditForm(<?php echo (int)$row['kegiatan_id']; ?>, '<?php echo htmlspecialchars(addslashes($row['judul'])); ?>', '<?php echo htmlspecialchars(addslashes($row['deskripsi'])); ?>')">
-                                            <i class="fas fa-edit"></i> Edit
-                                        </button>
-                                        <form method="POST" class="inline" onsubmit="return confirm('Hapus kegiatan ini?')">
-                                            <input type="hidden" name="action" value="delete_kegiatan">
-                                            <input type="hidden" name="id" value="<?php echo (int)$row['kegiatan_id']; ?>">
-                                            <button type="submit" class="btn btn-danger btn-sm"><i class="fas fa-trash"></i> Hapus</button>
-                                        </form>
-                                    </td>
+                                    <td colspan="5" class="text-center">Belum ada kegiatan</td>
                                 </tr>
-                            <?php endwhile; else: ?>
-                                <tr><td colspan="5" class="text-center">Belum ada kegiatan</td></tr>
                             <?php endif; ?>
                         </tbody>
                     </table>
@@ -278,42 +302,152 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
 
     <script src="../js/navbar.js"></script>
     <script>
-        function toggleSidebar() {
-            const sidebar = document.getElementById('sidebar');
-            const toggleBtn = document.querySelector('.mobile-toggle');
-            sidebar.classList.toggle('active');
-            if (sidebar.classList.contains('active')) {
-                toggleBtn.style.display = "none";
-            } else {
-                toggleBtn.style.display = "block";
+    // Sidebar toggle
+    function toggleSidebar() {
+        const sidebar = document.getElementById('sidebar');
+        const toggleBtn = document.querySelector('.mobile-toggle');
+        sidebar.classList.toggle('active');
+        toggleBtn.style.display = sidebar.classList.contains('active') ? "none" : "block";
+    }
+
+    // Tutup sidebar kalau klik di luar
+    document.addEventListener('click', function (event) {
+        const sidebar = document.getElementById('sidebar');
+        const mobileToggle = document.querySelector('.mobile-toggle');
+        if (window.innerWidth <= 768) {
+            if (!sidebar.contains(event.target) && !mobileToggle.contains(event.target)) {
+                sidebar.classList.remove('active');
+                mobileToggle.style.display = "block";
             }
         }
+    });
 
-        const modal = document.getElementById('editModal');
-        const span = document.getElementsByClassName('close')[0];
+    // Modal Edit
+    const modal = document.getElementById('editModal');
+    const span = document.getElementsByClassName('close')[0];
 
-        function showEditForm(id, judul, deskripsi = '') {
+    function showEditForm(type, id, judul, deskripsi = '', url = '', tipe = '') {
+        if (!modal) return;
+
+        // Hide semua form
+        ['editKegiatanForm', 'editWebinarForm', 'editLiveForm', 'editGaleriForm'].forEach(fid => {
+            const f = document.getElementById(fid);
+            if (f) f.style.display = 'none';
+        });
+
+        // Tampilkan form sesuai type
+        if (type === 'kegiatan') {
+            document.getElementById('modalTitle').textContent = 'Edit Kegiatan';
             document.getElementById('editKegiatanForm').style.display = 'block';
             document.getElementById('editKegiatanId').value = id;
             document.getElementById('editKegiatanJudul').value = judul;
             document.getElementById('editKegiatanDeskripsi').value = deskripsi;
-            modal.style.display = 'block';
-            modal.style.opacity = '0';
-            setTimeout(() => { modal.style.opacity = '1'; }, 10);
-            document.body.style.overflow = 'hidden';
+        } else if (type === 'webinar') {
+            document.getElementById('modalTitle').textContent = 'Edit Webinar';
+            document.getElementById('editWebinarForm').style.display = 'block';
+            document.getElementById('editWebinarId').value = id;
+            document.getElementById('editWebinarJudul').value = judul;
+        } else if (type === 'live') {
+            document.getElementById('modalTitle').textContent = 'Edit Live Streaming';
+            document.getElementById('editLiveForm').style.display = 'block';
+            document.getElementById('editLiveId').value = id;
+            document.getElementById('editLiveJudul').value = judul;
+            document.getElementById('editLiveUrl').value = url;
+            document.getElementById('editLiveTipe').value = tipe;
+        } else if (type === 'galeri') {
+            document.getElementById('modalTitle').textContent = 'Edit Galeri';
+            document.getElementById('editGaleriForm').style.display = 'block';
+            document.getElementById('editGaleriId').value = id;
+            document.getElementById('editGaleriJudul').value = judul;
         }
-        function closeModal() {
-            modal.style.opacity = '0';
-            setTimeout(() => {
-                modal.style.display = 'none';
-                document.body.style.overflow = 'auto';
-            }, 300);
+
+        // Buka modal
+        modal.style.display = 'block';
+        modal.style.opacity = '0';
+        setTimeout(() => modal.style.opacity = '1', 10);
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeModal() {
+        if (!modal) return;
+        modal.style.opacity = '0';
+        setTimeout(() => {
+            modal.style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }, 300);
+    }
+
+    if (span) span.onclick = closeModal;
+    window.onclick = e => { if (e.target === modal) closeModal(); };
+    document.addEventListener('keydown', e => { if (e.key === 'Escape' && modal.style.display === 'block') closeModal(); });
+
+    // Modal Gambar
+    function openImageModal(imageSrc, imageAlt) {
+        let imageModal = document.getElementById('imageModal');
+        if (!imageModal) {
+            imageModal = document.createElement('div');
+            imageModal.id = 'imageModal';
+            imageModal.className = 'image-modal';
+            imageModal.innerHTML = `
+                <div class="image-modal-content">
+                    <span class="close">&times;</span>
+                    <div class="image-loading"></div>
+                    <img id="modalImage" alt="">
+                    <div class="image-info" id="imageInfo"></div>
+                </div>`;
+            document.body.appendChild(imageModal);
+
+            // event close
+            imageModal.addEventListener('click', e => {
+                if (e.target === imageModal || e.target.className === 'close') closeImageModal();
+            });
+            document.addEventListener('keydown', e => { if (e.key === 'Escape') closeImageModal(); });
         }
-        if (span) { span.onclick = closeModal; }
-        window.onclick = function(event) { if (event.target == modal) { closeModal(); } }
-        document.addEventListener('keydown', function(event) { if (event.key === 'Escape' && modal.style.display === 'block') { closeModal(); } });
-    </script>
+
+        const modalImg = document.getElementById('modalImage');
+        const imageInfo = document.getElementById('imageInfo');
+        const loading = imageModal.querySelector('.image-loading');
+
+        loading.style.display = 'block';
+        modalImg.style.display = 'none';
+        imageModal.style.display = 'block';
+        document.body.style.overflow = 'hidden';
+
+        modalImg.onload = () => {
+            loading.style.display = 'none';
+            modalImg.style.display = 'block';
+        };
+
+        modalImg.src = imageSrc;
+        modalImg.alt = imageAlt;
+        imageInfo.textContent = imageAlt || 'Gambar';
+    }
+
+    function closeImageModal() {
+        const imageModal = document.getElementById('imageModal');
+        if (imageModal) {
+            imageModal.style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+    }
+
+    // Tambahkan handler ke semua gambar
+    function addImageHandlers() {
+        const imgs = document.querySelectorAll('.photo-item img, table tbody tr td img[src*="uploads/webinar/"]');
+        imgs.forEach(img => {
+            if (!img.dataset.clickable) {
+                img.dataset.clickable = 'true';
+                img.addEventListener('click', e => {
+                    e.stopPropagation();
+                    openImageModal(img.src, img.alt || 'Gambar');
+                });
+            }
+        });
+    }
+
+    document.addEventListener('DOMContentLoaded', addImageHandlers);
+    function refreshImageHandlers() { addImageHandlers(); }
+</script>
 </body>
+
 </html>
-
-

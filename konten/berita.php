@@ -436,14 +436,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                 <p>Tambah dan kelola Kegiatan, Webinar, Live Streaming, dan Galeri Foto</p>
             </div>
 
-            <!-- Quick navigation to per-category pages (sidebar untouched) -->
-            <div class="action-form" style="display:flex; gap:8px; flex-wrap:wrap; align-items:center;">
-                <a href="kegiatan.php" class="btn btn-primary"><i class="fas fa-calendar"></i> Kelola Kegiatan</a>
-                <a href="webinar.php" class="btn btn-primary"><i class="fas fa-chalkboard-teacher"></i> Kelola Webinar</a>
-                <a href="live.php" class="btn btn-primary"><i class="fas fa-video"></i> Kelola Live</a>
-                <a href="galeri.php" class="btn btn-primary"><i class="fas fa-images"></i> Kelola Galeri</a>
-            </div>
-
             <?php if ($notice_error): ?>
                 <div class="alert alert-danger"><?php echo $notice_error; ?></div>
             <?php endif; ?>
@@ -454,7 +446,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
             <div class="card">
                 <div class="card-header">
                     <h3><i class="fas fa-calendar"></i> Kegiatan</h3>
-                </div>  
+                </div>
                 <div class="card-body">
                     <form method="POST" enctype="multipart/form-data" class="action-form">
                         <input type="hidden" name="action" value="add_kegiatan">

@@ -194,7 +194,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                                     <td><?php if (!empty($row['gambar'])): ?><img src="../<?php echo htmlspecialchars($row['gambar']); ?>" alt="Gambar Webinar" style="height:40px"><?php else: ?>-<?php endif; ?></td>
                                     <td><?php echo htmlspecialchars($row['created_at']); ?></td>
                                     <td>
-                                        <button type="button" class="btn btn-primary btn-sm" onclick="showEditForm(<?php echo (int)$row['webinar_id']; ?>, '<?php echo htmlspecialchars(addslashes($row['judul'])); ?>')">
+                                        <button type="button" class="btn btn-primary btn-sm" onclick="showEditForm('webinar', <?php echo (int)$row['webinar_id']; ?>, '<?php echo htmlspecialchars(addslashes($row['judul'])); ?>')">
                                             <i class="fas fa-edit"></i> Edit
                                         </button>
                                         <form method="POST" class="inline" onsubmit="return confirm('Hapus webinar ini?')">
@@ -243,29 +243,226 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
         function toggleSidebar() {
             const sidebar = document.getElementById('sidebar');
             const toggleBtn = document.querySelector('.mobile-toggle');
+
             sidebar.classList.toggle('active');
-            toggleBtn.style.display = sidebar.classList.contains('active') ? 'none' : 'block';
+
+            // Sembunyikan tombol ketika sidebar muncul
+            if (sidebar.classList.contains('active')) {
+                toggleBtn.style.display = "none";
+            } else {
+                toggleBtn.style.display = "block";
+            }
         }
+
+        // Tutup sidebar kalau klik di luar
+        document.addEventListener('click', function(event) {
+            const sidebar = document.getElementById('sidebar');
+            const mobileToggle = document.querySelector('.mobile-toggle');
+
+            if (window.innerWidth <= 768) {
+                if (!sidebar.contains(event.target) && !mobileToggle.contains(event.target)) {
+                    sidebar.classList.remove('active');
+                    mobileToggle.style.display = "block"; // tampilkan kembali tombol
+                }
+            }
+        });
+
+        // Modal functionality
         const modal = document.getElementById('editModal');
         const span = document.getElementsByClassName('close')[0];
-        function showEditForm(id, judul) {
-            document.getElementById('editWebinarId').value = id;
-            document.getElementById('editWebinarJudul').value = judul;
+
+        function showEditForm(type, id, judul, deskripsi = '', url = '', tipe = '') {
+            console.log('Opening modal for:', type, id, judul); // Debug log
+
+            // Ensure modal exists
+            if (!modal) {
+                console.error('Modal element not found!');
+                return;
+            }
+
+            // Hide all forms first
+            const forms = ['editKegiatanForm', 'editWebinarForm', 'editLiveForm', 'editGaleriForm'];
+            forms.forEach(formId => {
+                const form = document.getElementById(formId);
+                if (form) form.style.display = 'none';
+            });
+
+            // Show appropriate form and set values
+            if (type === 'kegiatan') {
+                document.getElementById('modalTitle').textContent = 'Edit Kegiatan';
+                document.getElementById('editKegiatanForm').style.display = 'block';
+                document.getElementById('editKegiatanId').value = id;
+                document.getElementById('editKegiatanJudul').value = judul;
+                document.getElementById('editKegiatanDeskripsi').value = deskripsi;
+            } else if (type === 'webinar') {
+                document.getElementById('modalTitle').textContent = 'Edit Webinar';
+                document.getElementById('editWebinarForm').style.display = 'block';
+                document.getElementById('editWebinarId').value = id;
+                document.getElementById('editWebinarJudul').value = judul;
+            } else if (type === 'live') {
+                document.getElementById('modalTitle').textContent = 'Edit Live Streaming';
+                document.getElementById('editLiveForm').style.display = 'block';
+                document.getElementById('editLiveId').value = id;
+                document.getElementById('editLiveJudul').value = judul;
+                document.getElementById('editLiveUrl').value = url;
+                document.getElementById('editLiveTipe').value = tipe;
+            } else if (type === 'galeri') {
+                document.getElementById('modalTitle').textContent = 'Edit Galeri';
+                document.getElementById('editGaleriForm').style.display = 'block';
+                document.getElementById('editGaleriId').value = id;
+                document.getElementById('editGaleriJudul').value = judul;
+            }
+
+            // Show modal with animation
             modal.style.display = 'block';
             modal.style.opacity = '0';
-            setTimeout(() => { modal.style.opacity = '1'; }, 10);
+            setTimeout(() => {
+                modal.style.opacity = '1';
+            }, 10);
+
+            // Prevent body scroll when modal is open
             document.body.style.overflow = 'hidden';
         }
+
         function closeModal() {
+            if (!modal) return;
+
             modal.style.opacity = '0';
             setTimeout(() => {
                 modal.style.display = 'none';
                 document.body.style.overflow = 'auto';
             }, 300);
         }
-        if (span) { span.onclick = closeModal; }
-        window.onclick = function(event) { if (event.target == modal) { closeModal(); } }
-        document.addEventListener('keydown', function(event) { if (event.key === 'Escape' && modal.style.display === 'block') { closeModal(); } });
+
+        // Close modal when clicking on X or outside modal
+        if (span) {
+            span.onclick = closeModal;
+        }
+
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                closeModal();
+            }
+        }
+
+        // Close modal with Escape key
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape' && modal.style.display === 'block') {
+                closeModal();
+            }
+        });
+
+        // Prevent modal close when clicking inside modal content
+        modal.addEventListener('click', function(event) {
+            event.stopPropagation();
+        });
+
+        function openImageModal(imageSrc, imageAlt) {
+            // Create modal if it doesn't exist
+            let imageModal = document.getElementById('imageModal');
+            if (!imageModal) {
+                imageModal = document.createElement('div');
+                imageModal.id = 'imageModal';
+                imageModal.className = 'image-modal';
+                imageModal.innerHTML = `
+                    <div class="image-modal-content">
+                        <span class="close">&times;</span>
+                        <div class="image-loading"></div>
+                        <img id="modalImage" alt="">
+                        <div class="image-info" id="imageInfo"></div>
+                    </div>
+                `;
+                document.body.appendChild(imageModal);
+
+                // Add event listeners
+                imageModal.addEventListener('click', function(e) {
+                    if (e.target === imageModal || e.target.className === 'close') {
+                        closeImageModal();
+                    }
+                });
+
+                document.addEventListener('keydown', function(e) {
+                    if (e.key === 'Escape' && imageModal.style.display === 'block') {
+                        closeImageModal();
+                    }
+                });
+            }
+
+            const modalImg = document.getElementById('modalImage');
+            const imageInfo = document.getElementById('imageInfo');
+            const loading = imageModal.querySelector('.image-loading');
+
+            // Show loading spinner
+            loading.style.display = 'block';
+            modalImg.style.display = 'none';
+            imageModal.style.display = 'block';
+            document.body.style.overflow = 'hidden';
+
+            // Load image
+            modalImg.onload = function() {
+                loading.style.display = 'none';
+                modalImg.style.display = 'block';
+            };
+
+            modalImg.src = imageSrc;
+            modalImg.alt = imageAlt;
+            imageInfo.textContent = imageAlt || 'Gambar';
+        }
+
+        function closeImageModal() {
+            const imageModal = document.getElementById('imageModal');
+            if (imageModal) {
+                imageModal.style.display = 'none';
+                document.body.style.overflow = 'auto';
+            }
+        }
+
+        // Fungsi untuk menambahkan event handler pada gambar webinar
+        function addWebinarImageHandlers() {
+            const webinarImages = document.querySelectorAll('table tbody tr td img[src*="uploads/webinar/"]');
+            webinarImages.forEach(function(img) {
+                if (!img.classList.contains('clickable-image')) {
+                    img.classList.add('clickable-image');
+                    img.addEventListener('click', function(e) {
+                        e.stopPropagation();
+                        openImageModal(this.src, this.alt || 'Gambar Webinar');
+                    });
+                }
+            });
+        }
+
+        // Panggil fungsi setelah DOM selesai dimuat
+        document.addEventListener('DOMContentLoaded', function() {
+            addWebinarImageHandlers();
+
+            // Juga panggil untuk gambar lainnya jika diperlukan
+            const images = document.querySelectorAll('.photo-item img');
+            images.forEach(function(img) {
+                if (!img.dataset.clickable) {
+                    img.dataset.clickable = 'true';
+                    img.addEventListener('click', function(e) {
+                        e.stopPropagation();
+                        openImageModal(this.src, this.alt || 'Gambar');
+                    });
+                }
+            });
+        });
+
+        // Panggil ulang setelah ada perubahan AJAX/dynamic content
+        function refreshImageHandlers() {
+            addWebinarImageHandlers();
+
+            const images = document.querySelectorAll('.photo-item img');
+            images.forEach(function(img) {
+                if (!img.dataset.clickable) {
+                    img.dataset.clickable = 'true';
+                    img.addEventListener('click', function(e) {
+                        e.stopPropagation();
+                        openImageModal(this.src, this.alt || 'Gambar');
+                    });
+                }
+            });
+        }
     </script>
 </body>
 </html>
