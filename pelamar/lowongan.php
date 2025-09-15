@@ -26,55 +26,19 @@ function logActivity($conn, $actor_user_id, $action)
     mysqli_query($conn, "INSERT INTO log_aktivitas (user_id, action) VALUES ($actor_user_id, '$action')");
 }
 
-// Handle apply (only for open jobs)
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'apply') {
-    $job_id = (int)$_POST['job_id'];
+// Get filter parameter
+$status_filter = isset($_GET['status']) ? $_GET['status'] : 'all';
 
-    // Check if job is still open
-    $checkJob = mysqli_query($conn, "SELECT status FROM lowongan WHERE job_id = $job_id");
-    $jobData = mysqli_fetch_assoc($checkJob);
-    
-    if ($jobData['status'] !== 'open') {
-        $error = 'Lowongan sudah ditutup, tidak dapat mengirim lamaran.';
-        logActivity($conn, $user_id, 'Gagal kirim lamaran (lowongan sudah ditutup)');
-    } else {
-        // Ensure cv upload dir
-        $uploadDir = __DIR__ . '/../uploads/cv/';
-        if (!is_dir($uploadDir)) {
-            @mkdir($uploadDir, 0775, true);
-        }
-
-        if (!isset($_FILES['cv']) || $_FILES['cv']['error'] !== UPLOAD_ERR_OK) {
-            $error = 'Unggah CV gagal. Pastikan file dipilih.';
-            logActivity($conn, $user_id, 'Gagal kirim lamaran (CV tidak valid)');
-        } else {
-            $ext = pathinfo($_FILES['cv']['name'], PATHINFO_EXTENSION);
-            $safeName = 'cv_' . $user_id . '_' . $job_id . '_' . time() . '.' . strtolower($ext);
-            $targetPath = $uploadDir . $safeName;
-            $relPath = 'uploads/cv/' . $safeName;
-            $allowed = ['pdf', 'doc', 'docx'];
-            if (!in_array(strtolower($ext), $allowed)) {
-                $error = 'Format CV harus PDF/DOC/DOCX';
-                logActivity($conn, $user_id, 'Gagal kirim lamaran (format CV salah)');
-            } elseif (move_uploaded_file($_FILES['cv']['tmp_name'], $targetPath)) {
-                $q = "INSERT INTO applications (job_id, user_id, cv, status, applied_at) VALUES ($job_id, $user_id, '" . esc($conn, $relPath) . "', 'pendaftaran diterima', NOW())";
-                if (mysqli_query($conn, $q)) {
-                    $success = 'Lamaran berhasil dikirim';
-                    logActivity($conn, $user_id, "Kirim lamaran (job #$job_id)");
-                } else {
-                    $error = 'Gagal mengirim lamaran';
-                    logActivity($conn, $user_id, 'Gagal kirim lamaran (database error)');
-                }
-            } else {
-                $error = 'Gagal menyimpan file CV';
-                logActivity($conn, $user_id, 'Gagal kirim lamaran (simpan CV gagal)');
-            }
-        }
-    }
+// Build query based on filter
+$whereClause = "WHERE hapus=0";
+if ($status_filter === 'open') {
+    $whereClause .= " AND status='open'";
+} elseif ($status_filter === 'closed') {
+    $whereClause .= " AND status='closed'";
 }
 
-// List all jobs (both open and closed) that are not deleted
-$list = mysqli_query($conn, "SELECT * FROM lowongan WHERE hapus=0 ORDER BY status ASC, posted_at DESC");
+// List jobs based on filter
+$list = mysqli_query($conn, "SELECT * FROM lowongan $whereClause ORDER BY status ASC, posted_at DESC");
 ?>
 <!DOCTYPE html>
 <html lang="id">
@@ -118,18 +82,23 @@ $list = mysqli_query($conn, "SELECT * FROM lowongan WHERE hapus=0 ORDER BY statu
                 <p>Daftar lowongan yang tersedia</p>
             </div>
 
-            <?php if (isset($error)): ?>
-                <div class="alert alert-danger"><?php echo $error; ?></div>
-            <?php endif; ?>
-            <?php if (isset($success)): ?>
-                <div class="alert alert-success"><?php echo $success; ?></div>
-            <?php endif; ?>
-
             <div class="card">
                 <div class="card-header">
                     <h3><i class="fas fa-briefcase"></i> Daftar Lowongan</h3>
                 </div>
                 <div class="card-body">
+                    <!-- Filter Section -->
+                    <div class="filter-section">
+                        <div class="filter-group">
+                            <label for="status-filter"><i class="fas fa-filter"></i> Filter Status:</label>
+                            <select id="status-filter" onchange="filterJobs(this.value)">
+                                <option value="all" <?php echo $status_filter === 'all' ? 'selected' : ''; ?>>Semua Status</option>
+                                <option value="open" <?php echo $status_filter === 'open' ? 'selected' : ''; ?>>Aktif</option>
+                                <option value="closed" <?php echo $status_filter === 'closed' ? 'selected' : ''; ?>>Ditutup</option>
+                            </select>
+                        </div>
+                    </div>
+
                     <?php if ($list && mysqli_num_rows($list) > 0): ?>
                         <?php while ($row = mysqli_fetch_assoc($list)): ?>
                             <div class="job-item <?php echo $row['status'] === 'closed' ? 'job-closed' : ''; ?>">
@@ -152,37 +121,33 @@ $list = mysqli_query($conn, "SELECT * FROM lowongan WHERE hapus=0 ORDER BY statu
                                     Gaji: <?php echo htmlspecialchars($row['salary_range'] ?: '-'); ?> |
                                     Diposting: <?php echo date('d M Y', strtotime($row['posted_at'])); ?>
                                 </div>
-                                <div class="job-desc"><?php echo nl2br(htmlspecialchars($row['description'])); ?></div>
+                                <div class="job-desc-preview">
+                                    <?php 
+                                    $description = strip_tags($row['description']);
+                                    echo htmlspecialchars(strlen($description) > 200 ? substr($description, 0, 200) . '...' : $description); 
+                                    ?>
+                                </div>
                                 
-                                <?php if ($row['status'] === 'open'): ?>
-                                    <form method="POST" enctype="multipart/form-data" class="apply-form">
-                                        <input type="hidden" name="action" value="apply">
-                                        <input type="hidden" name="job_id" value="<?php echo (int)$row['job_id']; ?>">
-                                        <div class="form-inline">
-                                            <label>CV (PDF/DOC/DOCX): </label>
-                                            <input type="file" name="cv" accept=".pdf,.doc,.docx" required>
-                                            <button type="submit" class="btn btn-primary btn-sm">Kirim Lamaran</button>
-                                        </div>
-                                    </form>
-                                <?php else: ?>
-                                    <div class="apply-form apply-form-disabled">
-                                        <div class="form-inline">
-                                            <label class="disabled">CV (PDF/DOC/DOCX): </label>
-                                            <input type="file" disabled class="disabled">
-                                            <button type="button" class="btn btn-disabled btn-sm" disabled>
-                                                <i class="fas fa-lock"></i> Lowongan Ditutup
-                                            </button>
-                                        </div>
-                                        <p class="closure-notice">
-                                            <i class="fas fa-info-circle"></i> 
-                                            Lowongan ini sudah ditutup dan tidak menerima lamaran baru.
-                                        </p>
-                                    </div>
-                                <?php endif; ?>
+                                <div class="job-actions">
+                                    <a href="detail-lowongan.php?id=<?php echo $row['job_id']; ?>" class="btn btn-info btn-sm">
+                                        <i class="fas fa-eye"></i> Lihat Detail
+                                    </a>
+                                </div>
                             </div>
                         <?php endwhile; ?>
                     <?php else: ?>
-                        <p class="text-muted">Belum ada lowongan tersedia.</p>
+                        <div class="no-jobs">
+                            <i class="fas fa-briefcase"></i>
+                            <p>
+                                <?php if ($status_filter === 'open'): ?>
+                                    Belum ada lowongan aktif tersedia.
+                                <?php elseif ($status_filter === 'closed'): ?>
+                                    Belum ada lowongan yang ditutup.
+                                <?php else: ?>
+                                    Belum ada lowongan tersedia.
+                                <?php endif; ?>
+                            </p>
+                        </div>
                     <?php endif; ?>
                 </div>
             </div>
@@ -194,6 +159,17 @@ $list = mysqli_query($conn, "SELECT * FROM lowongan WHERE hapus=0 ORDER BY statu
         function toggleSidebar() {
             document.getElementById('sidebar').classList.toggle('active');
         }
+        
+        function filterJobs(status) {
+            const currentUrl = new URL(window.location);
+            if (status === 'all') {
+                currentUrl.searchParams.delete('status');
+            } else {
+                currentUrl.searchParams.set('status', status);
+            }
+            window.location.href = currentUrl.toString();
+        }
+        
         document.addEventListener('click', function(event) {
             const sidebar = document.getElementById('sidebar');
             const mobileToggle = document.querySelector('.mobile-toggle');
