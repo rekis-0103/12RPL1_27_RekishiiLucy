@@ -90,7 +90,7 @@ require_once 'connect/koneksi.php';
     <div class="page-container">
         <main class="page-content">
             <div class="container">
-                <h1>Bergabung</h1>
+                <h1>Lowongan Kerja</h1>
                 <p>Temukan lowongan yang sesuai dan kirimkan lamaran Anda.</p>
 
                 <?php if (isset($error)): ?>
@@ -102,7 +102,7 @@ require_once 'connect/koneksi.php';
 
                 <div class="card">
                     <div class="card-header">
-                        <h3><i class="fas fa-briefcase"></i> Daftar Lowongan</h3>
+                        <h3><i class="fas fa-briefcase"></i> Daftar Lowongan Yang Tersedia</h3>
                     </div>
                     <div class="card-body">
                         <?php if ($jobs && mysqli_num_rows($jobs) > 0): ?>

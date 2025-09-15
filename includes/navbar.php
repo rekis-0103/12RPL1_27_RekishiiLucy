@@ -19,7 +19,7 @@ if (session_status() === PHP_SESSION_NONE) {
             <li><a href="mitra-kerja.php" <?php echo (basename($_SERVER['PHP_SELF']) == 'mitra-kerja.php') ? 'class="active"' : ''; ?>>Mitra Kerja</a></li>
             <li><a href="berita.php" <?php echo (basename($_SERVER['PHP_SELF']) == 'berita.php') ? 'class="active"' : ''; ?>>Berita</a></li>
             <li><a href="hubungi-kami.php" <?php echo (basename($_SERVER['PHP_SELF']) == 'hubungi-kami.php') ? 'class="active"' : ''; ?>>Hubungi Kami</a></li>
-            <li><a href="bergabung.php" <?php echo (basename($_SERVER['PHP_SELF']) == 'bergabung.php') ? 'class="active"' : ''; ?>>Bergabung</a></li>
+            <li><a href="bergabung.php" <?php echo (basename($_SERVER['PHP_SELF']) == 'bergabung.php') ? 'class="active"' : ''; ?>>Lowongan Kerja</a></li>
             <li><a href="https://docs.google.com/forms/d/e/1FAIpQLSfvFEpx0w4Ypo9YcRmKH5IX3SI7kgk8DJGbKjUUuOAoC17IZQ/viewform" target="_blank">Download</a></li>
             
             <!-- Auth for Mobile (hidden in desktop, shown in mobile menu) -->

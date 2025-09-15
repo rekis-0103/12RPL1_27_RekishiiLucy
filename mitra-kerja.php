@@ -22,7 +22,7 @@ session_start();
 
             <div class="buttons">
                 <button id="btn-pemerintahan" onclick="showCategory('pemerintahan')">Pemerintahan</button>
-                <button id="btn-non" onclick="showCategory('non')">Non Pemerintahan</button>
+                <button id="btn-non" onclick="showCategory('non')">BUMN/Lembaga Non-Departemen</button>
             </div>
 
             <div id="category-title" class="category-title"></div>
@@ -59,19 +59,15 @@ session_start();
          const data = {
     pemerintahan: [
         { nama: "Kementrian ATR/BPN", gambar: "assets/atr.png" },
-        { nama: "BIG", gambar: "assets/BIG.png" },
-        { nama: "BMKG", gambar: "assets/BMKG.png" },
-        { nama: "KLHK", gambar: "assets/klhk.png" },
+        { nama: "KLH", gambar: "assets/klhk.png" },
         { nama: "Kementrian Kesehatan", gambar: "assets/kemenkes.png" },
         { nama: "PU", gambar: "assets/PU.png" },
         { nama: "Kementrian Pertanian", gambar: "assets/Kementerian-Pertanian.png" },
         { nama: "Kementrian Perhubungan", gambar: "assets/kemenhub.png" },
         { nama: "Dept. Tenaga kerja dan transmigrasi", gambar: "assets/Depnakertrans.png" },
-        { nama: "Perhutani", gambar: "assets/perhutani.png" },
-        { nama: "LAPAN", gambar: "assets/lapan.png" },
         { nama: "Badan Restorasi Gambut", gambar: "assets/brg.jpeg" },
-        { nama: "BNPB", gambar: "assets/BNPB.png" },
-        { nama: "KEMENDIKBUD", gambar: "assets/Kemdikbud.jpg" }
+        { nama: "KEMENDIKBUD", gambar: "assets/Kemdikbud.jpg" },
+        { nama: "Kementrian Kehutanan", gambar: "assets/kementrian-kehutanan.png"}
     ],
     non: [
         { nama: "Chevron", gambar: "assets/chevron.jpg" },
@@ -87,7 +83,13 @@ session_start();
         { nama: "KPK", gambar: "assets/KPK.png" },
         { nama: "Indra Karya", gambar: "assets/indrakarya.jpeg" },
         { nama: "GIZ", gambar: "assets/giz.jpeg" },
-        { nama: "UNESCO", gambar: "assets/unesco.jpeg" }
+        { nama: "UNESCO", gambar: "assets/unesco.jpeg" },
+        { nama: "BIG", gambar: "assets/BIG.png" },
+        { nama: "BMKG", gambar: "assets/BMKG.png" },
+        { nama: "LAPAN", gambar: "assets/lapan.png" },
+        { nama: "Perhutani", gambar: "assets/perhutani.png" },
+        { nama: "BNPB", gambar: "assets/BNPB.png" },
+        { nama: "BRIN", gambar: "assets/brin.png"}
     ]
 };
 
@@ -107,7 +109,7 @@ session_start();
             const titleElement = document.getElementById('category-title');
             const titles = {
                 'pemerintahan': 'Mitra Pemerintahan',
-                'non': 'Mitra Non-Pemerintahan'
+                'non': 'Mitra BUMN/Non-Departemen'
             };
             titleElement.textContent = titles[category] || '';
         }
