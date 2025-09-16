@@ -1,15 +1,13 @@
-// Mobile menu toggle functionality
 document.addEventListener('DOMContentLoaded', function() {
     const hamburger = document.getElementById('hamburger');
     const navMenu = document.getElementById('navMenu');
     
-    // Toggle mobile menu
+    // === Mobile menu toggle ===
     if (hamburger && navMenu) {
         hamburger.addEventListener('click', function() {
             hamburger.classList.toggle('active');
             navMenu.classList.toggle('active');
             
-            // Prevent body scroll when menu is open
             if (navMenu.classList.contains('active')) {
                 document.body.style.overflow = 'hidden';
             } else {
@@ -18,7 +16,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Close mobile menu when clicking on navigation links
+    // === Close menu on nav link click (mobile) ===
     const navLinks = document.querySelectorAll('.nav-menu a:not(.user-dropdown-btn)');
     navLinks.forEach(link => {
         link.addEventListener('click', function() {
@@ -30,7 +28,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // Handle window resize
+    // === Reset menu on resize ===
     window.addEventListener('resize', function() {
         if (window.innerWidth > 768) {
             hamburger.classList.remove('active');
@@ -39,13 +37,39 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // Close dropdown when clicking outside
+    // === Dropdown toggle (desktop + mobile) ===
+    const userDropdownBtns = document.querySelectorAll('.user-dropdown-btn');
+    userDropdownBtns.forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            const dropdown = btn.closest('.user-dropdown');
+            const content = dropdown.querySelector('.user-dropdown-content');
+            
+            // tutup semua dropdown lain dulu
+            document.querySelectorAll('.user-dropdown-content').forEach(d => {
+                if (d !== content) {
+                    d.style.display = 'none';
+                    d.closest('.user-dropdown').classList.remove('active');
+                }
+            });
+
+            // toggle dropdown ini
+            if (content.style.display === 'block') {
+                content.style.display = 'none';
+                dropdown.classList.remove('active');
+            } else {
+                content.style.display = 'block';
+                dropdown.classList.add('active');
+            }
+        });
+    });
+
+    // === Klik luar nutup dropdown ===
     document.addEventListener('click', function(event) {
-        const dropdowns = document.querySelectorAll('.user-dropdown-content');
         const isClickInsideDropdown = event.target.closest('.user-dropdown');
         
         if (!isClickInsideDropdown) {
-            dropdowns.forEach(dropdown => {
+            document.querySelectorAll('.user-dropdown-content').forEach(dropdown => {
                 dropdown.style.display = 'none';
                 if (dropdown.closest('.user-dropdown')) {
                     dropdown.closest('.user-dropdown').classList.remove('active');
@@ -54,25 +78,10 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // Prevent dropdown from closing when clicking inside it
-    const userDropdowns = document.querySelectorAll('.user-dropdown-content');
-    userDropdowns.forEach(dropdown => {
+    // === Prevent close if click inside dropdown ===
+    document.querySelectorAll('.user-dropdown-content').forEach(dropdown => {
         dropdown.addEventListener('click', function(event) {
             event.stopPropagation();
         });
     });
 });
-
-// Mobile user dropdown toggle function
-function toggleMobileUserDropdown() {
-    const mobileDropdown = document.querySelector('.nav-auth-mobile .user-dropdown');
-    const dropdownContent = mobileDropdown.querySelector('.user-dropdown-content');
-    
-    if (dropdownContent.style.display === 'block') {
-        dropdownContent.style.display = 'none';
-        mobileDropdown.classList.remove('active');
-    } else {
-        dropdownContent.style.display = 'block';
-        mobileDropdown.classList.add('active');
-    }
-}

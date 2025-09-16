@@ -191,13 +191,6 @@ body {
     border-radius: 2px;
 }
 
-/* Hover dropdown desktop */
-@media (min-width: 769px) {
-    .user-dropdown:hover .user-dropdown-content {
-        display: block;
-    }
-}
-
 /* Responsive Breakpoints */
 @media (max-width: 1200px) {
     .nav-menu {
