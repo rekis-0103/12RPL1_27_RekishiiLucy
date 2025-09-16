@@ -83,7 +83,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
 }
 
 // Fetch jobs
-$list = mysqli_query($conn, "SELECT l.*, u.full_name AS poster FROM lowongan l LEFT JOIN users u ON l.posted_by = u.user_id WHERE l.hapus = 0 ORDER BY l.posted_at DESC");
+$list = mysqli_query($conn, "SELECT l.*, u.full_name AS poster 
+    FROM lowongan l 
+    LEFT JOIN users u ON l.posted_by = u.user_id 
+    WHERE l.hapus = 0 AND l.posted_by = $user_id 
+    ORDER BY l.posted_at DESC");
 ?>
 <!DOCTYPE html>
 <html lang="id">
@@ -222,7 +226,7 @@ $list = mysqli_query($conn, "SELECT l.*, u.full_name AS poster FROM lowongan l L
                                 <?php endwhile; ?>
                             <?php else: ?>
                                 <tr>
-                                    <td colspan="7" class="text-center">Belum ada lowongan</td>
+                                    <td colspan="7" class="text-center">Anda Belum Membuat Lowongan</td>
                                 </tr>
                             <?php endif; ?>
                         </tbody>

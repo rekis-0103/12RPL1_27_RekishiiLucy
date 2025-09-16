@@ -80,21 +80,31 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && isset($_
 $detail = null;
 if (isset($_GET['id'])) {
     $id = (int)$_GET['id'];
-    $detail = mysqli_query($conn, "SELECT a.*, u.full_name, u.email, l.title FROM applications a JOIN users u ON a.user_id=u.user_id JOIN lowongan l ON a.job_id=l.job_id WHERE a.application_id=$id");
-    if ($detail && mysqli_num_rows($detail) === 1) {
-        $detail_row = mysqli_fetch_assoc($detail);
-        if ($detail_row['status'] === 'pendaftaran diterima') {
-            mysqli_query($conn, "UPDATE applications SET status='seleksi administrasi', updated_at=NOW() WHERE application_id=$id");
-            $detail_row['status'] = 'seleksi administrasi';
-            logActivity($conn, $user_id, "HRD: buka detail application #$id => seleksi administrasi");
-        }
+    $detail = mysqli_query($conn, "
+        SELECT a.*, u.full_name, u.email, l.title 
+        FROM applications a 
+        JOIN users u ON a.user_id = u.user_id 
+        JOIN lowongan l ON a.job_id = l.job_id 
+        WHERE a.application_id = $id AND l.posted_by = $user_id
+    ");
+
+    if ($detail && mysqli_num_rows($detail) > 0) {
+        $detail = mysqli_fetch_assoc($detail);
     } else {
         $detail = null;
     }
 }
 
 // List of new applications
-$list = mysqli_query($conn, "SELECT a.*, u.full_name, u.email, l.title FROM applications a JOIN users u ON a.user_id=u.user_id JOIN lowongan l ON a.job_id=l.job_id WHERE a.status IN ('pendaftaran diterima', 'seleksi administrasi') ORDER BY a.applied_at DESC");
+$list = mysqli_query($conn, "
+    SELECT a.*, u.full_name, u.email, l.title 
+    FROM applications a 
+    JOIN users u ON a.user_id=u.user_id 
+    JOIN lowongan l ON a.job_id=l.job_id 
+    WHERE a.status IN ('pendaftaran diterima', 'seleksi administrasi') 
+      AND l.posted_by=$user_id
+    ORDER BY a.applied_at DESC
+");
 ?>
 <!DOCTYPE html>
 <html lang="id">
@@ -277,7 +287,7 @@ $list = mysqli_query($conn, "SELECT a.*, u.full_name, u.email, l.title FROM appl
                             <?php
                             $filter = "";
                             if (!empty($_GET['status_filter'])) {
-                                $filter = "WHERE a.status = '" . mysqli_real_escape_string($conn, $_GET['status_filter']) . "'";
+                                $filter = "AND a.status = '" . mysqli_real_escape_string($conn, $_GET['status_filter']) . "'";
                             }
 
                             $sql = "SELECT u.full_name AS nama, 
@@ -288,7 +298,7 @@ $list = mysqli_query($conn, "SELECT a.*, u.full_name, u.email, l.title FROM appl
         FROM applications a
         JOIN users u ON u.user_id = a.user_id
         JOIN lowongan l ON l.job_id = a.job_id
-        $filter
+        WHERE l.posted_by=$user_id $filter
         ORDER BY a.applied_at DESC";
 
                             $result = mysqli_query($conn, $sql);

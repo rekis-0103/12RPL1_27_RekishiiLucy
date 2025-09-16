@@ -86,7 +86,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && isset($_
 }
 
 // Fetch candidates
-$list = mysqli_query($conn, "SELECT a.*, u.full_name, u.email, l.title FROM applications a JOIN users u ON a.user_id=u.user_id JOIN lowongan l ON a.job_id=l.job_id WHERE a.status IN ('lolos administrasi','tes & wawancara') ORDER BY COALESCE(a.interview_date,a.updated_at) ASC");
+$list = mysqli_query($conn, "SELECT a.*, u.full_name, u.email, l.title 
+    FROM applications a 
+    JOIN users u ON a.user_id=u.user_id 
+    JOIN lowongan l ON a.job_id=l.job_id 
+    WHERE a.status IN ('lolos administrasi','tes & wawancara') 
+      AND l.posted_by = $user_id 
+    ORDER BY COALESCE(a.interview_date,a.updated_at) ASC");
 ?>
 <!DOCTYPE html>
 <html lang="id">
