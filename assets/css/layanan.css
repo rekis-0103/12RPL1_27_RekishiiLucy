@@ -88,13 +88,13 @@
 }
 
 .tab-content.active {
-  display: block; 
+  display: block;
   opacity: 1;
   transform: translateY(0);
 }
 
 .tab-content.active .service-items {
-  display: grid;  
+  display: grid;
   gap: 40px;
 }
 
