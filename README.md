@@ -1,6 +1,23 @@
 # Re-Development Website Company Profile dengan Tambahan Fitur E-Recruitment Sebagai Keperluan Untuk Jurnal
 
-Guest :
+## Teknologi yang Digunakan :
+### Bahasa Pemrograman :
+- PHP
+- HTML
+- CSS
+- JS
+### Database :
+- MySQL
+### Tools :
+- Visual Studio Code
+- Laragon
+### Extension :
+- FPDF
+- PHPMailer
+
+## Hak Akses Beserta Fitur :
+
+### Guest :
 - Beranda
 - Tentang Kami
 - Produk
@@ -11,22 +28,26 @@ Guest :
 - Bergabung
 - Download
 
-Admin :
+### Admin :
+- All in guest
 - Dashboard
 - Kelola User
 - Log Aktivitas
 
-HRD :
+### HRD :
+- All in guest
 - Dashboard
 - Kelola Lowongan
 - Kelola Lamaran
 - Kandidat
 
-Konten :
+### Konten :
+- All in guest
 - Dashboard
 - Kelola Konten
 
-Pelamar :
+### Pelamar :
+- All in guest
 - Dashboard
 - Profil
 - Lohat Lowongan
