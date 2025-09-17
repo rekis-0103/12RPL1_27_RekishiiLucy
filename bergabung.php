@@ -51,17 +51,17 @@ $popup_data = $active_popup && mysqli_num_rows($active_popup) > 0 ? mysqli_fetch
     <?php include 'includes/navbar.php'; ?>
 
     <!-- Popup Modal -->
-    <?php if ($popup_data): ?>
+    <?php if ($popup_data && !isset($_GET['no_popup'])): ?>
         <div class="popup-overlay" id="imagePopup">
             <div class="popup-container <?php echo $popup_data['orientation']; ?>" id="popupContainer">
                 <button class="popup-close" onclick="closePopup()" title="Tutup">
                     <i class="fas fa-times"></i>
                 </button>
-                <img src="uploads/popups/<?php echo htmlspecialchars($popup_data['image_filename']); ?>" 
-                     alt="<?php echo htmlspecialchars($popup_data['title']); ?>" 
-                     class="popup-image"
-                     onload="imageLoaded()"
-                     onerror="imageError()">
+                <img src="uploads/popups/<?php echo htmlspecialchars($popup_data['image_filename']); ?>"
+                    alt="<?php echo htmlspecialchars($popup_data['title']); ?>"
+                    class="popup-image"
+                    onload="imageLoaded()"
+                    onerror="imageError()">
             </div>
         </div>
     <?php endif; ?>
@@ -69,8 +69,8 @@ $popup_data = $active_popup && mysqli_num_rows($active_popup) > 0 ? mysqli_fetch
     <div class="page-container">
         <main class="page-content">
             <div class="container">
-                    <h1>Lowongan Kerja</h1>
-                    <p>Temukan lowongan yang sesuai dengan keahlian dan minat Anda.</p>
+                <h1>Lowongan Kerja</h1>
+                <p>Temukan lowongan yang sesuai dengan keahlian dan minat Anda.</p>
 
                 <div class="card">
                     <div class="card-header">
@@ -182,71 +182,71 @@ $popup_data = $active_popup && mysqli_num_rows($active_popup) > 0 ? mysqli_fetch
             } else {
                 currentUrl.searchParams.set('status', status);
             }
+            // Tambahkan no_popup supaya popup tidak muncul saat filter
+            currentUrl.searchParams.set('no_popup', '1');
             window.location.href = currentUrl.toString();
         }
 
         // Popup functionality
-        <?php if ($popup_data): ?>
-        let popupShown = false;
-        
-        // Show popup after page loads - Always show every time page is opened
-        window.addEventListener('load', function() {
-            if (!popupShown) {
-                setTimeout(function() {
-                    showPopup();
-                }, 1500); // Show popup after 1.5 seconds
+        <?php if ($popup_data && !isset($_GET['no_popup'])): ?>
+            let popupShown = false;
+
+            // Show popup after page loads
+            window.addEventListener('load', function() {
+                if (!popupShown) {
+                    setTimeout(function() {
+                        showPopup();
+                    }, 1500);
+                }
+            });
+
+            function showPopup() {
+                const popup = document.getElementById('imagePopup');
+                const container = document.getElementById('popupContainer');
+                container.classList.add('loading');
+                popup.classList.add('show');
+                popupShown = true;
             }
-        });
 
-        function showPopup() {
-            const popup = document.getElementById('imagePopup');
-            const container = document.getElementById('popupContainer');
-            
-            // Add loading class initially
-            container.classList.add('loading');
-            popup.classList.add('show');
-            popupShown = true;
-        }
-
-        function closePopup() {
-            const popup = document.getElementById('imagePopup');
-            popup.classList.remove('show');
-        }
-
-        function imageLoaded() {
-            const container = document.getElementById('popupContainer');
-            container.classList.remove('loading');
-        }
-
-        function imageError() {
-            const container = document.getElementById('popupContainer');
-            container.classList.remove('loading');
-            container.innerHTML = '<div style="padding: 20px; background: white; border-radius: 12px; text-align: center;"><p>Gagal memuat gambar</p><button onclick="closePopup()" class="btn btn-primary">Tutup</button></div>';
-        }
-
-        // Close popup when clicking overlay
-        document.getElementById('imagePopup').addEventListener('click', function(e) {
-            if (e.target === this) {
-                closePopup();
+            function closePopup() {
+                const popup = document.getElementById('imagePopup');
+                popup.classList.remove('show');
             }
-        });
 
-        // Close popup with Escape key
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape') {
-                closePopup();
+            function imageLoaded() {
+                const container = document.getElementById('popupContainer');
+                container.classList.remove('loading');
             }
-        });
 
-        // Prevent right-click on popup image (optional)
-        document.addEventListener('DOMContentLoaded', function() {
-            const popupImage = document.querySelector('.popup-image');
-            if (popupImage) {
-                popupImage.addEventListener('contextmenu', function(e) {
-                    e.preventDefault();
-                });
+            function imageError() {
+                const container = document.getElementById('popupContainer');
+                container.classList.remove('loading');
+                container.innerHTML = '<div style="padding: 20px; background: white; border-radius: 12px; text-align: center;"><p>Gagal memuat gambar</p><button onclick="closePopup()" class="btn btn-primary">Tutup</button></div>';
             }
-        });
+
+            // Close popup when clicking overlay
+            document.getElementById('imagePopup').addEventListener('click', function(e) {
+                if (e.target === this) {
+                    closePopup();
+                }
+            });
+
+            // Close popup with Escape key
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') {
+                    closePopup();
+                }
+            });
+
+            // Prevent right-click on popup image
+            document.addEventListener('DOMContentLoaded', function() {
+                const popupImage = document.querySelector('.popup-image');
+                if (popupImage) {
+                    popupImage.addEventListener('contextmenu', function(e) {
+                        e.preventDefault();
+                    });
+                }
+            });
         <?php endif; ?>
     </script>
 </body>
