@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Sep 08, 2025 at 01:15 AM
+-- Generation Time: Sep 17, 2025 at 03:10 AM
 -- Server version: 8.0.30
--- PHP Version: 8.1.10
+-- PHP Version: 8.2.29
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -45,7 +45,20 @@ CREATE TABLE `applications` (
 --
 
 INSERT INTO `applications` (`application_id`, `job_id`, `user_id`, `cv`, `status`, `reason`, `interview_date`, `start_date`, `applied_at`, `updated_at`) VALUES
-(1, 1, 2, 'uploads/cv/cv_2_1_1755673380.pdf', 'seleksi administrasi', 'wjijdwjidjidwjiijwdji', '2025-08-20 14:49:00', '2025-08-22', '2025-08-20 07:03:00', '2025-08-26 04:45:06');
+(1, 1, 2, 'uploads/cv/cv_2_1_1755673380.pdf', 'tes & wawancara', 'ya ya saya setuju dengan anda', '2025-09-18 11:20:00', '2025-08-22', '2025-08-20 07:03:00', '2025-09-12 04:21:50');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `content_categories`
+--
+
+CREATE TABLE `content_categories` (
+  `category_id` int NOT NULL,
+  `category_name` varchar(100) NOT NULL,
+  `category_description` text,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
 
@@ -56,15 +69,16 @@ INSERT INTO `applications` (`application_id`, `job_id`, `user_id`, `cv`, `status
 CREATE TABLE `galeri` (
   `galeri_id` int NOT NULL,
   `judul` varchar(200) NOT NULL,
-  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `category_id` int DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `galeri`
 --
 
-INSERT INTO `galeri` (`galeri_id`, `judul`, `created_at`) VALUES
-(1, 'Acara Kemerdekaan Indonesia', '2025-08-26 02:21:27');
+INSERT INTO `galeri` (`galeri_id`, `judul`, `created_at`, `category_id`) VALUES
+(1, 'Acara Kemerdekaan Indonesia', '2025-08-26 02:21:27', NULL);
 
 -- --------------------------------------------------------
 
@@ -97,18 +111,19 @@ CREATE TABLE `kegiatan` (
   `kegiatan_id` int NOT NULL,
   `judul` varchar(200) NOT NULL,
   `deskripsi` text,
-  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `category_id` int DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `kegiatan`
 --
 
-INSERT INTO `kegiatan` (`kegiatan_id`, `judul`, `deskripsi`, `created_at`) VALUES
-(1, 'Kegiatan Outing dan Family Gathering', 'PT. Waindo SpecTerra membuat kegiatan yang dapat mengajak seluruh karyawan dan keluarga, yang tentunya melibatkan suami atau istri serta anak-anak mereka dalam suasana yang penuh keakraban. Rekreasi seluruh karyawan dan keluarganya ini dikemas dalam acara family day. Family day diselenggarakan perusahaan sebagai salah satu bentuk penghargaan perusahaan terhadap karyawan dan keluarganya atas kerja keras dan dukungan yang telah diberikan. Family day ini bertujuan untuk mempererat hubungan antara karyawan dan keluarganya, serta untuk meningkatkan kinerja para karyawan.\r\n\r\nTujuan :\r\n1.Untuk mempererat hubungan dan menghilangkan kepenatan selama bekerja\r\n2.Untuk mengembalikan optimalisasi kinerja karyawan\r\n3.Agar karyawan dan keluarga bisa dapat saling mengenal satu sama lain dan memperkokoh tali silaturahmi\r\n4.Untuk mewujudkan rasa kebersamaan dan kerukunan antar keluarga', '2025-08-21 09:19:16'),
-(2, 'Halal Bihalal Virtual saat Pandemi COVID-19', 'Pada Hari Raya Idul Fitri walaupun Tangan Tak Bisa Berjabat dan Tidak Bisa Betatap muka langsung tidak melunturkan semangat untuk saling bermaafan dan kembali fitri,Waindo tetap melaksanakan Halal Bi Halal secara virtual dengan mendengarkan tauziyah yang sangat bermanfaat saat pandemi oleh Ustadzah Bunda Yati', '2025-08-27 03:35:06'),
-(3, 'Kegiatan Pembagian Sembako Saat Pandemi Covid-19', 'Program ini dilakukan PT Waindo SpecTerra untuk support dan mengembalikan semangat karyawan dan keluarganya menghadapi Pandemi Covid 19 untuk pembagian sembako bagi yang berkeluarga dan ada voucher belanja bagi yang masih belum menikah. pembagian sembako, diantarkan langsung ke rumah masing - masing dengan menggunakan fasilitas mobil operasional kantor.', '2025-08-29 01:21:53'),
-(4, 'Kegiatan Berbagi Saat Ramadhan dan Santunan Anak Yatim', 'Program ini memang biasa dilakukan PT Waindo SpecTerra setiap tahunnya untuk membagikan makanan berbuka untuk anak-anak yatim piatu dan untuk masjid di lokasi tinggal para karyawan atau karyawan membagikan makanan untuk berbuka ke anak jalanan dengan cara membagikan dari dalam mobil karena situasi Covid19.\r\n', '2025-08-29 01:24:26');
+INSERT INTO `kegiatan` (`kegiatan_id`, `judul`, `deskripsi`, `created_at`, `category_id`) VALUES
+(1, 'Kegiatan Outing dan Family Gathering', 'PT. Waindo SpecTerra membuat kegiatan yang dapat mengajak seluruh karyawan dan keluarga, yang tentunya melibatkan suami atau istri serta anak-anak mereka dalam suasana yang penuh keakraban. Rekreasi seluruh karyawan dan keluarganya ini dikemas dalam acara family day. Family day diselenggarakan perusahaan sebagai salah satu bentuk penghargaan perusahaan terhadap karyawan dan keluarganya atas kerja keras dan dukungan yang telah diberikan. Family day ini bertujuan untuk mempererat hubungan antara karyawan dan keluarganya, serta untuk meningkatkan kinerja para karyawan.\r\n\r\nTujuan :\r\n1.Untuk mempererat hubungan dan menghilangkan kepenatan selama bekerja\r\n2.Untuk mengembalikan optimalisasi kinerja karyawan\r\n3.Agar karyawan dan keluarga bisa dapat saling mengenal satu sama lain dan memperkokoh tali silaturahmi\r\n4.Untuk mewujudkan rasa kebersamaan dan kerukunan antar keluarga', '2025-08-21 09:19:16', NULL),
+(2, 'Halal Bihalal Virtual saat Pandemi COVID-19', 'Pada Hari Raya Idul Fitri walaupun Tangan Tak Bisa Berjabat dan Tidak Bisa Betatap muka langsung tidak melunturkan semangat untuk saling bermaafan dan kembali fitri,Waindo tetap melaksanakan Halal Bi Halal secara virtual dengan mendengarkan tauziyah yang sangat bermanfaat saat pandemi oleh Ustadzah Bunda Yati', '2025-08-27 03:35:06', NULL),
+(3, 'Kegiatan Pembagian Sembako Saat Pandemi Covid-19', 'Program ini dilakukan PT Waindo SpecTerra untuk support dan mengembalikan semangat karyawan dan keluarganya menghadapi Pandemi Covid 19 untuk pembagian sembako bagi yang berkeluarga dan ada voucher belanja bagi yang masih belum menikah. pembagian sembako, diantarkan langsung ke rumah masing - masing dengan menggunakan fasilitas mobil operasional kantor.', '2025-08-29 01:21:53', NULL),
+(4, 'Kegiatan Berbagi Saat Ramadhan dan Santunan Anak Yatim', 'Program ini memang biasa dilakukan PT Waindo SpecTerra setiap tahunnya untuk membagikan makanan berbuka untuk anak-anak yatim piatu dan untuk masjid di lokasi tinggal para karyawan atau karyawan membagikan makanan untuk berbuka ke anak jalanan dengan cara membagikan dari dalam mobil karena situasi Covid19.\r\n', '2025-08-29 01:24:26', NULL);
 
 -- --------------------------------------------------------
 
@@ -150,15 +165,16 @@ CREATE TABLE `live_streaming` (
   `judul` varchar(200) NOT NULL,
   `tipe` enum('youtube','mp4') NOT NULL,
   `url` varchar(255) NOT NULL,
-  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `category_id` int DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `live_streaming`
 --
 
-INSERT INTO `live_streaming` (`streaming_id`, `judul`, `tipe`, `url`, `created_at`) VALUES
-(1, 'Live Streaming #1', 'mp4', 'uploads/live/1756174758_1.mp4', '2025-08-26 02:19:18');
+INSERT INTO `live_streaming` (`streaming_id`, `judul`, `tipe`, `url`, `created_at`, `category_id`) VALUES
+(1, 'Live Streaming #1', 'mp4', 'uploads/live/1756174758_1.mp4', '2025-08-26 02:19:18', NULL);
 
 -- --------------------------------------------------------
 
@@ -347,7 +363,101 @@ INSERT INTO `log_aktivitas` (`log_id`, `user_id`, `action`, `log_time`) VALUES
 (167, 3, 'Login', '2025-09-04 03:29:45'),
 (168, 3, 'Logout', '2025-09-04 03:36:48'),
 (169, 4, 'Login', '2025-09-04 03:36:58'),
-(170, 4, 'Logout', '2025-09-04 07:56:36');
+(170, 4, 'Logout', '2025-09-04 07:56:36'),
+(171, 1, 'Login', '2025-09-10 01:19:39'),
+(172, 1, 'Mengedit data user', '2025-09-10 01:20:31'),
+(173, 1, 'Mengedit data user', '2025-09-10 01:21:09'),
+(174, 1, 'Logout', '2025-09-10 01:39:18'),
+(175, 3, 'Login', '2025-09-10 01:39:30'),
+(176, 3, 'HRD: ubah status lowongan #1 -> closed', '2025-09-10 01:40:47'),
+(177, 3, 'HRD: ubah status lowongan #1 -> open', '2025-09-10 01:40:54'),
+(178, 3, 'HRD: ubah status lowongan #1 -> closed', '2025-09-10 01:40:59'),
+(179, 3, 'HRD: ubah status lowongan #1 -> open', '2025-09-10 01:41:15'),
+(180, 3, 'Logout', '2025-09-10 02:10:48'),
+(181, 2, 'Login', '2025-09-10 02:10:56'),
+(182, 2, 'Logout', '2025-09-10 02:19:13'),
+(183, 2, 'Login', '2025-09-10 02:19:26'),
+(184, 2, 'Logout', '2025-09-10 02:47:38'),
+(185, 2, 'Login', '2025-09-10 08:22:57'),
+(186, 2, 'Login', '2025-09-11 07:04:51'),
+(187, 2, 'Logout', '2025-09-11 07:05:04'),
+(188, 2, 'Login', '2025-09-11 07:05:13'),
+(189, 2, 'Logout', '2025-09-11 07:08:15'),
+(190, 1, 'Login', '2025-09-11 07:08:25'),
+(191, 1, 'Logout', '2025-09-11 07:08:51'),
+(192, 2, 'Login', '2025-09-11 07:09:05'),
+(193, 2, 'Logout', '2025-09-11 07:09:10'),
+(194, 4, 'Login', '2025-09-11 07:09:18'),
+(195, 4, 'Logout', '2025-09-11 07:11:41'),
+(196, 3, 'Login', '2025-09-11 07:11:55'),
+(197, 3, 'Logout', '2025-09-11 07:25:07'),
+(198, 1, 'Login', '2025-09-12 01:25:58'),
+(199, 1, 'Logout', '2025-09-12 01:33:41'),
+(200, 1, 'Login', '2025-09-12 03:07:07'),
+(201, 1, 'Logout', '2025-09-12 03:10:33'),
+(202, 2, 'Login', '2025-09-12 03:10:47'),
+(203, 2, 'Logout', '2025-09-12 03:17:48'),
+(204, 1, 'Login', '2025-09-12 03:18:05'),
+(205, 1, 'Logout', '2025-09-12 03:53:57'),
+(206, 3, 'Login', '2025-09-12 03:55:56'),
+(207, 3, 'HRD: ubah status lowongan #1 -> closed', '2025-09-12 03:57:33'),
+(208, 3, 'Logout', '2025-09-12 03:59:11'),
+(209, 7, 'Login', '2025-09-12 03:59:18'),
+(210, 7, 'Logout', '2025-09-12 03:59:51'),
+(211, 7, 'Login', '2025-09-12 03:59:59'),
+(212, 7, 'Logout', '2025-09-12 04:02:05'),
+(213, 3, 'Login', '2025-09-12 04:02:22'),
+(214, 3, 'HRD: terima administrasi application #1 (Programmer Frontend)', '2025-09-12 04:20:54'),
+(215, 3, 'HRD: terima administrasi application #1 (Programmer Frontend)', '2025-09-12 04:21:13'),
+(216, 3, 'HRD: set interview application #1', '2025-09-12 04:21:50'),
+(217, 3, 'Logout', '2025-09-12 04:26:55'),
+(218, 1, 'Login', '2025-09-12 04:27:14'),
+(219, 1, 'Logout', '2025-09-12 04:29:45'),
+(220, 4, 'Login', '2025-09-12 04:29:52'),
+(221, 4, 'Logout', '2025-09-12 06:12:08'),
+(222, 2, 'Login', '2025-09-12 06:12:24'),
+(223, 3, 'Login', '2025-09-13 03:23:43'),
+(224, 3, 'HRD: ubah status lowongan #1 -> open', '2025-09-13 03:25:05'),
+(225, 3, 'Logout', '2025-09-13 03:25:30'),
+(226, 2, 'Login', '2025-09-13 03:26:05'),
+(227, 4, 'Login', '2025-09-15 01:47:28'),
+(228, 4, 'Logout', '2025-09-15 01:50:19'),
+(229, 3, 'Login', '2025-09-15 02:38:55'),
+(230, 3, 'HRD: tambah lowongan #2 - Programmer Backend', '2025-09-15 02:52:56'),
+(231, 3, 'HRD: edit lowongan #1 - Programmer Frontend', '2025-09-15 02:53:16'),
+(232, 3, 'HRD: ubah status lowongan #2 -> closed', '2025-09-15 02:53:18'),
+(233, 3, 'Logout', '2025-09-15 03:01:21'),
+(234, 2, 'Login', '2025-09-15 03:01:30'),
+(235, 2, 'Logout', '2025-09-15 03:56:56'),
+(236, 3, 'Login', '2025-09-15 04:05:33'),
+(237, 3, 'Logout', '2025-09-15 04:05:52'),
+(238, 3, 'Login', '2025-09-15 04:06:25'),
+(239, 3, 'HRD: edit lowongan #1 - Programmer Frontend', '2025-09-15 04:07:52'),
+(240, 3, 'Logout', '2025-09-15 04:15:05'),
+(241, 4, 'Login', '2025-09-15 04:15:24'),
+(242, 4, 'Logout', '2025-09-15 07:26:28'),
+(243, 4, 'Login', '2025-09-15 07:26:37'),
+(244, 4, 'Logout', '2025-09-15 08:44:24'),
+(245, 3, 'Login', '2025-09-16 02:00:22'),
+(246, 3, 'Logout', '2025-09-16 02:07:18'),
+(247, 7, 'Login', '2025-09-16 02:08:30'),
+(248, 7, 'Logout', '2025-09-16 05:54:12'),
+(249, 1, 'Login', '2025-09-16 05:57:35'),
+(250, 1, 'Logout', '2025-09-16 06:55:12'),
+(251, 3, 'Login', '2025-09-16 06:55:22'),
+(252, 3, 'Login', '2025-09-17 02:26:34'),
+(253, 3, 'HRD: tambah popup gambar #1 - Lowongan Terbaru Di PT Waindo', '2025-09-17 02:31:27'),
+(254, 3, 'HRD: toggle popup gambar #1 -> aktif', '2025-09-17 02:31:34'),
+(255, 3, 'HRD: toggle popup gambar #1 -> nonaktif', '2025-09-17 02:33:35'),
+(256, 3, 'HRD: toggle popup gambar #1 -> aktif', '2025-09-17 02:33:38'),
+(257, 3, 'HRD: toggle popup gambar #1 -> nonaktif', '2025-09-17 02:36:54'),
+(258, 3, 'Logout', '2025-09-17 02:37:47'),
+(259, 1, 'Login', '2025-09-17 02:37:54'),
+(260, 1, 'Logout', '2025-09-17 02:38:45'),
+(261, 3, 'Login', '2025-09-17 02:38:51'),
+(262, 3, 'HRD: toggle popup gambar #1 -> aktif', '2025-09-17 02:38:59'),
+(263, 3, 'Logout', '2025-09-17 02:39:13'),
+(264, 3, 'Login', '2025-09-17 02:47:30');
 
 -- --------------------------------------------------------
 
@@ -374,7 +484,32 @@ CREATE TABLE `lowongan` (
 --
 
 INSERT INTO `lowongan` (`job_id`, `title`, `description`, `requirements`, `location`, `salary_range`, `status`, `posted_by`, `posted_at`, `updated_at`, `hapus`) VALUES
-(1, 'Programmer Frontend', 'lorem ipsum dolor sit amet', 'Lulusan S1 Informatika', 'PT. Waindo Specterra', '10.000.000 - 15.000.000', 'open', 3, '2025-08-20 07:01:47', NULL, 0);
+(1, 'Programmer Frontend', 'Jadi Programmer Frontend', '- S1 informasika\r\n- Pengalaman 20 tahun\r\n- mampu bekerja dibawah tekanan\r\n- Fresh Graduate', 'PT. Waindo Specterra', '10.000.000 - 15.000.000', 'open', 3, '2025-08-20 07:01:47', '2025-09-15 04:07:52', 0),
+(2, 'Programmer Backend', 'Jadi Programmer Backend', '- Fresh Graduate\r\n- S1 Informatika\r\n- Pengalaman Kerja 10 tahun', 'PT. Waindo Specterra', '20.000.000 - 30.000.000', 'open', 3, '2025-09-15 02:52:56', '2025-09-15 02:53:18', 0);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `popup_images`
+--
+
+CREATE TABLE `popup_images` (
+  `popup_id` int NOT NULL,
+  `title` varchar(255) NOT NULL,
+  `image_filename` varchar(255) NOT NULL,
+  `orientation` enum('vertical','horizontal') DEFAULT 'vertical',
+  `is_active` tinyint(1) DEFAULT '0',
+  `created_by` int NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Dumping data for table `popup_images`
+--
+
+INSERT INTO `popup_images` (`popup_id`, `title`, `image_filename`, `orientation`, `is_active`, `created_by`, `created_at`, `updated_at`) VALUES
+(1, 'Lowongan Terbaru Di PT Waindo', 'popup_vertical_68ca1d7f08849.png', 'vertical', 1, 3, '2025-09-17 02:31:27', '2025-09-17 02:38:59');
 
 -- --------------------------------------------------------
 
@@ -404,7 +539,7 @@ INSERT INTO `users` (`user_id`, `username`, `password`, `email`, `full_name`, `r
 (3, 'hrd01', '5c2e4a2563f9f4427955422fe1402762', 'siti@gmail.com', 'Siti', 'hrd', 'active', '2025-08-19 03:54:54', 0),
 (4, 'konten01', '26ed30f28908645239254ff4f88c1b75', 'rian@gmail.com', 'Rian', 'konten', 'active', '2025-08-19 03:54:54', 0),
 (6, 'agus01', '01c3c766ce47082b1b130daedd347ffd', 'agus123@gmail.com', 'Agus Agus', 'hrd', 'active', '2025-08-25 01:34:19', 0),
-(7, 'rekis', 'ef14d8aeff3c7255004a18508133b8ad', 'weioewhifewhuifwhui@gmail.com', 'rekishii lucy', 'pelamar', 'active', '2025-08-25 01:48:43', 0);
+(7, 'rekis', 'ef14d8aeff3c7255004a18508133b8ad', 'weioewhifewhuifwhui@gmail.com', 'rekishii lucy', 'hrd', 'active', '2025-08-25 01:48:43', 0);
 
 -- --------------------------------------------------------
 
@@ -416,17 +551,18 @@ CREATE TABLE `webinar` (
   `webinar_id` int NOT NULL,
   `judul` varchar(200) NOT NULL,
   `gambar` varchar(255) DEFAULT NULL,
-  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `category_id` int DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `webinar`
 --
 
-INSERT INTO `webinar` (`webinar_id`, `judul`, `gambar`, `created_at`) VALUES
-(1, 'Webinar Waindo Series #1 GIS Enterprise & Dashboard Operation, CSRT, Airbone LiDAR dan Aplikasi Pemanfaatannya', 'uploads/webinar/1756174143_webinar1.jpeg', '2025-08-26 02:09:03'),
-(2, 'Webinar Waindo Series #2 Pembuatan Peta 3D Menggunakan ArcGIS PRO', 'uploads/webinar/1756265798_webinar2.jpeg', '2025-08-27 03:36:38'),
-(3, 'Webinar Waindo Series #3 Technology Updates Low Cost GNSS for Surveying dan Monitoring', 'uploads/webinar/1756430418_webinar3.jpeg', '2025-08-29 01:20:18');
+INSERT INTO `webinar` (`webinar_id`, `judul`, `gambar`, `created_at`, `category_id`) VALUES
+(1, 'Webinar Waindo Series #1 GIS Enterprise & Dashboard Operation, CSRT, Airbone LiDAR dan Aplikasi Pemanfaatannya', 'uploads/webinar/1756174143_webinar1.jpeg', '2025-08-26 02:09:03', NULL),
+(2, 'Webinar Waindo Series #2 Pembuatan Peta 3D Menggunakan ArcGIS PRO', 'uploads/webinar/1756265798_webinar2.jpeg', '2025-08-27 03:36:38', NULL),
+(3, 'Webinar Waindo Series #3 Technology Updates Low Cost GNSS for Surveying dan Monitoring', 'uploads/webinar/1756430418_webinar3.jpeg', '2025-08-29 01:20:18', NULL);
 
 --
 -- Indexes for dumped tables
@@ -441,10 +577,18 @@ ALTER TABLE `applications`
   ADD KEY `relasi_job` (`job_id`);
 
 --
+-- Indexes for table `content_categories`
+--
+ALTER TABLE `content_categories`
+  ADD PRIMARY KEY (`category_id`),
+  ADD UNIQUE KEY `category_name` (`category_name`);
+
+--
 -- Indexes for table `galeri`
 --
 ALTER TABLE `galeri`
-  ADD PRIMARY KEY (`galeri_id`);
+  ADD PRIMARY KEY (`galeri_id`),
+  ADD KEY `fk_galeri_category` (`category_id`);
 
 --
 -- Indexes for table `galeri_foto`
@@ -457,7 +601,8 @@ ALTER TABLE `galeri_foto`
 -- Indexes for table `kegiatan`
 --
 ALTER TABLE `kegiatan`
-  ADD PRIMARY KEY (`kegiatan_id`);
+  ADD PRIMARY KEY (`kegiatan_id`),
+  ADD KEY `fk_kegiatan_category` (`category_id`);
 
 --
 -- Indexes for table `kegiatan_foto`
@@ -470,7 +615,8 @@ ALTER TABLE `kegiatan_foto`
 -- Indexes for table `live_streaming`
 --
 ALTER TABLE `live_streaming`
-  ADD PRIMARY KEY (`streaming_id`);
+  ADD PRIMARY KEY (`streaming_id`),
+  ADD KEY `fk_live_streaming_category` (`category_id`);
 
 --
 -- Indexes for table `log_aktivitas`
@@ -487,6 +633,13 @@ ALTER TABLE `lowongan`
   ADD KEY `posted_by` (`posted_by`);
 
 --
+-- Indexes for table `popup_images`
+--
+ALTER TABLE `popup_images`
+  ADD PRIMARY KEY (`popup_id`),
+  ADD KEY `created_by` (`created_by`);
+
+--
 -- Indexes for table `users`
 --
 ALTER TABLE `users`
@@ -499,7 +652,8 @@ ALTER TABLE `users`
 -- Indexes for table `webinar`
 --
 ALTER TABLE `webinar`
-  ADD PRIMARY KEY (`webinar_id`);
+  ADD PRIMARY KEY (`webinar_id`),
+  ADD KEY `fk_webinar_category` (`category_id`);
 
 --
 -- AUTO_INCREMENT for dumped tables
@@ -510,6 +664,12 @@ ALTER TABLE `webinar`
 --
 ALTER TABLE `applications`
   MODIFY `application_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT for table `content_categories`
+--
+ALTER TABLE `content_categories`
+  MODIFY `category_id` int NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `galeri`
@@ -545,13 +705,19 @@ ALTER TABLE `live_streaming`
 -- AUTO_INCREMENT for table `log_aktivitas`
 --
 ALTER TABLE `log_aktivitas`
-  MODIFY `log_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=171;
+  MODIFY `log_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=265;
 
 --
 -- AUTO_INCREMENT for table `lowongan`
 --
 ALTER TABLE `lowongan`
-  MODIFY `job_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `job_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT for table `popup_images`
+--
+ALTER TABLE `popup_images`
+  MODIFY `popup_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `users`
@@ -577,16 +743,34 @@ ALTER TABLE `applications`
   ADD CONSTRAINT `relasi_user` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE ON UPDATE RESTRICT;
 
 --
+-- Constraints for table `galeri`
+--
+ALTER TABLE `galeri`
+  ADD CONSTRAINT `fk_galeri_category` FOREIGN KEY (`category_id`) REFERENCES `content_categories` (`category_id`) ON DELETE SET NULL;
+
+--
 -- Constraints for table `galeri_foto`
 --
 ALTER TABLE `galeri_foto`
   ADD CONSTRAINT `galeri_foto_ibfk_1` FOREIGN KEY (`galeri_id`) REFERENCES `galeri` (`galeri_id`) ON DELETE CASCADE;
 
 --
+-- Constraints for table `kegiatan`
+--
+ALTER TABLE `kegiatan`
+  ADD CONSTRAINT `fk_kegiatan_category` FOREIGN KEY (`category_id`) REFERENCES `content_categories` (`category_id`) ON DELETE SET NULL;
+
+--
 -- Constraints for table `kegiatan_foto`
 --
 ALTER TABLE `kegiatan_foto`
   ADD CONSTRAINT `kegiatan_foto_ibfk_1` FOREIGN KEY (`kegiatan_id`) REFERENCES `kegiatan` (`kegiatan_id`) ON DELETE CASCADE;
+
+--
+-- Constraints for table `live_streaming`
+--
+ALTER TABLE `live_streaming`
+  ADD CONSTRAINT `fk_live_streaming_category` FOREIGN KEY (`category_id`) REFERENCES `content_categories` (`category_id`) ON DELETE SET NULL;
 
 --
 -- Constraints for table `log_aktivitas`
@@ -599,6 +783,18 @@ ALTER TABLE `log_aktivitas`
 --
 ALTER TABLE `lowongan`
   ADD CONSTRAINT `lowongan_ibfk_1` FOREIGN KEY (`posted_by`) REFERENCES `users` (`user_id`) ON DELETE SET NULL;
+
+--
+-- Constraints for table `popup_images`
+--
+ALTER TABLE `popup_images`
+  ADD CONSTRAINT `popup_images_ibfk_1` FOREIGN KEY (`created_by`) REFERENCES `users` (`user_id`);
+
+--
+-- Constraints for table `webinar`
+--
+ALTER TABLE `webinar`
+  ADD CONSTRAINT `fk_webinar_category` FOREIGN KEY (`category_id`) REFERENCES `content_categories` (`category_id`) ON DELETE SET NULL;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
