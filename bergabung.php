@@ -175,80 +175,110 @@ $popup_data = $active_popup && mysqli_num_rows($active_popup) > 0 ? mysqli_fetch
 
     <script src="js/common.js"></script>
     <script>
-        function filterJobs(status) {
-            const currentUrl = new URL(window.location);
-            if (status === 'all') {
-                currentUrl.searchParams.delete('status');
-            } else {
-                currentUrl.searchParams.set('status', status);
+    // ===== FILTER JOBS =====
+    function filterJobs(status) {
+        const currentUrl = new URL(window.location);
+        if (status === 'all') {
+            currentUrl.searchParams.delete('status');
+        } else {
+            currentUrl.searchParams.set('status', status);
+        }
+        // Tambahkan no_popup supaya popup tidak muncul saat filter
+        currentUrl.searchParams.set('no_popup', '1');
+        window.location.href = currentUrl.toString();
+    }
+
+    // ===== POPUP FUNCTIONALITY =====
+    <?php if (!empty($popup_data) && !isset($_GET['no_popup'])): ?>
+        let popupShown = false;
+        let currentIndex = 0;
+        const images = document.querySelectorAll('.popup-slideshow .popup-image');
+
+        // Show popup setelah page load
+        window.addEventListener('load', function () {
+            if (!popupShown) {
+                setTimeout(function () {
+                    showPopup();
+                }, 1500);
             }
-            // Tambahkan no_popup supaya popup tidak muncul saat filter
-            currentUrl.searchParams.set('no_popup', '1');
-            window.location.href = currentUrl.toString();
+        });
+
+        function showPopup() {
+            const popup = document.getElementById('imagePopup');
+            const container = document.getElementById('popupContainer');
+            if (!popup) return;
+            container.classList.add('loading');
+            popup.classList.add('show');
+            popupShown = true;
+            startSlideshow();
         }
 
-        // Popup functionality
-        <?php if ($popup_data && !isset($_GET['no_popup'])): ?>
-            let popupShown = false;
+        function closePopup() {
+            const popup = document.getElementById('imagePopup');
+            if (!popup) return;
+            popup.classList.remove('show');
+        }
 
-            // Show popup after page loads
-            window.addEventListener('load', function() {
-                if (!popupShown) {
-                    setTimeout(function() {
-                        showPopup();
-                    }, 1500);
-                }
-            });
+        function imageLoaded() {
+            const container = document.getElementById('popupContainer');
+            if (container) container.classList.remove('loading');
+        }
 
-            function showPopup() {
-                const popup = document.getElementById('imagePopup');
-                const container = document.getElementById('popupContainer');
-                container.classList.add('loading');
-                popup.classList.add('show');
-                popupShown = true;
-            }
-
-            function closePopup() {
-                const popup = document.getElementById('imagePopup');
-                popup.classList.remove('show');
-            }
-
-            function imageLoaded() {
-                const container = document.getElementById('popupContainer');
+        function imageError() {
+            const container = document.getElementById('popupContainer');
+            if (container) {
                 container.classList.remove('loading');
+                container.innerHTML = `
+                    <div style="padding: 20px; background: white; border-radius: 12px; text-align: center;">
+                        <p>Gagal memuat gambar</p>
+                        <button onclick="closePopup()" class="btn btn-primary">Tutup</button>
+                    </div>`;
             }
+        }
 
-            function imageError() {
-                const container = document.getElementById('popupContainer');
-                container.classList.remove('loading');
-                container.innerHTML = '<div style="padding: 20px; background: white; border-radius: 12px; text-align: center;"><p>Gagal memuat gambar</p><button onclick="closePopup()" class="btn btn-primary">Tutup</button></div>';
+        // Slideshow otomatis
+        function startSlideshow() {
+            if (images.length === 0) return;
+            showImage(currentIndex);
+            setInterval(() => {
+                currentIndex = (currentIndex + 1) % images.length;
+                showImage(currentIndex);
+            }, 4000); // ganti gambar tiap 4 detik
+        }
+
+        function showImage(index) {
+            images.forEach((img, i) => {
+                img.style.display = (i === index) ? 'block' : 'none';
+            });
+        }
+
+        // Tutup popup kalau klik overlay
+        document.addEventListener('click', function (e) {
+            const popup = document.getElementById('imagePopup');
+            if (popup && e.target === popup) {
+                closePopup();
             }
+        });
 
-            // Close popup when clicking overlay
-            document.getElementById('imagePopup').addEventListener('click', function(e) {
-                if (e.target === this) {
-                    closePopup();
-                }
-            });
+        // Tutup popup dengan tombol Escape
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape') {
+                closePopup();
+            }
+        });
 
-            // Close popup with Escape key
-            document.addEventListener('keydown', function(e) {
-                if (e.key === 'Escape') {
-                    closePopup();
-                }
+        // Cegah klik kanan di gambar popup
+        document.addEventListener('DOMContentLoaded', function () {
+            const popupImages = document.querySelectorAll('.popup-image');
+            popupImages.forEach(img => {
+                img.addEventListener('contextmenu', function (e) {
+                    e.preventDefault();
+                });
             });
+        });
+    <?php endif; ?>
+</script>
 
-            // Prevent right-click on popup image
-            document.addEventListener('DOMContentLoaded', function() {
-                const popupImage = document.querySelector('.popup-image');
-                if (popupImage) {
-                    popupImage.addEventListener('contextmenu', function(e) {
-                        e.preventDefault();
-                    });
-                }
-            });
-        <?php endif; ?>
-    </script>
 </body>
 
 </html>
