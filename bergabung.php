@@ -29,9 +29,14 @@ if ($status_filter === 'open') {
 // Fetch jobs based on filter
 $jobs = mysqli_query($conn, "SELECT job_id, title, description, location, salary_range, posted_at, status FROM lowongan $whereClause ORDER BY status ASC, posted_at DESC");
 
-// Fetch active popup image
-$active_popup = mysqli_query($conn, "SELECT * FROM popup_images WHERE is_active = 1 LIMIT 1");
-$popup_data = $active_popup && mysqli_num_rows($active_popup) > 0 ? mysqli_fetch_assoc($active_popup) : null;
+// Fetch active popup images (allow multiple active)
+$active_popup_rs = mysqli_query($conn, "SELECT * FROM popup_images WHERE is_active = 1 ORDER BY created_at DESC");
+$popup_list = [];
+if ($active_popup_rs && mysqli_num_rows($active_popup_rs) > 0) {
+    while ($row = mysqli_fetch_assoc($active_popup_rs)) {
+        $popup_list[] = $row;
+    }
+}
 ?>
 <!DOCTYPE html>
 <html lang="id">
@@ -50,18 +55,37 @@ $popup_data = $active_popup && mysqli_num_rows($active_popup) > 0 ? mysqli_fetch
 <body>
     <?php include 'includes/navbar.php'; ?>
 
-    <!-- Popup Modal -->
-    <?php if ($popup_data && !isset($_GET['no_popup'])): ?>
+    <!-- Popup Modal (supports multiple active images as slider) -->
+    <?php if (!empty($popup_list) && !isset($_GET['no_popup'])): ?>
         <div class="popup-overlay" id="imagePopup">
-            <div class="popup-container <?php echo $popup_data['orientation']; ?>" id="popupContainer">
-                <button class="popup-close" onclick="closePopup()" title="Tutup">
-                    <i class="fas fa-times"></i>
-                </button>
-                <img src="uploads/popups/<?php echo htmlspecialchars($popup_data['image_filename']); ?>"
-                    alt="<?php echo htmlspecialchars($popup_data['title']); ?>"
-                    class="popup-image"
-                    onload="imageLoaded()"
-                    onerror="imageError()">
+            <?php
+                $uniqueOrientations = array_unique(array_map(function($p){return $p['orientation'];}, $popup_list));
+                $containerMode = count($uniqueOrientations) === 1 ? $popup_list[0]['orientation'] : 'mixed';
+            ?>
+            <div class="popup-container <?php echo $containerMode; ?>" id="popupContainer">
+                <div class="popup-slider" id="popupSlider">
+                    <?php foreach ($popup_list as $idx => $p): ?>
+                        <div class="popup-slide" data-index="<?php echo $idx; ?>">
+                            <img src="uploads/popups/<?php echo htmlspecialchars($p['image_filename']); ?>"
+                                alt="<?php echo htmlspecialchars($p['title']); ?>"
+                                class="popup-image"
+                                onload="imageLoaded()"
+                                onerror="imageError()">
+                        </div>
+                    <?php endforeach; ?>
+                </div>
+                <div class="popup-controls">
+                    <?php if (count($popup_list) > 1): ?>
+                        <button class="popup-ctrl-btn" id="popupPrev" aria-label="Sebelumnya"><i class="fas fa-chevron-left"></i></button>
+                        <div class="popup-dots" id="popupDots">
+                            <?php foreach ($popup_list as $idx => $p): ?>
+                                <button class="popup-dot" onclick="goToSlide(<?php echo $idx; ?>)" aria-label="Slide <?php echo $idx+1; ?>"></button>
+                            <?php endforeach; ?>
+                        </div>
+                        <button class="popup-ctrl-btn" id="popupNext" aria-label="Berikutnya"><i class="fas fa-chevron-right"></i></button>
+                    <?php endif; ?>
+                    <button class="popup-ctrl-btn close" id="popupClose" aria-label="Tutup"><i class="fas fa-times"></i></button>
+                </div>
             </div>
         </div>
     <?php endif; ?>
@@ -188,18 +212,18 @@ $popup_data = $active_popup && mysqli_num_rows($active_popup) > 0 ? mysqli_fetch
         window.location.href = currentUrl.toString();
     }
 
-    // ===== POPUP FUNCTIONALITY =====
-    <?php if (!empty($popup_data) && !isset($_GET['no_popup'])): ?>
+    // ===== POPUP FUNCTIONALITY (Multiple with slider) =====
+    <?php if (!empty($popup_list) && !isset($_GET['no_popup'])): ?>
         let popupShown = false;
         let currentIndex = 0;
-        const images = document.querySelectorAll('.popup-slideshow .popup-image');
+        let autoTimer = null;
 
         // Show popup setelah page load
         window.addEventListener('load', function () {
             if (!popupShown) {
                 setTimeout(function () {
                     showPopup();
-                }, 1500);
+                }, 800);
             }
         });
 
@@ -210,13 +234,14 @@ $popup_data = $active_popup && mysqli_num_rows($active_popup) > 0 ? mysqli_fetch
             container.classList.add('loading');
             popup.classList.add('show');
             popupShown = true;
-            startSlideshow();
+            initSlider();
         }
 
         function closePopup() {
             const popup = document.getElementById('imagePopup');
             if (!popup) return;
             popup.classList.remove('show');
+            stopAuto();
         }
 
         function imageLoaded() {
@@ -231,26 +256,65 @@ $popup_data = $active_popup && mysqli_num_rows($active_popup) > 0 ? mysqli_fetch
                 container.innerHTML = `
                     <div style="padding: 20px; background: white; border-radius: 12px; text-align: center;">
                         <p>Gagal memuat gambar</p>
-                        <button onclick="closePopup()" class="btn btn-primary">Tutup</button>
+                        <button onclick=\"closePopup()\" class=\"btn btn-primary\">Tutup</button>
                     </div>`;
             }
         }
 
-        // Slideshow otomatis
-        function startSlideshow() {
-            if (images.length === 0) return;
-            showImage(currentIndex);
-            setInterval(() => {
-                currentIndex = (currentIndex + 1) % images.length;
-                showImage(currentIndex);
-            }, 4000); // ganti gambar tiap 4 detik
+        function initSlider() {
+            const slides = document.querySelectorAll('#popupSlider .popup-slide');
+            const dots = document.querySelectorAll('#popupDots .popup-dot');
+            if (slides.length === 0) return;
+            goToSlide(0);
+            startAuto();
+            // Prevent context menu on images
+            document.querySelectorAll('.popup-image').forEach(img => {
+                img.addEventListener('contextmenu', e => e.preventDefault());
+            });
+            // Wire grouped controls
+            const prevBtn = document.getElementById('popupPrev');
+            const nextBtn = document.getElementById('popupNext');
+            const closeBtn = document.getElementById('popupClose');
+            if (prevBtn) prevBtn.onclick = () => { stopAuto(); prevSlide(); };
+            if (nextBtn) nextBtn.onclick = () => { stopAuto(); nextSlide(); };
+            if (closeBtn) closeBtn.onclick = () => closePopup();
         }
 
-        function showImage(index) {
-            images.forEach((img, i) => {
-                img.style.display = (i === index) ? 'block' : 'none';
+        function updateUI(index) {
+            const slides = document.querySelectorAll('#popupSlider .popup-slide');
+            const dots = document.querySelectorAll('#popupDots .popup-dot');
+            slides.forEach((s, i) => {
+                s.style.display = (i === index) ? 'block' : 'none';
+            });
+            dots.forEach((d, i) => {
+                d.classList.toggle('active', i === index);
             });
         }
+
+        function goToSlide(index) {
+            const slides = document.querySelectorAll('#popupSlider .popup-slide');
+            if (slides.length === 0) return;
+            currentIndex = (index + slides.length) % slides.length;
+            updateUI(currentIndex);
+            restartAuto();
+        }
+
+        function nextSlide() { goToSlide(currentIndex + 1); }
+        function prevSlide() { goToSlide(currentIndex - 1); }
+
+        function startAuto() {
+            stopAuto();
+            autoTimer = setInterval(() => {
+                nextSlide();
+            }, 4000);
+        }
+        function stopAuto() {
+            if (autoTimer) {
+                clearInterval(autoTimer);
+                autoTimer = null;
+            }
+        }
+        function restartAuto() { startAuto(); }
 
         // Tutup popup kalau klik overlay
         document.addEventListener('click', function (e) {
@@ -265,16 +329,6 @@ $popup_data = $active_popup && mysqli_num_rows($active_popup) > 0 ? mysqli_fetch
             if (e.key === 'Escape') {
                 closePopup();
             }
-        });
-
-        // Cegah klik kanan di gambar popup
-        document.addEventListener('DOMContentLoaded', function () {
-            const popupImages = document.querySelectorAll('.popup-image');
-            popupImages.forEach(img => {
-                img.addEventListener('contextmenu', function (e) {
-                    e.preventDefault();
-                });
-            });
         });
     <?php endif; ?>
 </script>

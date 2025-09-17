@@ -840,154 +840,247 @@
   }
 }
 
- /* Popup Overlay */
-        .popup-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.7);
-            z-index: 9999;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.3s ease;
-        }
+/* Popup Overlay */
+.popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  z-index: 9999;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+}
 
-        .popup-overlay.show {
-            opacity: 1;
-            visibility: visible;
-        }
+.popup-overlay.show {
+  opacity: 1;
+  visibility: visible;
+}
 
-        /* Popup Container */
-        .popup-container {
-            position: relative;
-            max-width: 90%;
-            max-height: 90%;
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
-            animation: popupZoomIn 0.4s ease-out;
-        }
+/* Popup Container */
+.popup-container {
+  position: relative;
+  max-width: 90%;
+  max-height: 90%;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+  animation: popupZoomIn 0.4s ease-out;
+}
 
-        /* Vertical Popup - Portrait orientation */
-        .popup-container.vertical {
-            max-width: 400px;
-            max-height: 80vh;
-        }
+/* Slider wrapper and slides */
+.popup-slider {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+.popup-slide {
+  display: none;
+}
+.popup-slide img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
 
-        /* Horizontal Popup - Landscape orientation */
-        .popup-container.horizontal {
-            max-width: 70vw;
-            max-height: 500px;
-        }
+/* Navigation arrows */
+/* Unified controls bar */
+.popup-controls {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  z-index: 10003;
+}
+.popup-ctrl-btn {
+  background: rgba(0, 0, 0, 0.55);
+  color: #fff;
+  border: none;
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+.popup-ctrl-btn:hover {
+  background: rgba(0, 0, 0, 0.75);
+}
+.popup-ctrl-btn.close {
+  width: 44px;
+  height: 40px;
+}
 
-        @keyframes popupZoomIn {
-            from {
-                transform: scale(0.7);
-                opacity: 0;
-            }
-            to {
-                transform: scale(1);
-                opacity: 1;
-            }
-        }
+/* Dots indicator within controls */
+.popup-dots {
+  display: flex;
+  gap: 8px;
+}
+.popup-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.6);
+  border: none;
+  cursor: pointer;
+}
+.popup-dot.active {
+  background: #fff;
+}
 
-        /* Popup Image */
-        .popup-image {
-            width: 100%;
-            height: auto;
-            display: block;
-            max-width: 100%;
-            max-height: 100%;
-            object-fit: contain;
-            border-radius: 12px;
-        }
+/* Vertical Popup - Portrait orientation */
+.popup-container.vertical {
+  max-width: 400px;
+  max-height: 80vh;
+}
 
-        /* Close Button */
-        .popup-close {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            background: rgba(0, 0, 0, 0.7);
-            color: white;
-            border: none;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            cursor: pointer;
-            font-size: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.2s ease;
-            z-index: 10001;
-        }
+/* Horizontal Popup - Landscape orientation */
+.popup-container.horizontal {
+  max-width: 70vw;
+  max-height: 500px;
+}
 
-        .popup-close:hover {
-            background: rgba(0, 0, 0, 0.9);
-            transform: scale(1.1);
-        }
+/* Mixed mode: add generous padding and center slides to avoid clash */
+.popup-container.mixed {
+  max-width: 80vw;
+  max-height: 85vh;
+  padding: 24px;
+  background: #000; /* dark background to isolate mixed content */
+}
 
-        /* Responsive Design */
-        @media (max-width: 768px) {
-            .popup-container.vertical {
-                max-width: 85%;
-                max-height: 70vh;
-            }
-            
-            .popup-container.horizontal {
-                max-width: 90%;
-                max-height: 60vh;
-            }
-            
-            .popup-close {
-                top: 5px;
-                right: 5px;
-                width: 35px;
-                height: 35px;
-                font-size: 18px;
-            }
-        }
+.popup-container.mixed .popup-slider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 
-        @media (max-width: 480px) {
-            .popup-container.vertical,
-            .popup-container.horizontal {
-                max-width: 95%;
-                max-height: 60vh;
-            }
-            
-            .popup-close {
-                width: 30px;
-                height: 30px;
-                font-size: 16px;
-            }
-        }
+.popup-container.mixed .popup-slide {
+  display: none;
+}
 
-        /* Loading animation while image loads */
-        .popup-container.loading {
-            background: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            min-width: 200px;
-            min-height: 200px;
-        }
+.popup-container.mixed .popup-slide img {
+  max-width: 100%;
+  max-height: calc(85vh - 80px);
+  object-fit: contain;
+}
 
-        .popup-container.loading::before {
-            content: "";
-            width: 40px;
-            height: 40px;
-            border: 4px solid #f3f3f3;
-            border-top: 4px solid #3498db;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
+@keyframes popupZoomIn {
+  from {
+    transform: scale(0.7);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
 
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
+/* Popup Image */
+.popup-image {
+  width: 100%;
+  height: auto;
+  display: block;
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  border-radius: 12px;
+}
+
+/* Close Button */
+.popup-close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: rgba(0, 0, 0, 0.7);
+  color: white;
+  border: none;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  z-index: 10001;
+}
+
+.popup-close:hover {
+  background: rgba(0, 0, 0, 0.9);
+  transform: scale(1.1);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .popup-container.vertical {
+    max-width: 85%;
+    max-height: 70vh;
+  }
+
+  .popup-container.horizontal {
+    max-width: 90%;
+    max-height: 60vh;
+  }
+
+  .popup-close {
+    top: 5px;
+    right: 5px;
+    width: 35px;
+    height: 35px;
+    font-size: 18px;
+  }
+}
+
+@media (max-width: 480px) {
+  .popup-container.vertical,
+  .popup-container.horizontal {
+    max-width: 95%;
+    max-height: 60vh;
+  }
+
+  .popup-close {
+    width: 30px;
+    height: 30px;
+    font-size: 16px;
+  }
+}
+
+/* Loading animation while image loads */
+.popup-container.loading {
+  background: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 200px;
+  min-height: 200px;
+}
+
+.popup-container.loading::before {
+  content: "";
+  width: 40px;
+  height: 40px;
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #3498db;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}

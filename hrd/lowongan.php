@@ -175,14 +175,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
         $popup_id = (int)$_POST['popup_id'];
         $is_active = (int)$_POST['is_active'];
         
-        // First, deactivate all other popups
-        mysqli_query($conn, "UPDATE popup_images SET is_active=0");
-        
-        if ($is_active) {
-            $q = "UPDATE popup_images SET is_active=1, updated_at=NOW() WHERE popup_id=$popup_id";
-        } else {
-            $q = "UPDATE popup_images SET is_active=0, updated_at=NOW() WHERE popup_id=$popup_id";
-        }
+        // Allow multiple active popups: toggle only the requested one
+        $q = "UPDATE popup_images SET is_active=" . ($is_active ? '1' : '0') . ", updated_at=NOW() WHERE popup_id=$popup_id";
         
         if (mysqli_query($conn, $q)) {
             $success = 'Status popup diperbarui';
