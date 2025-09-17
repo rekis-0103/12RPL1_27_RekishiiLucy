@@ -28,6 +28,10 @@ if ($status_filter === 'open') {
 
 // Fetch jobs based on filter
 $jobs = mysqli_query($conn, "SELECT job_id, title, description, location, salary_range, posted_at, status FROM lowongan $whereClause ORDER BY status ASC, posted_at DESC");
+
+// Fetch active popup image
+$active_popup = mysqli_query($conn, "SELECT * FROM popup_images WHERE is_active = 1 LIMIT 1");
+$popup_data = $active_popup && mysqli_num_rows($active_popup) > 0 ? mysqli_fetch_assoc($active_popup) : null;
 ?>
 <!DOCTYPE html>
 <html lang="id">
@@ -45,6 +49,22 @@ $jobs = mysqli_query($conn, "SELECT job_id, title, description, location, salary
 
 <body>
     <?php include 'includes/navbar.php'; ?>
+
+    <!-- Popup Modal -->
+    <?php if ($popup_data): ?>
+        <div class="popup-overlay" id="imagePopup">
+            <div class="popup-container <?php echo $popup_data['orientation']; ?>" id="popupContainer">
+                <button class="popup-close" onclick="closePopup()" title="Tutup">
+                    <i class="fas fa-times"></i>
+                </button>
+                <img src="uploads/popups/<?php echo htmlspecialchars($popup_data['image_filename']); ?>" 
+                     alt="<?php echo htmlspecialchars($popup_data['title']); ?>" 
+                     class="popup-image"
+                     onload="imageLoaded()"
+                     onerror="imageError()">
+            </div>
+        </div>
+    <?php endif; ?>
 
     <div class="page-container">
         <main class="page-content">
@@ -164,6 +184,70 @@ $jobs = mysqli_query($conn, "SELECT job_id, title, description, location, salary
             }
             window.location.href = currentUrl.toString();
         }
+
+        // Popup functionality
+        <?php if ($popup_data): ?>
+        let popupShown = false;
+        
+        // Show popup after page loads - Always show every time page is opened
+        window.addEventListener('load', function() {
+            if (!popupShown) {
+                setTimeout(function() {
+                    showPopup();
+                }, 1500); // Show popup after 1.5 seconds
+            }
+        });
+
+        function showPopup() {
+            const popup = document.getElementById('imagePopup');
+            const container = document.getElementById('popupContainer');
+            
+            // Add loading class initially
+            container.classList.add('loading');
+            popup.classList.add('show');
+            popupShown = true;
+        }
+
+        function closePopup() {
+            const popup = document.getElementById('imagePopup');
+            popup.classList.remove('show');
+        }
+
+        function imageLoaded() {
+            const container = document.getElementById('popupContainer');
+            container.classList.remove('loading');
+        }
+
+        function imageError() {
+            const container = document.getElementById('popupContainer');
+            container.classList.remove('loading');
+            container.innerHTML = '<div style="padding: 20px; background: white; border-radius: 12px; text-align: center;"><p>Gagal memuat gambar</p><button onclick="closePopup()" class="btn btn-primary">Tutup</button></div>';
+        }
+
+        // Close popup when clicking overlay
+        document.getElementById('imagePopup').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closePopup();
+            }
+        });
+
+        // Close popup with Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closePopup();
+            }
+        });
+
+        // Prevent right-click on popup image (optional)
+        document.addEventListener('DOMContentLoaded', function() {
+            const popupImage = document.querySelector('.popup-image');
+            if (popupImage) {
+                popupImage.addEventListener('contextmenu', function(e) {
+                    e.preventDefault();
+                });
+            }
+        });
+        <?php endif; ?>
     </script>
 </body>
 
