@@ -16,7 +16,7 @@ session_start();
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 
-<body>
+<body class="produk-page">
     <?php include 'includes/navbar.php'; ?>
 
     <div class="page-container">

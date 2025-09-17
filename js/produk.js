@@ -1,203 +1,336 @@
 const categoryProducts = {
   'geomatic-applications': {
     title: 'Geomatic Applications',
+    description: 'Solusi aplikasi geomatika untuk survei, pemetaan, dan analisis geospasial',
     products: [
       {
+        id: 'enterprise-rack-server',
         name: 'Enterprise Rack Server',
         image: 'assets/remotesesing.jpg',
-        //detailUrl: 'produk-detail.php?id=enterprise-rack-server' 
+        description: 'Server rack enterprise dengan performa tinggi yang dirancang khusus untuk mendukung aplikasi geomatika skala besar. Menyediakan kapasitas penyimpanan besar, kecepatan pemrosesan data spasial yang optimal, serta keandalan 24/7 untuk mendukung kebutuhan survei, pemetaan, hingga analisis geospasial yang kompleks.',
+        features: [],
+        category: 'Geomatic Applications',
+        detailUrl: 'produk-detail.php?id=enterprise-rack-server'
       },
       {
+        id: 'geographic-information-system',
         name: 'Geographic Information System',
         image: 'assets/Geograpic-Information-System.jpg',
         icon: 'fas fa-database',
-        //detailUrl: 'produk-detail.php?id=storage-area-network'
+        description: 'Sistem informasi geografis komprehensif untuk analisis dan visualisasi data spasial.',
+        features: [],
+        category: 'Geomatic Applications',
+        detailUrl: 'produk-detail.php?id=geographic-information-system'
       },
       {
+        id: 'peta-rbi-tanjung-lesung',
         name: 'Peta RBI Skala 1:5000 Wilayah KEK Tanjung Lesung Menggunakan Data Foto Udara dan Lidar Tahun 2017',
         image: 'assets/Fotogrametri.jpg',
-        icon: 'fas fa-hdd',
-        //detailUrl: 'produk-detail.php?id=network-attached-storage'
+        icon: 'fas fa-map',
+        description: 'Peta Rupa Bumi Indonesia skala 1:5000 untuk wilayah KEK Tanjung Lesung menggunakan teknologi fotogrametri dan LiDAR.',
+        features: [],
+        category: 'Geomatic Applications',
+        detailUrl: 'produk-detail.php?id=peta-rbi-tanjung-lesung'
       },
       {
+        id: 'lidar-survey',
         name: 'Lidar Survey',
         image: 'assets/lidar1.jpg',
-        icon: 'fas fa-shield-alt',
-        //detailUrl: 'produk-detail.php?id=backup-recovery-suite'
+        icon: 'fas fa-radar',
+        description: 'Layanan survei LiDAR untuk pemetaan topografi dan analisis elevasi dengan akurasi tinggi.',
+        features: [],
+        category: 'Geomatic Applications',
+        detailUrl: 'produk-detail.php?id=lidar-survey'
       },
       {
+        id: 'topographic-survey',
         name: 'Topographic Survey',
         image: 'assets/topograpsurvey.jpg',
-        icon: 'fas fa-cubes',
-        //detailUrl: 'produk-detail.php?id=virtualization-platform'
+        icon: 'fas fa-mountain',
+        description: 'Survei topografi untuk pemetaan kontur dan elevasi permukaan tanah.',
+        features: [],
+        category: 'Geomatic Applications',
+        detailUrl: 'produk-detail.php?id=topographic-survey'
       },
       {
+        id: 'studi-survey-alur',
         name: 'Studi Survey Alur',
         image: 'assets/Studi Survey Alur.jpg',
-        icon: 'fas fa-memory',
-        //detailUrl: 'produk-detail.php?id=high-performance-storage'
+        icon: 'fas fa-route',
+        description: 'Studi dan survei alur untuk perencanaan infrastruktur dan transportasi.',
+        features: [],
+        category: 'Geomatic Applications',
+        detailUrl: 'produk-detail.php?id=studi-survey-alur'
       },
       {
+        id: 'peta-sistem-lahan',
         name: 'Peta Sistem Lahan Skala 1:50.000 Provinsi Sumatera Selatan',
         image: 'assets/peta sistem lahan.jpg',
-        icon: 'fas fa-memory',
-        //detailUrl: 'produk-detail.php?id=high-performance-storage'
+        icon: 'fas fa-seedling',
+        description: 'Peta sistem lahan untuk perencanaan pertanian dan pengelolaan sumber daya alam.',
+        features: [],
+        category: 'Geomatic Applications',
+        detailUrl: 'produk-detail.php?id=peta-sistem-lahan'
       },
       {
+        id: 'peta-morfometri',
         name: 'Peta Morfometri Bentang Lahan 1:50.000 tahun 2018',
         image: 'assets/Peta Morfometri.jpg',
-        icon: 'fas fa-memory',
-        //detailUrl: 'produk-detail.php?id=high-performance-storage'
+        icon: 'fas fa-mountain',
+        description: 'Peta morfometri untuk analisis bentuk lahan dan karakteristik topografi.',
+        features: [],
+        category: 'Geomatic Applications',
+        detailUrl: 'produk-detail.php?id=peta-morfometri'
       },
       {
+        id: 'peta-penutup-lahan',
         name: 'Peta Penutup Lahan tahun 2016',
         image: 'assets/Peta Penutup Lahan.jpg',
-        icon: 'fas fa-memory',
-        //detailUrl: 'produk-detail.php?id=high-performance-storage'
+        icon: 'fas fa-leaf',
+        description: 'Peta penutup lahan untuk monitoring perubahan penggunaan lahan dan vegetasi.',
+        features: [],
+        category: 'Geomatic Applications',
+        detailUrl: 'produk-detail.php?id=peta-penutup-lahan'
       },
       {
+        id: 'peta-rbi-gunungmas',
         name: 'Peta RBI Skala 1:5000 Kab Gunungmas menggunakan data foto udara dan Lidar th 2019',
         image: 'assets/Fotogrametri2.jpg',
-        icon: 'fas fa-memory',
-        //detailUrl: 'produk-detail.php?id=high-performance-storage'
+        icon: 'fas fa-map-marked-alt',
+        description: 'Peta RBI skala 1:5000 untuk Kabupaten Gunungmas dengan teknologi fotogrametri dan LiDAR terbaru.',
+        features: [],
+        category: 'Geomatic Applications',
+        detailUrl: 'produk-detail.php?id=peta-rbi-gunungmas'
       },
       {
+        id: 'hidrographic-survey',
         name: 'Hidrographic Survey',
         image: 'assets/hidrograpsurvey1.jpg',
-        icon: 'fas fa-memory',
-        //detailUrl: 'produk-detail.php?id=high-performance-storage'
+        icon: 'fas fa-water',
+        description: 'Survei hidrografi untuk pemetaan dasar laut dan perairan.',
+        features: [],
+        category: 'Geomatic Applications',
+        detailUrl: 'produk-detail.php?id=hidrographic-survey'
       }
     ]
   },
   'software-provider': {
     title: 'Software Provider',
+    description: 'Software dan platform GIS terdepan untuk analisis geospasial dan pemetaan',
     products: [
       {
+        id: 'arcgis-desktop',
         name: 'ArcGIS For Desktop',
         image: 'assets/arcgis_destop.jpg',
-        icon: 'fas fa-network-wired',
-        //detailUrl: 'produk-detail.php?id=enterprise-core-switch'
+        icon: 'fas fa-desktop',
+        description: 'Software GIS desktop terdepan untuk analisis geospasial, pemetaan, dan manajemen data.',
+        features: [],
+        category: 'Software Provider',
+        detailUrl: 'produk-detail.php?id=arcgis-desktop'
       },
       {
+        id: 'arcgis-enterprise',
         name: 'ArcGIS Enterprise',
         image: 'assets/arcgisportal.jpg',
-        icon: 'fas fa-wifi',
-        //detailUrl: 'produk-detail.php?id=wireless-access-point'
+        icon: 'fas fa-server',
+        description: 'Platform GIS enterprise untuk organisasi besar dengan kemampuan sharing dan kolaborasi.',
+        features: [],
+        category: 'Software Provider',
+        detailUrl: 'produk-detail.php?id=arcgis-enterprise'
       },
       {
+        id: 'arcgis-mobile',
         name: 'ArcGIS Mobile',
         image: 'assets/arcgis_mobile.jpg',
-        icon: 'fas fa-shield-alt',
-        //detailUrl: 'produk-detail.php?id=next-gen-firewall'
+        icon: 'fas fa-mobile-alt',
+        description: 'Aplikasi GIS mobile untuk pengumpulan data lapangan dan navigasi.',
+        features: [],
+        category: 'Software Provider',
+        detailUrl: 'produk-detail.php?id=arcgis-mobile'
       },
       {
+        id: 'erdas-image',
         name: 'Erdas Image',
         image: 'assets/erdas image.jpg',
-        icon: 'fas fa-balance-scale',
-        //detailUrl: 'produk-detail.php?id=load-balancer'
+        icon: 'fas fa-satellite',
+        description: 'Software pengolahan citra satelit dan remote sensing untuk analisis geospasial.',
+        features: [],
+        category: 'Software Provider',
+        detailUrl: 'produk-detail.php?id=erdas-image'
       },
       {
+        id: 'erdas-apollo',
         name: 'Erdas Apollo',
         image: 'assets/erdas apolo.jpg',
-        icon: 'fas fa-chart-line',
-        //detailUrl: 'produk-detail.php?id=network-monitoring-tools'
+        icon: 'fas fa-rocket',
+        description: 'Platform cloud untuk manajemen dan analisis citra satelit skala besar.',
+        features: [],
+        category: 'Software Provider',
+        detailUrl: 'produk-detail.php?id=erdas-apollo'
       }
     ]
   },
   'enrm': {
     title: 'Environment & Natural Resources Management',
+    description: 'Solusi manajemen lingkungan dan sumber daya alam untuk pembangunan berkelanjutan',
     products: [
       {
-        name: 'Crystal Zone Management',
+        id: 'coastal-zone-management',
+        name: 'Coastal Zone Management',
         image: 'assets/coastal zone.jpg',
-        icon: 'fas fa-laptop',
-        //detailUrl: 'produk-detail.php?id=endpoint-detection-response'
+        icon: 'fas fa-water',
+        description: 'Sistem manajemen zona pesisir untuk monitoring dan perlindungan lingkungan pantai.',
+        features: [],
+        category: 'Environment & Natural Resources Management',
+        detailUrl: 'produk-detail.php?id=coastal-zone-management'
       },
       {
+        id: 'forest-plantation-inventory',
         name: 'Forest & Plantation Inventory',
         image: 'assets/logo.png',
-        icon: 'fas fa-envelope-open-text',
-        //detailUrl: 'produk-detail.php?id=email-security-gateway'
+        icon: 'fas fa-tree',
+        description: 'Sistem inventarisasi hutan dan perkebunan untuk pengelolaan sumber daya kehutanan.',
+        features: [],
+        category: 'Environment & Natural Resources Management',
+        detailUrl: 'produk-detail.php?id=forest-plantation-inventory'
       },
       {
+        id: 'natural-resources-accounting',
         name: 'Natural Resources Accounting',
         image: 'assets/logo.png',
-        icon: 'fas fa-search',
-        //detailUrl: 'produk-detail.php?id=siem-platform'
+        icon: 'fas fa-calculator',
+        description: 'Sistem akuntansi sumber daya alam untuk valuasi ekonomi dan perencanaan pembangunan.',
+        features: [],
+        category: 'Environment & Natural Resources Management',
+        detailUrl: 'produk-detail.php?id=natural-resources-accounting'
       },
       {
+        id: 'environment-monitoring',
         name: 'Environment Monitoring',
         image: 'assets/logo.png',
         icon: 'fas fa-globe',
-        //detailUrl: 'produk-detail.php?id=web-application-firewall'
+        description: 'Sistem monitoring lingkungan untuk pemantauan kualitas air, udara, dan tanah.',
+        features: [],
+        category: 'Environment & Natural Resources Management',
+        detailUrl: 'produk-detail.php?id=environment-monitoring'
       }
     ]
   },
   'gis-data-provider': {
     title: 'GIS Data Provider',
+    description: 'Penyedia data geospasial dan citra satelit untuk berbagai kebutuhan pemetaan',
     products: [
       {
+        id: 'maxar',
         name: 'Maxar',
         image: 'assets/maxar.jpeg',
-        icon: 'fas fa-cloud',
-        //detailUrl: 'produk-detail.php?id=public-cloud-services'
+        icon: 'fas fa-satellite',
+        description: 'Penyedia citra satelit resolusi tinggi untuk pemetaan dan monitoring global.',
+        features: [],
+        category: 'GIS Data Provider',
+        detailUrl: 'produk-detail.php?id=maxar'
       },
       {
+        id: 'planetscope',
         name: 'Planetscope',
         image: 'assets/logo.png',
-        icon: 'fas fa-cloud-upload-alt',
-        //detailUrl: 'produk-detail.php?id=private-cloud-infrastructure'
+        icon: 'fas fa-globe',
+        description: 'Citra satelit harian untuk monitoring perubahan lahan dan pertanian.',
+        features: [],
+        category: 'GIS Data Provider',
+        detailUrl: 'produk-detail.php?id=planetscope'
       },
       {
+        id: 'radarsat',
         name: 'Radarsat',
         image: 'assets/radarsat.jpg',
-        icon: 'fas fa-life-ring',
-        //detailUrl: 'produk-detail.php?id=disaster-recovery-service'
+        icon: 'fas fa-radar',
+        description: 'Data radar satelit untuk monitoring cuaca dan analisis permukaan bumi.',
+        features: [],
+        category: 'GIS Data Provider',
+        detailUrl: 'produk-detail.php?id=radarsat'
       },
       {
+        id: 'scanned-map',
         name: 'Scanned Map',
         image: 'assets/scanned map.jpg',
-        icon: 'fas fa-exchange-alt',
-        //detailUrl: 'produk-detail.php?id=cloud-migration-services'
+        icon: 'fas fa-map',
+        description: 'Peta digital hasil scanning untuk referensi historis dan analisis perubahan.',
+        features: [],
+        category: 'GIS Data Provider',
+        detailUrl: 'produk-detail.php?id=scanned-map'
       },
       {
+        id: 'vector-map',
         name: 'Vector Map',
         image: 'assets/vector map.jpg',
-        icon: 'fas fa-cloud-download-alt',
-        //detailUrl: 'produk-detail.php?id=hybrid-cloud-solutions'
+        icon: 'fas fa-vector-square',
+        description: 'Data vektor untuk analisis spasial dan pembuatan peta tematik.',
+        features: [],
+        category: 'GIS Data Provider',
+        detailUrl: 'produk-detail.php?id=vector-map'
       },
       {
+        id: 'data-converter',
         name: 'Data Converter',
         image: 'assets/logo.png',
-        icon: 'fas fa-cubes',
-        //detailUrl: 'produk-detail.php?id=container-orchestration'
+        icon: 'fas fa-exchange-alt',
+        description: 'Tools konversi data geospasial antar format untuk kompatibilitas sistem.',
+        features: [],
+        category: 'GIS Data Provider',
+        detailUrl: 'produk-detail.php?id=data-converter'
       },
       {
-        name: 'POI',
+        id: 'poi-data',
+        name: 'POI Data',
         image: 'assets/logo.png',
-        icon: 'fas fa-cubes',
-        //detailUrl: 'produk-detail.php?id=container-orchestration'
+        icon: 'fas fa-map-marker-alt',
+        description: 'Database Points of Interest untuk navigasi dan analisis lokasi.',
+        features: [],
+        category: 'GIS Data Provider',
+        detailUrl: 'produk-detail.php?id=poi-data'
       }
     ]
   },
   'gis-information-technology': {
     title: 'GIS & Information Technology',
+    description: 'Aplikasi dan sistem teknologi informasi geografis untuk berbagai platform',
     products: [
       {
+        id: 'web-desktop-mobile-app',
         name: 'Web, Desktop, Mobile Application',
         image: 'assets/application.jpg',
-        icon: 'fas fa-warehouse',
-        detailUrl: 'produk-detail.php?id=data-warehouse-platform'
+        icon: 'fas fa-laptop-code',
+        description: 'Pengembangan aplikasi GIS untuk platform web, desktop, dan mobile sesuai kebutuhan.',
+        features: [],
+        category: 'GIS & Information Technology',
+        detailUrl: 'produk-detail.php?id=web-desktop-mobile-app'
       },
       {
+        id: 'gps-tracking-system',
         name: 'GPS Tracking System',
         image: 'assets/logo.png',
-        icon: 'fas fa-chart-bar',
-        detailUrl: 'produk-detail.php?id=business-analytics-suite'
+        icon: 'fas fa-map-marker-alt',
+        description: 'Sistem pelacakan GPS untuk monitoring kendaraan, aset, dan personel secara real-time.',
+        features: [],
+        category: 'GIS & Information Technology',
+        detailUrl: 'produk-detail.php?id=gps-tracking-system'
       }
     ]
   },
 };
+
+// Function to get product by ID
+function getProductById(productId) {
+  for (const categoryKey in categoryProducts) {
+    const category = categoryProducts[categoryKey];
+    const product = category.products.find(p => p.id === productId);
+    if (product) {
+      return product;
+    }
+  }
+  return null;
+}
 
 // Function to show category products
 function showCategoryProducts(categoryKey) {
@@ -219,7 +352,8 @@ function showCategoryProducts(categoryKey) {
   // Add products
   categoryData.products.forEach(product => {
     const productCard = document.createElement('div');
-    productCard.className = 'individual-product';
+    productCard.className = 'individual-product clickable-product';
+    productCard.onclick = () => window.location.href = product.detailUrl;
     productCard.innerHTML = `
       <div class="product-image">
         ${product.image ? 
@@ -231,6 +365,13 @@ function showCategoryProducts(categoryKey) {
       </div>
       <div class="product-info">
         <h4 class="product-name">${product.name}</h4>
+        <p class="product-description">${product.description}</p>
+        <div class="product-features">
+          ${product.features.slice(0, 3).map(feature => `<span class="feature-tag">${feature}</span>`).join('')}
+        </div>
+        <div class="product-action">
+          <button class="btn-detail">Lihat Detail</button>
+        </div>
       </div>
     `;
     productsGrid.appendChild(productCard);

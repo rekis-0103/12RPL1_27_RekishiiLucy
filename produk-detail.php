@@ -1,4 +1,4 @@
-<!--<?php
+<?php
 $id = isset($_GET['id']) ? preg_replace('/[^a-z0-9\-]/i', '', $_GET['id']) : '';
 $title = $id ? ucwords(str_replace('-', ' ', $id)) : 'Detail Produk';
 ?>
@@ -10,64 +10,42 @@ $title = $id ? ucwords(str_replace('-', ' ', $id)) : 'Detail Produk';
 	<title><?= htmlspecialchars($title) ?> - PT Waindo Specterra</title>
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 	<link rel="stylesheet" href="assets/css/common.css">
+	<link rel="stylesheet" href="assets/css/navbar.css">
+	<link rel="stylesheet" href="assets/css/pages.css">
 	<link rel="stylesheet" href="assets/css/produk.css">
 </head>
-<body>
-	<nav class="navbar">
-		<div class="nav-container">
-			<div class="nav-logo">
-				<a href="index.php"><img src="assets/logo.png" alt="" style="width: 30vh"></a>
-			</div>
-			<ul class="nav-menu">
-				<li><a href="index.php">Beranda</a></li>
-				<li><a href="tentang-kami.php">Tentang Kami</a></li>
-				<li><a href="produk.php" class="active">Produk</a></li>
-				<li><a href="layanan.php">Layanan</a></li>
-				<li><a href="mitra-kerja.php">Mitra Kerja</a></li>
-				<li><a href="berita.php">Berita</a></li>
-				<li><a href="hubungi-kami.php">Hubungi Kami</a></li>
-				<li><a href="bergabung.php">Bergabung</a></li>
-				<li><a href="login.php" class="login-btn">Login</a></li>
-			</ul>
-			<div class="hamburger">
-				<span></span>
-				<span></span>
-				<span></span>
-			</div>
-		</div>
-	</nav>
+<body class="produk-detail-page">
+	<?php include 'includes/navbar.php'; ?>
 
-	<header class="page-header">
-		<div class="container">
-			<h1 class="fade-in-up"><?= htmlspecialchars($title) ?></h1>
-			<p class="fade-in-up">Detail informasi produk terkait kategori dan spesifikasi.</p>
-		</div>
-	</header>
-
-	<main>
-		<section class="products-section">
+	<div class="page-container">
+		<header class="page-header">
 			<div class="container">
-				<div class="category-products-display active" style="display:block; opacity:1; transform:none;">
-					<div class="category-header">
-						<h3><?= htmlspecialchars($title) ?></h3>
-						<p>Halaman detail untuk produk "<?= htmlspecialchars($title) ?>". Konten detail bisa diisi dari database nanti.</p>
-					</div>
-					<div class="products-grid">
-						<div class="individual-product">
-							<div class="product-image">
-								<i class="fas fa-box-open"></i>
-							</div>
-							<div class="product-info">
-								<h4 class="product-name"><?= htmlspecialchars($title) ?></h4>
-								<p>Deskripsi produk placeholder. Tambahkan fitur, spesifikasi, dan gambar sesuai kebutuhan.</p>
-								<a href="produk.php" class="product-detail-btn">Kembali ke Produk</a>
-							</div>
+				<h1 class="fade-in-up" id="product-title"><?= htmlspecialchars($title) ?></h1>
+				<p class="fade-in-up">Detail informasi produk terkait kategori dan spesifikasi.</p>
+			</div>
+		</header>
+
+		<main class="page-content">
+			<section class="products-section">
+				<div class="container">
+					<!-- Product not found message -->
+					<div id="product-not-found" class="product-not-found" style="display: none;">
+						<div class="not-found-content">
+							<i class="fas fa-exclamation-triangle"></i>
+							<h2>Produk Tidak Ditemukan</h2>
+							<p>Maaf, produk yang Anda cari tidak tersedia.</p>
+							<a href="produk.php" class="btn-primary">Kembali ke Produk</a>
 						</div>
 					</div>
+
+					<!-- Product detail container -->
+					<div id="product-detail-container" class="product-detail-container">
+						<!-- Content will be loaded by JavaScript -->
+					</div>
 				</div>
-			</div>
-		</section>
-	</main>
+			</section>
+		</main>
+	</div>
 
 	<footer class="footer">
 		<div class="container">
@@ -96,7 +74,8 @@ $title = $id ? ucwords(str_replace('-', ' ', $id)) : 'Detail Produk';
 		</div>
 	</footer>
 
+	<script src="js/produk.js"></script>
+	<script src="js/produk-detail.js"></script>
 	<script src="js/common.js"></script>
 </body>
 </html>
--->
