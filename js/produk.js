@@ -207,7 +207,7 @@ const categoryProducts = {
       {
         id: "forest-plantation-inventory",
         name: "Forest & Plantation Inventory",
-        image: "assets/logo.png",
+        image: "assets/forest-plantation.jpg",
         icon: "fas fa-tree",
         description:
           "Sistem inventarisasi hutan dan perkebunan untuk memantau luas, jenis vegetasi, serta potensi sumber daya kehutanan. Dapat digunakan untuk pengelolaan hutan lestari, perencanaan produksi, maupun konservasi keanekaragaman hayati.",
@@ -218,7 +218,7 @@ const categoryProducts = {
       {
         id: "natural-resources-accounting",
         name: "Natural Resources Accounting",
-        image: "assets/logo.png",
+        image: "assets/Natural-Resource-Accounting.jpg",
         icon: "fas fa-calculator",
         description:
           "Sistem akuntansi sumber daya alam yang digunakan untuk menghitung nilai ekonomi dari hutan, tambang, air, hingga energi. Mendukung perencanaan pembangunan berkelanjutan dengan data kuantitatif dan komprehensif.",
@@ -229,7 +229,7 @@ const categoryProducts = {
       {
         id: "environment-monitoring",
         name: "Environment Monitoring",
-        image: "assets/logo.png",
+        image: "assets/environtment-monitoring.jpg",
         icon: "fas fa-globe",
         description:
           "Sistem pemantauan lingkungan yang fokus pada kualitas air, udara, dan tanah. Memberikan data real-time yang penting bagi pengendalian pencemaran, kesehatan lingkungan, hingga perumusan kebijakan berbasis data.",
@@ -302,7 +302,7 @@ const categoryProducts = {
       {
         id: "data-converter",
         name: "Data Converter",
-        image: "assets/logo.png",
+        image: "assets/data-converter.jpg",
         icon: "fas fa-exchange-alt",
         description:
           "Tools konversi data geospasial antar format yang memudahkan interoperabilitas antar sistem. Mendukung berbagai format standar sehingga mempermudah integrasi lintas platform.",
@@ -313,7 +313,7 @@ const categoryProducts = {
       {
         id: "poi-data",
         name: "POI Data",
-        image: "assets/logo.png",
+        image: "assets/POI-data.png",
         icon: "fas fa-map-marker-alt",
         description:
           "Database Points of Interest yang berisi lokasi penting seperti fasilitas umum, transportasi, hingga destinasi wisata. Sangat berguna untuk navigasi, analisis lokasi bisnis, serta perencanaan transportasi.",
@@ -342,7 +342,7 @@ const categoryProducts = {
       {
         id: "gps-tracking-system",
         name: "GPS Tracking System",
-        image: "assets/logo.png",
+        image: "assets/gps-tracking-system.jpeg",
         icon: "fas fa-map-marker-alt",
         description:
           "Sistem pelacakan GPS yang memungkinkan monitoring kendaraan, aset, maupun personel secara real-time. Cocok digunakan untuk manajemen armada, keamanan aset, hingga pengelolaan logistik yang efisien.",
