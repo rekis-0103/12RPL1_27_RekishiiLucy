@@ -306,7 +306,7 @@ if ($active_popup_rs && mysqli_num_rows($active_popup_rs) > 0) {
             stopAuto();
             autoTimer = setInterval(() => {
                 nextSlide();
-            }, 4000);
+            }, 10000);
         }
         function stopAuto() {
             if (autoTimer) {

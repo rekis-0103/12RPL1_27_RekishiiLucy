@@ -24,7 +24,15 @@ if (session_status() === PHP_SESSION_NONE) {
             </li>
             <li><a href="layanan.php" <?php echo (basename($_SERVER['PHP_SELF']) == 'layanan.php') ? 'class="active"' : ''; ?>>Layanan</a></li>
             <li><a href="mitra-kerja.php" <?php echo (basename($_SERVER['PHP_SELF']) == 'mitra-kerja.php') ? 'class="active"' : ''; ?>>Mitra Kerja</a></li>
-            <li><a href="berita.php" <?php echo (basename($_SERVER['PHP_SELF']) == 'berita.php') ? 'class="active"' : ''; ?>>Berita</a></li>
+            <li>
+                <a href="berita.php"
+                    <?php echo (basename($_SERVER['PHP_SELF']) == 'berita.php'
+                        || strpos(basename($_SERVER['PHP_SELF']), 'kegiatan-detail') !== false
+                        || strpos(basename($_SERVER['PHP_SELF']), 'galeri') !== false)
+                        ? 'class="active"' : ''; ?>>
+                    Berita
+                </a>
+            </li>
             <li><a href="hubungi-kami.php" <?php echo (basename($_SERVER['PHP_SELF']) == 'hubungi-kami.php') ? 'class="active"' : ''; ?>>Hubungi Kami</a></li>
             <li>
                 <a href="bergabung.php"
