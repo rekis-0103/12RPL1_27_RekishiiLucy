@@ -67,6 +67,7 @@ $konten_terbaru = mysqli_query($conn, "SELECT * FROM `log_aktivitas` WHERE actio
             <ul class="sidebar-menu">
                 <li><a href="dashboard.php" class="active"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
                 <li><a href="kegiatan.php"><i class="fas fa-newspaper"></i> Kelola Konten</a></li>
+                <li><a href="produk-manager.php"><i class="fas fa-box"></i> Kelola Produk</a></li>
                 <li><a href="../index.php"><i class="fas fa-home"></i> Beranda</a></li>
                 <li><a href="../logout.php"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
             </ul>

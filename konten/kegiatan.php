@@ -176,6 +176,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
             <ul class="sidebar-menu">
                 <li><a href="dashboard.php"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
                 <li><a href="kegiatan.php" class="active"><i class="fas fa-newspaper"></i> Kelola Konten</a></li>
+                <li><a href="produk-manager.php"><i class="fas fa-box"></i> Kelola Produk</a></li>
                 <li><a href="../index.php"><i class="fas fa-home"></i> Beranda</a></li>
                 <li><a href="../logout.php"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
             </ul>
@@ -302,152 +303,161 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
 
     <script src="../js/navbar.js"></script>
     <script>
-    // Sidebar toggle
-    function toggleSidebar() {
-        const sidebar = document.getElementById('sidebar');
-        const toggleBtn = document.querySelector('.mobile-toggle');
-        sidebar.classList.toggle('active');
-        toggleBtn.style.display = sidebar.classList.contains('active') ? "none" : "block";
-    }
-
-    // Tutup sidebar kalau klik di luar
-    document.addEventListener('click', function (event) {
-        const sidebar = document.getElementById('sidebar');
-        const mobileToggle = document.querySelector('.mobile-toggle');
-        if (window.innerWidth <= 768) {
-            if (!sidebar.contains(event.target) && !mobileToggle.contains(event.target)) {
-                sidebar.classList.remove('active');
-                mobileToggle.style.display = "block";
-            }
+        // Sidebar toggle
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const toggleBtn = document.querySelector('.mobile-toggle');
+            sidebar.classList.toggle('active');
+            toggleBtn.style.display = sidebar.classList.contains('active') ? "none" : "block";
         }
-    });
 
-    // Modal Edit
-    const modal = document.getElementById('editModal');
-    const span = document.getElementsByClassName('close')[0];
-
-    function showEditForm(type, id, judul, deskripsi = '', url = '', tipe = '') {
-        if (!modal) return;
-
-        // Hide semua form
-        ['editKegiatanForm', 'editWebinarForm', 'editLiveForm', 'editGaleriForm'].forEach(fid => {
-            const f = document.getElementById(fid);
-            if (f) f.style.display = 'none';
+        // Tutup sidebar kalau klik di luar
+        document.addEventListener('click', function(event) {
+            const sidebar = document.getElementById('sidebar');
+            const mobileToggle = document.querySelector('.mobile-toggle');
+            if (window.innerWidth <= 768) {
+                if (!sidebar.contains(event.target) && !mobileToggle.contains(event.target)) {
+                    sidebar.classList.remove('active');
+                    mobileToggle.style.display = "block";
+                }
+            }
         });
 
-        // Tampilkan form sesuai type
-        if (type === 'kegiatan') {
-            document.getElementById('modalTitle').textContent = 'Edit Kegiatan';
-            document.getElementById('editKegiatanForm').style.display = 'block';
-            document.getElementById('editKegiatanId').value = id;
-            document.getElementById('editKegiatanJudul').value = judul;
-            document.getElementById('editKegiatanDeskripsi').value = deskripsi;
-        } else if (type === 'webinar') {
-            document.getElementById('modalTitle').textContent = 'Edit Webinar';
-            document.getElementById('editWebinarForm').style.display = 'block';
-            document.getElementById('editWebinarId').value = id;
-            document.getElementById('editWebinarJudul').value = judul;
-        } else if (type === 'live') {
-            document.getElementById('modalTitle').textContent = 'Edit Live Streaming';
-            document.getElementById('editLiveForm').style.display = 'block';
-            document.getElementById('editLiveId').value = id;
-            document.getElementById('editLiveJudul').value = judul;
-            document.getElementById('editLiveUrl').value = url;
-            document.getElementById('editLiveTipe').value = tipe;
-        } else if (type === 'galeri') {
-            document.getElementById('modalTitle').textContent = 'Edit Galeri';
-            document.getElementById('editGaleriForm').style.display = 'block';
-            document.getElementById('editGaleriId').value = id;
-            document.getElementById('editGaleriJudul').value = judul;
+        // Modal Edit
+        const modal = document.getElementById('editModal');
+        const span = document.getElementsByClassName('close')[0];
+
+        function showEditForm(type, id, judul, deskripsi = '', url = '', tipe = '') {
+            if (!modal) return;
+
+            // Hide semua form
+            ['editKegiatanForm', 'editWebinarForm', 'editLiveForm', 'editGaleriForm'].forEach(fid => {
+                const f = document.getElementById(fid);
+                if (f) f.style.display = 'none';
+            });
+
+            // Tampilkan form sesuai type
+            if (type === 'kegiatan') {
+                document.getElementById('modalTitle').textContent = 'Edit Kegiatan';
+                document.getElementById('editKegiatanForm').style.display = 'block';
+                document.getElementById('editKegiatanId').value = id;
+                document.getElementById('editKegiatanJudul').value = judul;
+                document.getElementById('editKegiatanDeskripsi').value = deskripsi;
+            } else if (type === 'webinar') {
+                document.getElementById('modalTitle').textContent = 'Edit Webinar';
+                document.getElementById('editWebinarForm').style.display = 'block';
+                document.getElementById('editWebinarId').value = id;
+                document.getElementById('editWebinarJudul').value = judul;
+            } else if (type === 'live') {
+                document.getElementById('modalTitle').textContent = 'Edit Live Streaming';
+                document.getElementById('editLiveForm').style.display = 'block';
+                document.getElementById('editLiveId').value = id;
+                document.getElementById('editLiveJudul').value = judul;
+                document.getElementById('editLiveUrl').value = url;
+                document.getElementById('editLiveTipe').value = tipe;
+            } else if (type === 'galeri') {
+                document.getElementById('modalTitle').textContent = 'Edit Galeri';
+                document.getElementById('editGaleriForm').style.display = 'block';
+                document.getElementById('editGaleriId').value = id;
+                document.getElementById('editGaleriJudul').value = judul;
+            }
+
+            // Buka modal
+            modal.style.display = 'block';
+            modal.style.opacity = '0';
+            setTimeout(() => modal.style.opacity = '1', 10);
+            document.body.style.overflow = 'hidden';
         }
 
-        // Buka modal
-        modal.style.display = 'block';
-        modal.style.opacity = '0';
-        setTimeout(() => modal.style.opacity = '1', 10);
-        document.body.style.overflow = 'hidden';
-    }
+        function closeModal() {
+            if (!modal) return;
+            modal.style.opacity = '0';
+            setTimeout(() => {
+                modal.style.display = 'none';
+                document.body.style.overflow = 'auto';
+            }, 300);
+        }
 
-    function closeModal() {
-        if (!modal) return;
-        modal.style.opacity = '0';
-        setTimeout(() => {
-            modal.style.display = 'none';
-            document.body.style.overflow = 'auto';
-        }, 300);
-    }
+        if (span) span.onclick = closeModal;
+        window.onclick = e => {
+            if (e.target === modal) closeModal();
+        };
+        document.addEventListener('keydown', e => {
+            if (e.key === 'Escape' && modal.style.display === 'block') closeModal();
+        });
 
-    if (span) span.onclick = closeModal;
-    window.onclick = e => { if (e.target === modal) closeModal(); };
-    document.addEventListener('keydown', e => { if (e.key === 'Escape' && modal.style.display === 'block') closeModal(); });
-
-    // Modal Gambar
-    function openImageModal(imageSrc, imageAlt) {
-        let imageModal = document.getElementById('imageModal');
-        if (!imageModal) {
-            imageModal = document.createElement('div');
-            imageModal.id = 'imageModal';
-            imageModal.className = 'image-modal';
-            imageModal.innerHTML = `
+        // Modal Gambar
+        function openImageModal(imageSrc, imageAlt) {
+            let imageModal = document.getElementById('imageModal');
+            if (!imageModal) {
+                imageModal = document.createElement('div');
+                imageModal.id = 'imageModal';
+                imageModal.className = 'image-modal';
+                imageModal.innerHTML = `
                 <div class="image-modal-content">
                     <span class="close">&times;</span>
                     <div class="image-loading"></div>
                     <img id="modalImage" alt="">
                     <div class="image-info" id="imageInfo"></div>
                 </div>`;
-            document.body.appendChild(imageModal);
+                document.body.appendChild(imageModal);
 
-            // event close
-            imageModal.addEventListener('click', e => {
-                if (e.target === imageModal || e.target.className === 'close') closeImageModal();
-            });
-            document.addEventListener('keydown', e => { if (e.key === 'Escape') closeImageModal(); });
-        }
-
-        const modalImg = document.getElementById('modalImage');
-        const imageInfo = document.getElementById('imageInfo');
-        const loading = imageModal.querySelector('.image-loading');
-
-        loading.style.display = 'block';
-        modalImg.style.display = 'none';
-        imageModal.style.display = 'block';
-        document.body.style.overflow = 'hidden';
-
-        modalImg.onload = () => {
-            loading.style.display = 'none';
-            modalImg.style.display = 'block';
-        };
-
-        modalImg.src = imageSrc;
-        modalImg.alt = imageAlt;
-        imageInfo.textContent = imageAlt || 'Gambar';
-    }
-
-    function closeImageModal() {
-        const imageModal = document.getElementById('imageModal');
-        if (imageModal) {
-            imageModal.style.display = 'none';
-            document.body.style.overflow = 'auto';
-        }
-    }
-
-    // Tambahkan handler ke semua gambar
-    function addImageHandlers() {
-        const imgs = document.querySelectorAll('.photo-item img, table tbody tr td img[src*="uploads/webinar/"]');
-        imgs.forEach(img => {
-            if (!img.dataset.clickable) {
-                img.dataset.clickable = 'true';
-                img.addEventListener('click', e => {
-                    e.stopPropagation();
-                    openImageModal(img.src, img.alt || 'Gambar');
+                // event close
+                imageModal.addEventListener('click', e => {
+                    if (e.target === imageModal || e.target.className === 'close') closeImageModal();
+                });
+                document.addEventListener('keydown', e => {
+                    if (e.key === 'Escape') closeImageModal();
                 });
             }
-        });
-    }
 
-    document.addEventListener('DOMContentLoaded', addImageHandlers);
-    function refreshImageHandlers() { addImageHandlers(); }
-</script>
+            const modalImg = document.getElementById('modalImage');
+            const imageInfo = document.getElementById('imageInfo');
+            const loading = imageModal.querySelector('.image-loading');
+
+            loading.style.display = 'block';
+            modalImg.style.display = 'none';
+            imageModal.style.display = 'block';
+            document.body.style.overflow = 'hidden';
+
+            modalImg.onload = () => {
+                loading.style.display = 'none';
+                modalImg.style.display = 'block';
+            };
+
+            modalImg.src = imageSrc;
+            modalImg.alt = imageAlt;
+            imageInfo.textContent = imageAlt || 'Gambar';
+        }
+
+        function closeImageModal() {
+            const imageModal = document.getElementById('imageModal');
+            if (imageModal) {
+                imageModal.style.display = 'none';
+                document.body.style.overflow = 'auto';
+            }
+        }
+
+        // Tambahkan handler ke semua gambar
+        function addImageHandlers() {
+            const imgs = document.querySelectorAll('.photo-item img, table tbody tr td img[src*="uploads/webinar/"]');
+            imgs.forEach(img => {
+                if (!img.dataset.clickable) {
+                    img.dataset.clickable = 'true';
+                    img.addEventListener('click', e => {
+                        e.stopPropagation();
+                        openImageModal(img.src, img.alt || 'Gambar');
+                    });
+                }
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', addImageHandlers);
+
+        function refreshImageHandlers() {
+            addImageHandlers();
+        }
+    </script>
 </body>
 
 </html>

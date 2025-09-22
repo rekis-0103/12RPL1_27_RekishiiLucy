@@ -1,6 +1,6 @@
 <?php
-$id = isset($_GET['id']) ? preg_replace('/[^a-z0-9\-]/i', '', $_GET['id']) : '';
-$title = $id ? ucwords(str_replace('-', ' ', $id)) : 'Detail Produk';
+$id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
+$title = $id > 0 ? 'Detail Produk' : 'Detail Produk';
 ?>
 <!DOCTYPE html>
 <html lang="id">
@@ -74,7 +74,7 @@ $title = $id ? ucwords(str_replace('-', ' ', $id)) : 'Detail Produk';
 		</div>
 	</footer>
 
-	<script src="js/produk.js"></script>
+	<script src="js/produk-db.js"></script>
 	<script src="js/produk-detail.js"></script>
 	<script src="js/common.js"></script>
 </body>

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Sep 17, 2025 at 03:10 AM
+-- Generation Time: Sep 22, 2025 at 07:54 AM
 -- Server version: 8.0.30
 -- PHP Version: 8.2.29
 
@@ -457,7 +457,24 @@ INSERT INTO `log_aktivitas` (`log_id`, `user_id`, `action`, `log_time`) VALUES
 (261, 3, 'Login', '2025-09-17 02:38:51'),
 (262, 3, 'HRD: toggle popup gambar #1 -> aktif', '2025-09-17 02:38:59'),
 (263, 3, 'Logout', '2025-09-17 02:39:13'),
-(264, 3, 'Login', '2025-09-17 02:47:30');
+(264, 3, 'Login', '2025-09-17 02:47:30'),
+(265, 3, 'HRD: tambah popup gambar #2 - Lowongan geospasial', '2025-09-17 06:21:11'),
+(266, 3, 'HRD: toggle popup gambar #2 -> aktif', '2025-09-17 06:21:15'),
+(267, 3, 'HRD: toggle popup gambar #1 -> aktif', '2025-09-17 06:21:22'),
+(268, 3, 'HRD: toggle popup gambar #2 -> aktif', '2025-09-17 06:21:37'),
+(269, 3, 'HRD: toggle popup gambar #1 -> aktif', '2025-09-17 08:35:13'),
+(270, 3, 'HRD: toggle popup gambar #2 -> aktif', '2025-09-17 08:35:16'),
+(271, 3, 'Logout', '2025-09-17 08:38:52'),
+(272, 3, 'Login', '2025-09-17 08:39:08'),
+(273, 3, 'HRD: toggle popup gambar #1 -> aktif', '2025-09-17 08:40:17'),
+(274, 3, 'Login', '2025-09-18 07:32:03'),
+(275, 1, 'Login', '2025-09-22 02:45:44'),
+(276, 1, 'Logout', '2025-09-22 04:07:41'),
+(277, 3, 'Login', '2025-09-22 04:07:52'),
+(278, 3, 'Logout', '2025-09-22 04:20:49'),
+(279, 4, 'Login', '2025-09-22 04:21:58'),
+(280, 4, 'Logout', '2025-09-22 04:24:36'),
+(281, 4, 'Login', '2025-09-22 04:26:22');
 
 -- --------------------------------------------------------
 
@@ -509,7 +526,62 @@ CREATE TABLE `popup_images` (
 --
 
 INSERT INTO `popup_images` (`popup_id`, `title`, `image_filename`, `orientation`, `is_active`, `created_by`, `created_at`, `updated_at`) VALUES
-(1, 'Lowongan Terbaru Di PT Waindo', 'popup_vertical_68ca1d7f08849.png', 'vertical', 1, 3, '2025-09-17 02:31:27', '2025-09-17 02:38:59');
+(1, 'Lowongan Terbaru Di PT Waindo', 'popup_vertical_68ca1d7f08849.png', 'vertical', 1, 3, '2025-09-17 02:31:27', '2025-09-17 08:40:17'),
+(2, 'Lowongan geospasial', 'popup_horizontal_68ca5357b1b93.jpg', 'horizontal', 1, 3, '2025-09-17 06:21:11', '2025-09-17 08:35:16');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `products`
+--
+
+CREATE TABLE `products` (
+  `product_id` int NOT NULL,
+  `name` varchar(200) NOT NULL,
+  `description` text,
+  `image` varchar(255) DEFAULT NULL,
+  `category_id` int NOT NULL,
+  `status` enum('active','inactive') DEFAULT 'active',
+  `created_by` int NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Dumping data for table `products`
+--
+
+INSERT INTO `products` (`product_id`, `name`, `description`, `image`, `category_id`, `status`, `created_by`, `created_at`, `updated_at`) VALUES
+(1, 'Enterprise Rack Server', 'Server rack enterprise dengan performa tinggi yang dirancang khusus untuk mendukung aplikasi geomatika skala besar. Menyediakan kapasitas penyimpanan besar, kecepatan pemrosesan data spasial yang optimal, serta keandalan 24/7 untuk mendukung kebutuhan survei, pemetaan, hingga analisis geospasial yang kompleks.', 'assets/remotesesing.jpg', 1, 'active', 4, '2025-09-22 07:15:25', '2025-09-22 07:15:25'),
+(2, 'Geographic Information System', 'Sistem informasi geografis yang komprehensif untuk pengolahan, analisis, serta visualisasi data spasial. GIS ini membantu dalam pengambilan keputusan berbasis lokasi, pemetaan interaktif, hingga integrasi data multi-sumber sehingga dapat digunakan oleh berbagai sektor, mulai dari tata ruang, lingkungan, hingga infrastruktur.', 'assets/Geograpic-Information-System.jpg', 1, 'active', 4, '2025-09-22 07:15:25', '2025-09-22 07:15:25'),
+(3, 'ArcGIS For Desktop', 'Perangkat lunak GIS desktop yang menjadi standar industri dalam analisis geospasial. Menyediakan berbagai tools untuk pemetaan, manajemen data spasial, hingga analisis tingkat lanjut, sehingga sangat ideal digunakan oleh pemerintah, perusahaan, maupun akademisi.', 'assets/arcgis_destop.jpg', 2, 'active', 4, '2025-09-22 07:15:25', '2025-09-22 07:15:25'),
+(4, 'ArcGIS Enterprise', 'Platform GIS berbasis enterprise yang dirancang untuk organisasi besar. Mendukung integrasi data spasial lintas divisi, memungkinkan kolaborasi antar pengguna, serta menyediakan kontrol penuh terhadap keamanan dan distribusi informasi geospasial.', 'assets/arcgisportal.jpg', 2, 'active', 4, '2025-09-22 07:15:25', '2025-09-22 07:15:25');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `product_categories`
+--
+
+CREATE TABLE `product_categories` (
+  `category_id` int NOT NULL,
+  `category_key` varchar(50) NOT NULL,
+  `category_name` varchar(100) NOT NULL,
+  `category_description` text,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Dumping data for table `product_categories`
+--
+
+INSERT INTO `product_categories` (`category_id`, `category_key`, `category_name`, `category_description`, `created_at`, `updated_at`) VALUES
+(1, 'geomatic-applications', 'Geomatic Applications', 'Solusi aplikasi geomatika untuk survei, pemetaan, dan analisis geospasial', '2025-09-22 07:15:25', '2025-09-22 07:15:25'),
+(2, 'software-provider', 'Software Provider', 'Software dan platform GIS terdepan untuk analisis geospasial dan pemetaan', '2025-09-22 07:15:25', '2025-09-22 07:15:25'),
+(3, 'enrm', 'Environment & Natural Resources Management', 'Solusi manajemen lingkungan dan sumber daya alam untuk pembangunan berkelanjutan', '2025-09-22 07:15:25', '2025-09-22 07:15:25'),
+(4, 'gis-data-provider', 'GIS Data Provider', 'Penyedia data geospasial dan citra satelit untuk berbagai kebutuhan pemetaan', '2025-09-22 07:15:25', '2025-09-22 07:15:25'),
+(5, 'gis-information-technology', 'GIS & Information Technology', 'Aplikasi dan sistem teknologi informasi geografis untuk berbagai platform', '2025-09-22 07:15:25', '2025-09-22 07:15:25');
 
 -- --------------------------------------------------------
 
@@ -640,6 +712,21 @@ ALTER TABLE `popup_images`
   ADD KEY `created_by` (`created_by`);
 
 --
+-- Indexes for table `products`
+--
+ALTER TABLE `products`
+  ADD PRIMARY KEY (`product_id`),
+  ADD KEY `category_id` (`category_id`),
+  ADD KEY `created_by` (`created_by`);
+
+--
+-- Indexes for table `product_categories`
+--
+ALTER TABLE `product_categories`
+  ADD PRIMARY KEY (`category_id`),
+  ADD UNIQUE KEY `category_key` (`category_key`);
+
+--
 -- Indexes for table `users`
 --
 ALTER TABLE `users`
@@ -705,7 +792,7 @@ ALTER TABLE `live_streaming`
 -- AUTO_INCREMENT for table `log_aktivitas`
 --
 ALTER TABLE `log_aktivitas`
-  MODIFY `log_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=265;
+  MODIFY `log_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=282;
 
 --
 -- AUTO_INCREMENT for table `lowongan`
@@ -717,7 +804,19 @@ ALTER TABLE `lowongan`
 -- AUTO_INCREMENT for table `popup_images`
 --
 ALTER TABLE `popup_images`
-  MODIFY `popup_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `popup_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT for table `products`
+--
+ALTER TABLE `products`
+  MODIFY `product_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+
+--
+-- AUTO_INCREMENT for table `product_categories`
+--
+ALTER TABLE `product_categories`
+  MODIFY `category_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `users`
@@ -789,6 +888,13 @@ ALTER TABLE `lowongan`
 --
 ALTER TABLE `popup_images`
   ADD CONSTRAINT `popup_images_ibfk_1` FOREIGN KEY (`created_by`) REFERENCES `users` (`user_id`);
+
+--
+-- Constraints for table `products`
+--
+ALTER TABLE `products`
+  ADD CONSTRAINT `products_ibfk_1` FOREIGN KEY (`category_id`) REFERENCES `product_categories` (`category_id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `products_ibfk_2` FOREIGN KEY (`created_by`) REFERENCES `users` (`user_id`);
 
 --
 -- Constraints for table `webinar`

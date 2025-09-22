@@ -1,5 +1,18 @@
 <?php
 session_start();
+require_once 'connect/koneksi.php';
+
+// Get categories with product count
+$categories_query = "
+    SELECT 
+        pc.*,
+        COUNT(p.product_id) as product_count
+    FROM product_categories pc
+    LEFT JOIN products p ON pc.category_id = p.category_id AND p.status = 'active'
+    GROUP BY pc.category_id
+    ORDER BY pc.category_name
+";
+$categories_result = mysqli_query($conn, $categories_query);
 ?>
 <!DOCTYPE html>
 <html lang="id">
@@ -34,30 +47,13 @@ session_start();
                     </div>
 
                     <div class="product-categories">
-                        <div class="category-card fade-in-up">
-                            <h3>Geomatic Applications</h3>
-                            <button class="category-btn" data-category="geomatic-applications">Lihat Produk</button>
-                        </div>
-
-                        <div class="category-card fade-in-up">
-                            <h3>Software Provider</h3>
-                            <button class="category-btn" data-category="software-provider">Lihat Produk</button>
-                        </div>
-
-                        <div class="category-card fade-in-up">
-                            <h3>Environment & Natural Resources Management</h3>
-                            <button class="category-btn" data-category="enrm">Lihat Produk</button>
-                        </div>
-
-                        <div class="category-card fade-in-up">
-                            <h3>GIS Data Provider</h3>
-                            <button class="category-btn" data-category="gis-data-provider">Lihat Produk</button>
-                        </div>
-
-                        <div class="category-card fade-in-up">
-                            <h3>GIS & Information Technology</h3>
-                            <button class="category-btn" data-category="gis-information-technology">Lihat Produk</button>
-                        </div>
+                        <?php while ($category = mysqli_fetch_assoc($categories_result)): ?>
+                            <div class="category-card fade-in-up">
+                                <h3><?php echo htmlspecialchars($category['category_name']); ?></h3>
+                                <p><small><?php echo $category['product_count']; ?> produk tersedia</small></p>
+                                <button class="category-btn" data-category="<?php echo $category['category_key']; ?>">Lihat Produk</button>
+                            </div>
+                        <?php endwhile; ?>
 
                         <!-- Category Products Display Area -->
                         <div id="category-products-display" class="category-products-display">
@@ -67,7 +63,7 @@ session_start();
                                 <p id="category-description">Deskripsi kategori</p>
                             </div>
                             <div id="products-grid" class="products-grid">
-                                <!-- Products will be dynamically inserted here -->
+                                <!-- Products will be dynamically loaded here -->
                             </div>
                         </div>
                     </div>
@@ -100,7 +96,7 @@ session_start();
         </div>
     </footer>
 
-    <script src="js/produk.js"></script>
+    <script src="js/produk-db.js"></script>
     <script src="js/common.js"></script>
 </body>
 

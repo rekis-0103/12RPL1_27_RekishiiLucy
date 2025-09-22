@@ -1,115 +1,120 @@
-// produk-detail.js - untuk menangani halaman detail produk
+// produk-detail.js - menangani halaman detail produk dari database
 
-// Get product ID from URL
+// Ambil product ID dari URL
 const urlParams = new URLSearchParams(window.location.search);
 const productId = urlParams.get('id');
 
-// Load product details when page loads
-document.addEventListener('DOMContentLoaded', function() {
-	loadProductDetails(productId);
+// Jalankan setelah DOM siap
+document.addEventListener('DOMContentLoaded', function () {
+    loadProductDetails(productId);
 });
 
-function loadProductDetails(productId) {
-	// Get product data from produk.js
-	const product = getProductById(productId);
-	
-	if (!product) {
-		showNotFoundMessage();
-		return;
-	}
-	
-	// Update page title
-	document.title = `${product.name} - PT Waindo Specterra`;
-	document.getElementById('product-title').textContent = product.name;
-	
-	// Create product detail HTML
-	const productDetailHTML = `
-		<div class="product-detail-content">
-			<div class="product-detail-header">
-				<div class="breadcrumb">
-					<a href="index.php">Beranda</a>
-					<span>/</span>
-					<a href="produk.php">Produk</a>
-					<span>/</span>
-					<span>${product.category}</span>
-					<span>/</span>
-					<span>${product.name}</span>
-				</div>
-			</div>
-			
-			<div class="product-detail-main">
-				<div class="product-image-section">
-					<div class="product-main-image">
-						${product.image ? 
-							`<img src="${product.image}" alt="${product.name}" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-							 <div class="image-placeholder" style="display:none;">
-								<i class="fas fa-image"></i>
-								<p>Gambar tidak tersedia</p>
-							 </div>` 
-							: 
-							`<div class="image-placeholder">
-								<i class="fas fa-image"></i>
-								<p>Gambar tidak tersedia</p>
-							 </div>`
-						}
-					</div>
-				</div>
-				
-				<div class="product-info-section">
-					<div class="product-header">
-						<h1>${product.name}</h1>
-						<div class="product-category-badge">
-							<i class="fas fa-tag"></i>
-							${product.category}
-						</div>
-					</div>
-					
-					<div class="product-description">
-						<h3>Deskripsi Produk</h3>
-						<p>${product.description}</p>
-					</div>
-				</div>
-			</div>
-			
-			<div class="back-to-products">
-				<a href="produk.php" class="btn-back">
-					<i class="fas fa-arrow-left"></i>
-					Kembali ke Produk
-				</a>
-			</div>
-		</div>
-	`;
-	
-	document.getElementById('product-detail-container').innerHTML = productDetailHTML;
+async function loadProductDetails(productId) {
+    if (!productId) {
+        showNotFoundMessage();
+        return;
+    }
+
+    try {
+        const response = await fetch(`ajax/get-product-detail.php?id=${productId}`);
+        const data = await response.json();
+
+        if (data.success && data.product) {
+            const product = data.product;
+
+            // Update judul halaman
+            document.title = `${product.name} - PT Waindo Specterra`;
+
+            const titleEl = document.getElementById('product-title');
+            if (titleEl) titleEl.textContent = product.name;
+
+            // Buat HTML detail produk
+            const productDetailHTML = `
+                <div class="product-detail-content">
+                    <div class="product-detail-header">
+                        <div class="breadcrumb">
+                            <a href="index.php">Beranda</a>
+                            <span>/</span>
+                            <a href="produk.php">Produk</a>
+                            <span>/</span>
+                            <span>${product.category_name}</span>
+                            <span>/</span>
+                            <span>${product.name}</span>
+                        </div>
+                    </div>
+                    
+                    <div class="product-detail-main">
+                        <div class="product-image-section">
+                            <div class="product-main-image">
+                                ${product.image ? 
+                                    `<img src="${product.image}" alt="${product.name}" 
+                                          onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                                     <div class="image-placeholder" style="display:none;">
+                                        <i class="fas fa-box"></i>
+                                        <p>Gambar tidak tersedia</p>
+                                     </div>` 
+                                    : 
+                                    `<div class="image-placeholder">
+                                        <i class="fas fa-box"></i>
+                                        <p>Gambar tidak tersedia</p>
+                                     </div>`
+                                }
+                            </div>
+                        </div>
+                        
+                        <div class="product-info-section">
+                            <div class="product-header">
+                                <h1>${product.name}</h1>
+                                <div class="product-category-badge">
+                                    <i class="fas fa-tag"></i>
+                                    ${product.category_name}
+                                </div>
+                            </div>
+                            
+                            <div class="product-description">
+                                <h3>Deskripsi Produk</h3>
+                                <p>${product.description}</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="back-to-products">
+                        <a href="produk.php" class="btn-back">
+                            <i class="fas fa-arrow-left"></i>
+                            Kembali ke Produk
+                        </a>
+                    </div>
+                </div>
+            `;
+
+            const containerEl = document.getElementById('product-detail-container');
+            if (containerEl) containerEl.innerHTML = productDetailHTML;
+
+        } else {
+            console.error('API Error:', data.error || 'Product not found');
+            showNotFoundMessage();
+        }
+    } catch (error) {
+        console.error('Error loading product details:', error);
+        showNotFoundMessage();
+    }
 }
 
 function showNotFoundMessage() {
-	document.getElementById('product-not-found').style.display = 'block';
-	document.getElementById('product-title').textContent = 'Produk Tidak Ditemukan';
-}
+    const notFoundEl = document.getElementById('product-not-found');
+    const containerEl = document.getElementById('product-detail-container');
+    const titleEl = document.getElementById('product-title');
 
-function showTab(tabName) {
-	// Hide all tab panes
-	document.querySelectorAll('.tab-pane').forEach(pane => {
-		pane.classList.remove('active');
-	});
-	
-	// Remove active class from all tab buttons
-	document.querySelectorAll('.tab-btn').forEach(btn => {
-		btn.classList.remove('active');
-	});
-	
-	// Show selected tab pane
-	document.getElementById(tabName + '-tab').classList.add('active');
-	
-	// Add active class to clicked button
-	event.target.classList.add('active');
+    if (notFoundEl) notFoundEl.style.display = 'block';
+    if (containerEl) containerEl.style.display = 'none';
+    if (titleEl) titleEl.textContent = 'Produk Tidak Ditemukan';
 }
 
 function contactUs() {
-	window.location.href = 'hubungi-kami.php';
+    window.location.href = 'hubungi-kami.php';
 }
 
 function requestQuote() {
-	window.location.href = 'hubungi-kami.php?request=quote&product=' + encodeURIComponent(document.getElementById('product-title').textContent);
+    const productName = document.getElementById('product-title')?.textContent || '';
+    window.location.href = 'hubungi-kami.php?request=quote&product=' + encodeURIComponent(productName);
 }

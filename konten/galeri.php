@@ -127,6 +127,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
 ?>
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -137,11 +138,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
     <link rel="stylesheet" href="css/dashboard.css">
     <link rel="stylesheet" href="css/berita.css">
     <style>
-        .tabs { display:flex; gap:8px; margin:10px 0; flex-wrap: wrap; }
-        .tabs a { padding:8px 12px; border:1px solid #ddd; border-radius:6px; text-decoration:none; }
-        .tabs a.active { background:#007bff; color:#fff; border-color:#007bff; }
+        .tabs {
+            display: flex;
+            gap: 8px;
+            margin: 10px 0;
+            flex-wrap: wrap;
+        }
+
+        .tabs a {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            text-decoration: none;
+        }
+
+        .tabs a.active {
+            background: #007bff;
+            color: #fff;
+            border-color: #007bff;
+        }
     </style>
-    </head>
+</head>
+
 <body>
     <button class="mobile-toggle" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
     <div class="dashboard-container">
@@ -154,6 +172,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
             <ul class="sidebar-menu">
                 <li><a href="dashboard.php"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
                 <li><a href="galeri.php" class="active"><i class="fas fa-newspaper"></i> Kelola Konten</a></li>
+                <li><a href="produk-manager.php"><i class="fas fa-box"></i> Kelola Produk</a></li>
                 <li><a href="../index.php"><i class="fas fa-home"></i> Beranda</a></li>
                 <li><a href="../logout.php"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
             </ul>
@@ -202,37 +221,42 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                         <tbody>
                             <?php $gl = mysqli_query($conn, "SELECT * FROM galeri ORDER BY created_at DESC"); ?>
                             <?php if ($gl && mysqli_num_rows($gl) > 0): while ($row = mysqli_fetch_assoc($gl)): ?>
+                                    <tr>
+                                        <td><?php echo htmlspecialchars($row['judul']); ?></td>
+                                        <td>
+                                            <?php
+                                            $fotos = mysqli_query($conn, "SELECT * FROM galeri_foto WHERE galeri_id=" . (int)$row['galeri_id']);
+                                            if ($fotos && mysqli_num_rows($fotos) > 0):
+                                                while ($foto = mysqli_fetch_assoc($fotos)): ?>
+                                                    <div class="photo-item">
+                                                        <img src="../<?php echo htmlspecialchars($foto['foto']); ?>" alt="Foto Galeri" style="height:40px; margin:2px;">
+                                                        <form method="POST" class="inline" onsubmit="return confirm('Hapus foto ini?')">
+                                                            <input type="hidden" name="action" value="delete_galeri_foto">
+                                                            <input type="hidden" name="foto_id" value="<?php echo (int)$foto['foto_id']; ?>">
+                                                            <button type="submit" class="btn btn-danger btn-xs"><i class="fas fa-times"></i></button>
+                                                        </form>
+                                                    </div>
+                                            <?php endwhile;
+                                            else: echo "-";
+                                            endif; ?>
+                                        </td>
+                                        <td><?php echo htmlspecialchars($row['created_at']); ?></td>
+                                        <td>
+                                            <button type="button" class="btn btn-primary btn-sm" onclick="showEditForm('galeri', <?php echo (int)$row['galeri_id']; ?>, '<?php echo htmlspecialchars(addslashes($row['judul'])); ?>')">
+                                                <i class="fas fa-edit"></i> Edit
+                                            </button>
+                                            <form method="POST" class="inline" onsubmit="return confirm('Hapus galeri ini? Semua foto akan terhapus.')">
+                                                <input type="hidden" name="action" value="delete_galeri">
+                                                <input type="hidden" name="id" value="<?php echo (int)$row['galeri_id']; ?>">
+                                                <button type="submit" class="btn btn-danger btn-sm"><i class="fas fa-trash"></i> Hapus</button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                <?php endwhile;
+                            else: ?>
                                 <tr>
-                                    <td><?php echo htmlspecialchars($row['judul']); ?></td>
-                                    <td>
-                                        <?php
-                                        $fotos = mysqli_query($conn, "SELECT * FROM galeri_foto WHERE galeri_id=" . (int)$row['galeri_id']);
-                                        if ($fotos && mysqli_num_rows($fotos) > 0):
-                                            while ($foto = mysqli_fetch_assoc($fotos)): ?>
-                                                <div class="photo-item">
-                                                    <img src="../<?php echo htmlspecialchars($foto['foto']); ?>" alt="Foto Galeri" style="height:40px; margin:2px;">
-                                                    <form method="POST" class="inline" onsubmit="return confirm('Hapus foto ini?')">
-                                                        <input type="hidden" name="action" value="delete_galeri_foto">
-                                                        <input type="hidden" name="foto_id" value="<?php echo (int)$foto['foto_id']; ?>">
-                                                        <button type="submit" class="btn btn-danger btn-xs"><i class="fas fa-times"></i></button>
-                                                    </form>
-                                                </div>
-                                        <?php endwhile; else: echo "-"; endif; ?>
-                                    </td>
-                                    <td><?php echo htmlspecialchars($row['created_at']); ?></td>
-                                    <td>
-                                        <button type="button" class="btn btn-primary btn-sm" onclick="showEditForm('galeri', <?php echo (int)$row['galeri_id']; ?>, '<?php echo htmlspecialchars(addslashes($row['judul'])); ?>')">
-                                            <i class="fas fa-edit"></i> Edit
-                                        </button>
-                                        <form method="POST" class="inline" onsubmit="return confirm('Hapus galeri ini? Semua foto akan terhapus.')">
-                                            <input type="hidden" name="action" value="delete_galeri">
-                                            <input type="hidden" name="id" value="<?php echo (int)$row['galeri_id']; ?>">
-                                            <button type="submit" class="btn btn-danger btn-sm"><i class="fas fa-trash"></i> Hapus</button>
-                                        </form>
-                                    </td>
+                                    <td colspan="4" class="text-center">Belum ada galeri</td>
                                 </tr>
-                            <?php endwhile; else: ?>
-                                <tr><td colspan="4" class="text-center">Belum ada galeri</td></tr>
                             <?php endif; ?>
                         </tbody>
                     </table>
@@ -492,6 +516,5 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
         }
     </script>
 </body>
+
 </html>
-
-
