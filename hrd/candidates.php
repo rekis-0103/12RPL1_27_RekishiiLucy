@@ -85,13 +85,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && isset($_
     }
 }
 
-// Fetch candidates
+// Fetch candidates - Updated query to show all candidates regardless of who posted the job
 $list = mysqli_query($conn, "SELECT a.*, u.full_name, u.email, l.title 
     FROM applications a 
     JOIN users u ON a.user_id=u.user_id 
     JOIN lowongan l ON a.job_id=l.job_id 
-    WHERE a.status IN ('lolos administrasi','tes & wawancara') 
-      AND l.posted_by = $user_id 
+    WHERE a.status IN ('lolos administrasi','tes & wawancara')
     ORDER BY COALESCE(a.interview_date,a.updated_at) ASC");
 ?>
 <!DOCTYPE html>
@@ -152,9 +151,12 @@ $list = mysqli_query($conn, "SELECT a.*, u.full_name, u.email, l.title
                         <thead>
                             <tr>
                                 <th>Nama</th>
+                                <th>Email</th>
                                 <th>Posisi</th>
                                 <th>Status</th>
+                                <th>CV</th>
                                 <th>Jadwal Wawancara</th>
+                                <th>Tanggal Melamar</th>
                                 <th>Aksi</th>
                             </tr>
                         </thead>
@@ -163,32 +165,51 @@ $list = mysqli_query($conn, "SELECT a.*, u.full_name, u.email, l.title
                                 <?php while ($row = mysqli_fetch_assoc($list)): ?>
                                     <tr>
                                         <td><?php echo htmlspecialchars($row['full_name']); ?></td>
+                                        <td><?php echo htmlspecialchars($row['email']); ?></td>
                                         <td><?php echo htmlspecialchars($row['title']); ?></td>
-                                        <td><span class="badge"><?php echo htmlspecialchars($row['status']); ?></span></td>
-                                        <td><?php echo htmlspecialchars($row['interview_date'] ?: '-'); ?></td>
+                                        <td><span class="badge status-<?php echo str_replace(' ', '-', $row['status']); ?>"><?php echo htmlspecialchars($row['status']); ?></span></td>
+                                        <td>
+                                            <?php if (!empty($row['cv'])): ?>
+                                                <a href="../<?php echo htmlspecialchars($row['cv']); ?>" target="_blank" class="btn btn-secondary btn-sm">
+                                                    <i class="fas fa-file-pdf"></i> Lihat CV
+                                                </a>
+                                            <?php else: ?>
+                                                <span class="text-muted">-</span>
+                                            <?php endif; ?>
+                                        </td>
+                                        <td><?php echo htmlspecialchars($row['interview_date'] ? date('d/m/Y H:i', strtotime($row['interview_date'])) : '-'); ?></td>
+                                        <td><?php echo htmlspecialchars(date('d/m/Y', strtotime($row['applied_at']))); ?></td>
                                         <td>
                                             <div class="row-actions">
                                                 <?php if ($row['status'] === 'lolos administrasi'): ?>
-                                                    <form method="POST" class="inline">
+                                                    <form method="POST" class="inline action-form">
                                                         <input type="hidden" name="action" value="move_to_interview">
                                                         <input type="hidden" name="application_id" value="<?php echo (int)$row['application_id']; ?>">
-                                                        <input type="datetime-local" name="interview_date" class="input-sm">
-                                                        <button type="submit" class="btn btn-primary btn-sm">Set Tes & Wawancara</button>
+                                                        <input type="datetime-local" name="interview_date" class="input-sm" required>
+                                                        <button type="submit" class="btn btn-primary btn-sm">
+                                                            <i class="fas fa-calendar-alt"></i> Set Wawancara
+                                                        </button>
                                                     </form>
                                                 <?php endif; ?>
+                                                
                                                 <?php if ($row['status'] === 'tes & wawancara' || $row['status'] === 'lolos administrasi'): ?>
-                                                    <form method="POST" class="inline" onsubmit="return confirm('Terima kandidat ini?')">
+                                                    <form method="POST" class="inline action-form" onsubmit="return confirm('Terima kandidat ini?')">
                                                         <input type="hidden" name="action" value="accept_hire">
                                                         <input type="hidden" name="application_id" value="<?php echo (int)$row['application_id']; ?>">
-                                                        <input type="date" name="start_date" class="input-sm" required>
-                                                        <input type="text" name="reason" class="input-sm" placeholder="Alasan/Note" required>
-                                                        <button type="submit" class="btn btn-primary btn-sm">Terima Bekerja</button>
+                                                        <input type="date" name="start_date" class="input-sm" placeholder="Tanggal Mulai" required>
+                                                        <input type="text" name="reason" class="input-sm" placeholder="Catatan" required>
+                                                        <button type="submit" class="btn btn-success btn-sm">
+                                                            <i class="fas fa-check"></i> Terima
+                                                        </button>
                                                     </form>
-                                                    <form method="POST" class="inline" onsubmit="return confirm('Tolak kandidat ini?')">
+                                                    
+                                                    <form method="POST" class="inline action-form" onsubmit="return confirm('Tolak kandidat ini?')">
                                                         <input type="hidden" name="action" value="reject_after_interview">
                                                         <input type="hidden" name="application_id" value="<?php echo (int)$row['application_id']; ?>">
                                                         <input type="text" name="reason" class="input-sm" placeholder="Alasan Ditolak" required>
-                                                        <button type="submit" class="btn btn-danger btn-sm">Tolak</button>
+                                                        <button type="submit" class="btn btn-danger btn-sm">
+                                                            <i class="fas fa-times"></i> Tolak
+                                                        </button>
                                                     </form>
                                                 <?php endif; ?>
                                             </div>
@@ -197,7 +218,7 @@ $list = mysqli_query($conn, "SELECT a.*, u.full_name, u.email, l.title
                                 <?php endwhile; ?>
                             <?php else: ?>
                                 <tr>
-                                    <td colspan="5" class="text-center">Belum ada kandidat</td>
+                                    <td colspan="8" class="text-center">Belum ada kandidat pada tahap lanjutan</td>
                                 </tr>
                             <?php endif; ?>
                         </tbody>

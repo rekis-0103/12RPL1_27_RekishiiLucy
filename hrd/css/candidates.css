@@ -37,72 +37,193 @@
 table {
   width: 100%;
   border-collapse: collapse;
+  font-size: 14px;
 }
 th,
 td {
-  padding: 12px;
+  padding: 12px 8px;
   border-bottom: 1px solid #e5e7eb;
   text-align: left;
+  vertical-align: middle;
 }
 th {
   background: #f9fafb;
   color: #374151;
+  font-weight: 600;
+  white-space: nowrap;
 }
 .text-center {
   text-align: center;
 }
+.text-muted {
+  color: #6b7280;
+}
+
+/* Status badges */
 .badge {
   padding: 4px 10px;
   border-radius: 999px;
-  background: #eef2ff;
-  color: #3730a3;
   font-size: 12px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+.status-lolos-administrasi {
+  background: #fef3c7;
+  color: #92400e;
+}
+.status-tes-wawancara {
+  background: #dbeafe;
+  color: #1d4ed8;
+}
+.status-diterima-bekerja {
+  background: #d1fae5;
+  color: #065f46;
+}
+.status-ditolak {
+  background: #fee2e2;
+  color: #991b1b;
 }
 
 /* Actions */
 .row-actions {
   display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 200px;
+}
+.action-form {
+  display: flex;
+  align-items: center;
+  gap: 4px;
   flex-wrap: wrap;
-  gap: 8px;
 }
 .inline {
-  display: inline-flex;
+  display: flex;
   align-items: center;
   gap: 6px;
+  margin-bottom: 4px;
 }
 .input-sm {
   padding: 6px 8px;
   border: 1px solid #d1d5db;
   border-radius: 6px;
   font-size: 12px;
+  min-width: 100px;
 }
 
 /* Buttons */
 .btn {
-  padding: 8px 12px;
+  padding: 6px 10px;
   border: none;
   border-radius: 6px;
   cursor: pointer;
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 4px;
+  text-decoration: none;
+  font-size: 12px;
+  font-weight: 500;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+.btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 .btn-primary {
   background: #2563eb;
   color: #fff;
 }
+.btn-primary:hover {
+  background: #1d4ed8;
+}
+.btn-success {
+  background: #059669;
+  color: #fff;
+}
+.btn-success:hover {
+  background: #047857;
+}
 .btn-danger {
   background: #dc2626;
   color: #fff;
+}
+.btn-danger:hover {
+  background: #b91c1c;
+}
+.btn-secondary {
+  background: #6b7280;
+  color: #fff;
+}
+.btn-secondary:hover {
+  background: #4b5563;
 }
 .btn-sm {
   padding: 6px 10px;
   font-size: 12px;
 }
 
-@media (max-width: 768px) {
-  .inline {
+/* Responsive design */
+@media (max-width: 1200px) {
+  .row-actions {
+    min-width: 180px;
+  }
+  .action-form {
     flex-direction: column;
     align-items: stretch;
   }
+  .input-sm {
+    min-width: 80px;
+  }
+}
+
+@media (max-width: 992px) {
+  table {
+    font-size: 12px;
+  }
+  th, td {
+    padding: 8px 6px;
+  }
+  .row-actions {
+    min-width: 160px;
+  }
+}
+
+@media (max-width: 768px) {
+  .table-wrap {
+    overflow-x: scroll;
+  }
+  table {
+    min-width: 1000px;
+  }
+  .action-form {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 4px;
+  }
+  .input-sm {
+    width: 100%;
+    min-width: auto;
+  }
+  .btn {
+    justify-content: center;
+    width: 100%;
+  }
+}
+
+/* Loading states */
+.btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Table hover effects */
+tbody tr:hover {
+  background-color: #f9fafb;
+}
+
+/* Better spacing for email column */
+td:nth-child(2) {
+  max-width: 200px;
+  word-break: break-word;
 }
