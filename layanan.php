@@ -1,5 +1,20 @@
 <?php
 session_start();
+require_once 'connect/koneksi.php';
+
+// Get services from database grouped by category
+$services_by_category = [];
+$categories = ['foto-dan-lidar', 'survey', 'tematik', 'training', 'software'];
+
+foreach ($categories as $category) {
+    $query = "SELECT * FROM services WHERE category = '$category' AND status = 'active' ORDER BY order_position ASC";
+    $result = mysqli_query($conn, $query);
+    $services_by_category[$category] = [];
+    
+    while ($row = mysqli_fetch_assoc($result)) {
+        $services_by_category[$category][] = $row;
+    }
+}
 ?>
 <!DOCTYPE html>
 <html lang="id">
@@ -41,134 +56,383 @@ session_start();
 
                     <!-- Content Area -->
                     <div class="content-area">
+                        <!-- Foto Udara dan Lidar Tab -->
                         <div id="foto-dan-lidar" class="tab-content active">
                             <div class="service-items">
-                                <div class="service-item">
-                                    <div class="service-image">
-                                        <img src="assets/Lidar.png" alt="" style="width: 100%; height:100%;">
+                                <?php if (!empty($services_by_category['foto-dan-lidar'])): ?>
+                                    <?php foreach ($services_by_category['foto-dan-lidar'] as $index => $service): ?>
+                                        <div class="service-item">
+                                            <?php if ($index % 2 == 0): ?>
+                                                <div class="service-image">
+                                                    <?php if ($service['image']): ?>
+                                                        <img src="<?php echo htmlspecialchars($service['image']); ?>" alt="<?php echo htmlspecialchars($service['title']); ?>" style="width: 100%; height:100%;">
+                                                    <?php else: ?>
+                                                        <i class="fas fa-cogs"></i>
+                                                    <?php endif; ?>
+                                                </div>
+                                                <div class="service-content">
+                                                    <h3><?php echo htmlspecialchars($service['title']); ?></h3>
+                                                    <?php if ($service['description']): ?>
+                                                        <p><?php echo nl2br(htmlspecialchars($service['description'])); ?></p>
+                                                    <?php endif; ?>
+                                                    <?php if ($service['features']): ?>
+                                                        <ul class="service-features">
+                                                            <?php 
+                                                            $features = explode('|', $service['features']);
+                                                            foreach ($features as $feature): 
+                                                                if (trim($feature)):
+                                                            ?>
+                                                                <li><?php echo htmlspecialchars(trim($feature)); ?></li>
+                                                            <?php 
+                                                                endif;
+                                                            endforeach; 
+                                                            ?>
+                                                        </ul>
+                                                    <?php endif; ?>
+                                                </div>
+                                            <?php else: ?>
+                                                <div class="service-content">
+                                                    <h3><?php echo htmlspecialchars($service['title']); ?></h3>
+                                                    <?php if ($service['description']): ?>
+                                                        <p><?php echo nl2br(htmlspecialchars($service['description'])); ?></p>
+                                                    <?php endif; ?>
+                                                    <?php if ($service['features']): ?>
+                                                        <ul class="service-features">
+                                                            <?php 
+                                                            $features = explode('|', $service['features']);
+                                                            foreach ($features as $feature): 
+                                                                if (trim($feature)):
+                                                            ?>
+                                                                <li><?php echo htmlspecialchars(trim($feature)); ?></li>
+                                                            <?php 
+                                                                endif;
+                                                            endforeach; 
+                                                            ?>
+                                                        </ul>
+                                                    <?php endif; ?>
+                                                </div>
+                                                <div class="service-image">
+                                                    <?php if ($service['image']): ?>
+                                                        <img src="<?php echo htmlspecialchars($service['image']); ?>" alt="<?php echo htmlspecialchars($service['title']); ?>" style="width: 100%; height:100%;">
+                                                    <?php else: ?>
+                                                        <i class="fas fa-cogs"></i>
+                                                    <?php endif; ?>
+                                                </div>
+                                            <?php endif; ?>
+                                        </div>
+                                    <?php endforeach; ?>
+                                <?php else: ?>
+                                    <div class="service-item">
+                                        <div class="service-content" style="grid-column: 1 / -1; text-align: center; padding: 50px;">
+                                            <h3>Belum ada layanan</h3>
+                                            <p>Layanan untuk kategori ini sedang dalam pengembangan.</p>
+                                        </div>
                                     </div>
-                                    <div class="service-content">
-                                        <h3>Pengambilan & Pengolahan Data LIDAR</h3>
-                                        <ul class="service-features">
-                                            <li>Data Raw LIDAR</li>
-                                            <li>Pengolahan dan Pengklasifikasian Point Clouds LIDAR</li>
-                                            <li>Digital Surface Model (DSM)</li>
-                                            <li>Digital Terrain Model (DTM)</li>
-                                            <li>LIDAR Intensity Images</li>
-                                        </ul>
-                                    </div>
-                                </div>
-
-                                <div class="service-item">
-                                    <div class="service-content">
-                                        <h3>Pengambilan & Pengolahan Foto Udara Digital</h3>
-                                        <ul class="service-features">
-                                            <li>Triangulasi Udara</li>
-                                            <li>Stereomodel</li>
-                                            <li>Mosaik Orthophoto</li>
-                                        </ul>
-                                    </div>
-                                    <div class="service-image">
-                                        <img src="assets/Data-Lidar.png" alt="" style="width: 100%; height:100%;">
-                                    </div>
-                                </div>
+                                <?php endif; ?>
                             </div>
                         </div>
 
+                        <!-- Survey Tab -->
                         <div id="survey" class="tab-content">
                             <div class="service-items">
-                                <div class="service-item">
-                                    <div class="service-image">
-                                        <img src="assets/LandSurvey.png" alt="" style="width: 100%; height:100%;">
+                                <?php if (!empty($services_by_category['survey'])): ?>
+                                    <?php foreach ($services_by_category['survey'] as $index => $service): ?>
+                                        <div class="service-item">
+                                            <?php if ($index % 2 == 0): ?>
+                                                <div class="service-image">
+                                                    <?php if ($service['image']): ?>
+                                                        <img src="<?php echo htmlspecialchars($service['image']); ?>" alt="<?php echo htmlspecialchars($service['title']); ?>" style="width: 100%; height:100%;">
+                                                    <?php else: ?>
+                                                        <i class="fas fa-map-marked-alt"></i>
+                                                    <?php endif; ?>
+                                                </div>
+                                                <div class="service-content">
+                                                    <h3><?php echo htmlspecialchars($service['title']); ?></h3>
+                                                    <?php if ($service['description']): ?>
+                                                        <p><?php echo nl2br(htmlspecialchars($service['description'])); ?></p>
+                                                    <?php endif; ?>
+                                                    <?php if ($service['features']): ?>
+                                                        <ul class="service-features">
+                                                            <?php 
+                                                            $features = explode('|', $service['features']);
+                                                            foreach ($features as $feature): 
+                                                                if (trim($feature)):
+                                                            ?>
+                                                                <li><?php echo htmlspecialchars(trim($feature)); ?></li>
+                                                            <?php 
+                                                                endif;
+                                                            endforeach; 
+                                                            ?>
+                                                        </ul>
+                                                    <?php endif; ?>
+                                                </div>
+                                            <?php else: ?>
+                                                <div class="service-content">
+                                                    <h3><?php echo htmlspecialchars($service['title']); ?></h3>
+                                                    <?php if ($service['description']): ?>
+                                                        <p><?php echo nl2br(htmlspecialchars($service['description'])); ?></p>
+                                                    <?php endif; ?>
+                                                    <?php if ($service['features']): ?>
+                                                        <ul class="service-features">
+                                                            <?php 
+                                                            $features = explode('|', $service['features']);
+                                                            foreach ($features as $feature): 
+                                                                if (trim($feature)):
+                                                            ?>
+                                                                <li><?php echo htmlspecialchars(trim($feature)); ?></li>
+                                                            <?php 
+                                                                endif;
+                                                            endforeach; 
+                                                            ?>
+                                                        </ul>
+                                                    <?php endif; ?>
+                                                </div>
+                                                <div class="service-image">
+                                                    <?php if ($service['image']): ?>
+                                                        <img src="<?php echo htmlspecialchars($service['image']); ?>" alt="<?php echo htmlspecialchars($service['title']); ?>" style="width: 100%; height:100%;">
+                                                    <?php else: ?>
+                                                        <i class="fas fa-map-marked-alt"></i>
+                                                    <?php endif; ?>
+                                                </div>
+                                            <?php endif; ?>
+                                        </div>
+                                    <?php endforeach; ?>
+                                <?php else: ?>
+                                    <div class="service-item">
+                                        <div class="service-content" style="grid-column: 1 / -1; text-align: center; padding: 50px;">
+                                            <h3>Belum ada layanan</h3>
+                                            <p>Layanan untuk kategori ini sedang dalam pengembangan.</p>
+                                        </div>
                                     </div>
-                                    <div class="service-content">
-                                        <h3>Survey – Hydrografi dan Terestrial dengan GPS dan 3D Mobile System</h3>
-                                        <ul class="service-features">
-                                            <li>Survey karakteristik perairan, danau dan sungai</li>
-                                            <li>Survey Topografi</li>
-                                            <li>Survey Toponimi Wilayah</li>
-                                            <li>Road Survey</li>
-                                        </ul>
-                                    </div>
-                                </div>
+                                <?php endif; ?>
                             </div>
                         </div>
 
+                        <!-- Tematik Tab -->
                         <div id="tematik" class="tab-content">
                             <div class="service-items">
-                                <div class="service-item">
-                                    <div class="service-image">
-                                        <img src="assets/tematik1.png" alt="" style="width: 100%; height:100%;">
+                                <?php if (!empty($services_by_category['tematik'])): ?>
+                                    <?php foreach ($services_by_category['tematik'] as $index => $service): ?>
+                                        <div class="service-item">
+                                            <?php if ($index % 2 == 0): ?>
+                                                <div class="service-image">
+                                                    <?php if ($service['image']): ?>
+                                                        <img src="<?php echo htmlspecialchars($service['image']); ?>" alt="<?php echo htmlspecialchars($service['title']); ?>" style="width: 100%; height:100%;">
+                                                    <?php else: ?>
+                                                        <i class="fas fa-layer-group"></i>
+                                                    <?php endif; ?>
+                                                </div>
+                                                <div class="service-content">
+                                                    <h3><?php echo htmlspecialchars($service['title']); ?></h3>
+                                                    <?php if ($service['description']): ?>
+                                                        <p><?php echo nl2br(htmlspecialchars($service['description'])); ?></p>
+                                                    <?php endif; ?>
+                                                    <?php if ($service['features']): ?>
+                                                        <ul class="service-features">
+                                                            <?php 
+                                                            $features = explode('|', $service['features']);
+                                                            foreach ($features as $feature): 
+                                                                if (trim($feature)):
+                                                            ?>
+                                                                <li><?php echo htmlspecialchars(trim($feature)); ?></li>
+                                                            <?php 
+                                                                endif;
+                                                            endforeach; 
+                                                            ?>
+                                                        </ul>
+                                                    <?php endif; ?>
+                                                </div>
+                                            <?php else: ?>
+                                                <div class="service-content">
+                                                    <h3><?php echo htmlspecialchars($service['title']); ?></h3>
+                                                    <?php if ($service['description']): ?>
+                                                        <p><?php echo nl2br(htmlspecialchars($service['description'])); ?></p>
+                                                    <?php endif; ?>
+                                                    <?php if ($service['features']): ?>
+                                                        <ul class="service-features">
+                                                            <?php 
+                                                            $features = explode('|', $service['features']);
+                                                            foreach ($features as $feature): 
+                                                                if (trim($feature)):
+                                                            ?>
+                                                                <li><?php echo htmlspecialchars(trim($feature)); ?></li>
+                                                            <?php 
+                                                                endif;
+                                                            endforeach; 
+                                                            ?>
+                                                        </ul>
+                                                    <?php endif; ?>
+                                                </div>
+                                                <div class="service-image">
+                                                    <?php if ($service['image']): ?>
+                                                        <img src="<?php echo htmlspecialchars($service['image']); ?>" alt="<?php echo htmlspecialchars($service['title']); ?>" style="width: 100%; height:100%;">
+                                                    <?php else: ?>
+                                                        <i class="fas fa-layer-group"></i>
+                                                    <?php endif; ?>
+                                                </div>
+                                            <?php endif; ?>
+                                        </div>
+                                    <?php endforeach; ?>
+                                <?php else: ?>
+                                    <div class="service-item">
+                                        <div class="service-content" style="grid-column: 1 / -1; text-align: center; padding: 50px;">
+                                            <h3>Belum ada layanan</h3>
+                                            <p>Layanan untuk kategori ini sedang dalam pengembangan.</p>
+                                        </div>
                                     </div>
-                                    <div class="service-content">
-                                        <h3>Sasaran dari kegiatan Pemetaan Penutup Lahan adalah :</h3>
-                                        <p>1. lnformasi Geospasial Tematik Penutup Lahan skala 1 : 50.000 dalam format NLP dan seamless (Region, provinsi, kabupaten). <br>2. Buku Deskripsi Analisis Pembaruan Peta Penutup Lahan <br>3. Metadata Pembaruan Peta Penutup Lahan</p>
-                                    </div>
-                                </div>
-
-                                <div class="service-item">
-                                    <div class="service-content">
-                                        <h3>Layout Peta Penutup Lahan Provinsi</h3>
-                                        <p>1. Hasil digitasi data penutup lahan dilakukan interpolasi 3D.
-                                            <br>2. Data yang digunakan untuk proses penutup lahan yaitu data DSM (Digital Surface Model) dan DTM (Digital Terrain Model)
-                                            <br>3. Setelah dilakukan proses interpolasi akan menghasilkan data ketinggian sesuai vertek di data penutup lahan 2D
-                                            <br>4. Setelah data sudah terisi semua nilai x,y dan z maka melakukan analisis 3D menggunakan extension 3D analyst dengan metode Interpolate shape.
-                                            <br>5. Konversi data vektor 2D ke data 3D dengan metode pengambilan ketinggian (Z) dari data DEMNAS dan DTM.
-                                        </p>
-                                    </div>
-                                    <div class="service-image">
-                                        <img src="assets/tematik2.png" alt="" style="width: 100%; height:100%">
-                                    </div>
-                                </div>
+                                <?php endif; ?>
                             </div>
                         </div>
 
+                        <!-- Training Tab -->
                         <div id="training" class="tab-content">
                             <div class="service-items">
-                                <div class="service-item">
-                                    <div class="service-image">
-                                        <img src="assets/Dispotrud.jpeg" alt="" style="width: 100%; height:100%">
+                                <?php if (!empty($services_by_category['training'])): ?>
+                                    <?php foreach ($services_by_category['training'] as $index => $service): ?>
+                                        <div class="service-item">
+                                            <?php if ($index % 2 == 0): ?>
+                                                <div class="service-image">
+                                                    <?php if ($service['image']): ?>
+                                                        <img src="<?php echo htmlspecialchars($service['image']); ?>" alt="<?php echo htmlspecialchars($service['title']); ?>" style="width: 100%; height:100%;">
+                                                    <?php else: ?>
+                                                        <i class="fas fa-chalkboard-teacher"></i>
+                                                    <?php endif; ?>
+                                                </div>
+                                                <div class="service-content">
+                                                    <h3><?php echo htmlspecialchars($service['title']); ?></h3>
+                                                    <?php if ($service['description']): ?>
+                                                        <p><?php echo nl2br(htmlspecialchars($service['description'])); ?></p>
+                                                    <?php endif; ?>
+                                                    <?php if ($service['features']): ?>
+                                                        <ul class="service-features">
+                                                            <?php 
+                                                            $features = explode('|', $service['features']);
+                                                            foreach ($features as $feature): 
+                                                                if (trim($feature)):
+                                                            ?>
+                                                                <li><?php echo htmlspecialchars(trim($feature)); ?></li>
+                                                            <?php 
+                                                                endif;
+                                                            endforeach; 
+                                                            ?>
+                                                        </ul>
+                                                    <?php endif; ?>
+                                                </div>
+                                            <?php else: ?>
+                                                <div class="service-content">
+                                                    <h3><?php echo htmlspecialchars($service['title']); ?></h3>
+                                                    <?php if ($service['description']): ?>
+                                                        <p><?php echo nl2br(htmlspecialchars($service['description'])); ?></p>
+                                                    <?php endif; ?>
+                                                    <?php if ($service['features']): ?>
+                                                        <ul class="service-features">
+                                                            <?php 
+                                                            $features = explode('|', $service['features']);
+                                                            foreach ($features as $feature): 
+                                                                if (trim($feature)):
+                                                            ?>
+                                                                <li><?php echo htmlspecialchars(trim($feature)); ?></li>
+                                                            <?php 
+                                                                endif;
+                                                            endforeach; 
+                                                            ?>
+                                                        </ul>
+                                                    <?php endif; ?>
+                                                </div>
+                                                <div class="service-image">
+                                                    <?php if ($service['image']): ?>
+                                                        <img src="<?php echo htmlspecialchars($service['image']); ?>" alt="<?php echo htmlspecialchars($service['title']); ?>" style="width: 100%; height:100%;">
+                                                    <?php else: ?>
+                                                        <i class="fas fa-chalkboard-teacher"></i>
+                                                    <?php endif; ?>
+                                                </div>
+                                            <?php endif; ?>
+                                        </div>
+                                    <?php endforeach; ?>
+                                <?php else: ?>
+                                    <div class="service-item">
+                                        <div class="service-content" style="grid-column: 1 / -1; text-align: center; padding: 50px;">
+                                            <h3>Belum ada layanan</h3>
+                                            <p>Layanan untuk kategori ini sedang dalam pengembangan.</p>
+                                        </div>
                                     </div>
-                                    <div class="service-content">
-                                        <h3>Training Dispotrud</h3>
-                                        <ul class="service-features">
-                                            <li>Menggunakan Mobile Application untuk collecting data lapangan</li>
-                                            <li>Pembuatan Database Dengan Menggunakan Arcgis Pro(Proses Digitasi, Editing dan Attribut dan pembuatan Geodatabase)</li>
-                                            <li>Visualisasi 3D Menggunakan Arcgis Pro</li>
-                                        </ul>
-                                    </div>
-                                </div>
+                                <?php endif; ?>
                             </div>
                         </div>
 
+                        <!-- Software Tab -->
                         <div id="software" class="tab-content">
                             <div class="service-items">
-                                <div class="service-item">
-                                    <div class="service-image">
-                                        <img src="assets/ddsaplication.jpeg" alt="" style="width: 100%; height:100%">
+                                <?php if (!empty($services_by_category['software'])): ?>
+                                    <?php foreach ($services_by_category['software'] as $index => $service): ?>
+                                        <div class="service-item">
+                                            <?php if ($index % 2 == 0): ?>
+                                                <div class="service-image">
+                                                    <?php if ($service['image']): ?>
+                                                        <img src="<?php echo htmlspecialchars($service['image']); ?>" alt="<?php echo htmlspecialchars($service['title']); ?>" style="width: 100%; height:100%;">
+                                                    <?php else: ?>
+                                                        <i class="fas fa-code"></i>
+                                                    <?php endif; ?>
+                                                </div>
+                                                <div class="service-content">
+                                                    <h3><?php echo htmlspecialchars($service['title']); ?></h3>
+                                                    <?php if ($service['description']): ?>
+                                                        <p><?php echo nl2br(htmlspecialchars($service['description'])); ?></p>
+                                                    <?php endif; ?>
+                                                    <?php if ($service['features']): ?>
+                                                        <ul class="service-features">
+                                                            <?php 
+                                                            $features = explode('|', $service['features']);
+                                                            foreach ($features as $feature): 
+                                                                if (trim($feature)):
+                                                            ?>
+                                                                <li><?php echo htmlspecialchars(trim($feature)); ?></li>
+                                                            <?php 
+                                                                endif;
+                                                            endforeach; 
+                                                            ?>
+                                                        </ul>
+                                                    <?php endif; ?>
+                                                </div>
+                                            <?php else: ?>
+                                                <div class="service-content">
+                                                    <h3><?php echo htmlspecialchars($service['title']); ?></h3>
+                                                    <?php if ($service['description']): ?>
+                                                        <p><?php echo nl2br(htmlspecialchars($service['description'])); ?></p>
+                                                    <?php endif; ?>
+                                                    <?php if ($service['features']): ?>
+                                                        <ul class="service-features">
+                                                            <?php 
+                                                            $features = explode('|', $service['features']);
+                                                            foreach ($features as $feature): 
+                                                                if (trim($feature)):
+                                                            ?>
+                                                                <li><?php echo htmlspecialchars(trim($feature)); ?></li>
+                                                            <?php 
+                                                                endif;
+                                                            endforeach; 
+                                                            ?>
+                                                        </ul>
+                                                    <?php endif; ?>
+                                                </div>
+                                                <div class="service-image">
+                                                    <?php if ($service['image']): ?>
+                                                        <img src="<?php echo htmlspecialchars($service['image']); ?>" alt="<?php echo htmlspecialchars($service['title']); ?>" style="width: 100%; height:100%;">
+                                                    <?php else: ?>
+                                                        <i class="fas fa-code"></i>
+                                                    <?php endif; ?>
+                                                </div>
+                                            <?php endif; ?>
+                                        </div>
+                                    <?php endforeach; ?>
+                                <?php else: ?>
+                                    <div class="service-item">
+                                        <div class="service-content" style="grid-column: 1 / -1; text-align: center; padding: 50px;">
+                                            <h3>Belum ada layanan</h3>
+                                            <p>Layanan untuk kategori ini sedang dalam pengembangan.</p>
+                                        </div>
                                     </div>
-                                    <div class="service-content">
-                                        <h3>DDS Application</h3>
-                                    </div>
-                                </div>
-
-                                <div class="service-item">
-                                    <div class="service-content">
-                                        <h3>SIPETA Application</h3>
-                                    </div>
-                                    <div class="service-image">
-                                        <img src="assets/sipeta.jpeg" alt="" style="width: 100%; height:100%">
-                                    </div>
-                                </div>
-
-                                <div class="service-item">
-                                    <div class="service-image">
-                                        <img src="assets/webgis.jpeg" alt="" style="width: 100%; height:100%">
-                                    </div>
-                                    <div class="service-content">
-                                        <h3>WebGIS & Mobile Apps</h3>
-                                    </div>
-                                </div>
+                                <?php endif; ?>
                             </div>
                         </div>
                     </div>
