@@ -133,7 +133,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kelola Kegiatan - PT Waindo Specterra</title>
+    <title>Kelola Berita - PT Waindo Specterra</title>
     <link rel="stylesheet" href="../assets/css/common.css">
     <link rel="stylesheet" href="../assets/css/pages.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
@@ -175,7 +175,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
 
             <ul class="sidebar-menu">
                 <li><a href="dashboard.php"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
-                <li><a href="kegiatan.php" class="active"><i class="fas fa-newspaper"></i> Kelola Konten</a></li>
+                <li><a href="kegiatan.php" class="active"><i class="fas fa-newspaper"></i> Kelola Berita</a></li>
                 <li><a href="produk-manager.php"><i class="fas fa-box"></i> Kelola Produk</a></li>
                 <li><a href="../index.php"><i class="fas fa-home"></i> Beranda</a></li>
                 <li><a href="../logout.php"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
@@ -184,7 +184,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
 
         <div class="main-content">
             <div class="dashboard-header">
-                <h1>Kelola Kegiatan</h1>
+                <h1>Kelola Berita - Kegiatan</h1>
                 <div class="tabs">
                     <a href="kegiatan.php" class="active">Kegiatan</a>
                     <a href="webinar.php">Webinar</a>

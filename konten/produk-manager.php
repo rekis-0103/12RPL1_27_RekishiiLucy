@@ -293,7 +293,7 @@ if (isset($_GET['edit'])) {
 
             <ul class="sidebar-menu">
                 <li><a href="dashboard.php"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
-                <li><a href="kegiatan.php"><i class="fas fa-newspaper"></i> Kelola Konten</a></li>
+                <li><a href="kegiatan.php"><i class="fas fa-newspaper"></i> Kelola Berita</a></li>
                 <li><a href="produk-manager.php" class="active"><i class="fas fa-box"></i> Kelola Produk</a></li>
                 <li><a href="../index.php"><i class="fas fa-home"></i> Beranda</a></li>
                 <li><a href="../logout.php"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
