@@ -44,7 +44,9 @@
 ### Konten :
 - All in guest
 - Dashboard
-- Kelola Konten
+- Kelola Berita (Kegiatan, Webinar, Live, Galeri)
+- Kelola Produk
+- Kelola Layanan
 
 ### Pelamar :
 - All in guest
