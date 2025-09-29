@@ -38,7 +38,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 }
                 
                 $stmt = mysqli_prepare($conn, "INSERT INTO products (name, description, image, category_id, created_by) VALUES (?, ?, ?, ?, ?)");
-                mysqli_stmt_bind_param($stmt, "ssiii", $name, $description, $image, $category_id, $user_id);
+                mysqli_stmt_bind_param($stmt, "sssii", $name, $description, $image, $category_id, $user_id);
                 
                 if (mysqli_stmt_execute($stmt)) {
                     // Log activity

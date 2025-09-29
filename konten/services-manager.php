@@ -227,13 +227,6 @@ if (isset($_GET['edit'])) {
                     </div>
 
                     <div class="two-col">
-                        <div class="form-group">
-                            <label for="order_position">Urutan</label>
-                            <input type="number" id="order_position" name="order_position" 
-                                   value="<?php echo $edit_service['order_position'] ?? 0; ?>" 
-                                   min="0" required>
-                        </div>
-
                         <?php if ($edit_service): ?>
                         <div class="form-group">
                             <label for="status">Status</label>
@@ -275,7 +268,6 @@ if (isset($_GET['edit'])) {
                             <th>Judul</th>
                             <th>Kategori</th>
                             <th>Status</th>
-                            <th>Urutan</th>
                             <th>Aksi</th>
                         </tr>
                     </thead>
@@ -318,7 +310,6 @@ if (isset($_GET['edit'])) {
                                         <?php echo ucfirst($service['status']); ?>
                                     </span>
                                 </td>
-                                <td><?php echo $service['order_position']; ?></td>
                                 <td>
                                     <a href="?edit=<?php echo $service['service_id']; ?>" class="btn btn-primary" style="margin-right: 5px; padding: 6px 12px; font-size: 0.8rem;">
                                         <i class="fas fa-edit"></i> Edit
