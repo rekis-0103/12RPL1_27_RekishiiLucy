@@ -3,7 +3,7 @@ $db_config = [
     'host' => 'localhost',
     'username' => 'root',
     'password' => '',
-    'database' => 'compro'
+    'database' => 'e-recruitment'
 ];
 
 try {

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Sep 22, 2025 at 07:54 AM
+-- Generation Time: Oct 01, 2025 at 04:37 AM
 -- Server version: 8.0.30
 -- PHP Version: 8.2.29
 
@@ -18,7 +18,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `compro`
+-- Database: `e-recruitment`
 --
 
 -- --------------------------------------------------------
@@ -474,7 +474,25 @@ INSERT INTO `log_aktivitas` (`log_id`, `user_id`, `action`, `log_time`) VALUES
 (278, 3, 'Logout', '2025-09-22 04:20:49'),
 (279, 4, 'Login', '2025-09-22 04:21:58'),
 (280, 4, 'Logout', '2025-09-22 04:24:36'),
-(281, 4, 'Login', '2025-09-22 04:26:22');
+(281, 4, 'Login', '2025-09-22 04:26:22'),
+(282, 4, 'Login', '2025-09-23 01:47:46'),
+(283, 4, 'Konten: tambah produk - Coastal Zone Management', '2025-09-23 04:17:40'),
+(284, 4, 'Konten: tambah produk - Forest & Plantation Inventory', '2025-09-23 04:35:41'),
+(285, 4, 'Konten: tambah produk - Natural Resources Accounting', '2025-09-23 04:48:21'),
+(286, 4, 'Konten: tambah produk - Environment Monitoring', '2025-09-23 04:49:07'),
+(287, 4, 'Konten: tambah produk - Maxar', '2025-09-23 04:50:04'),
+(288, 4, 'Konten: tambah produk - Planetscope', '2025-09-23 04:51:31'),
+(289, 4, 'Konten: tambah produk - Radarsat', '2025-09-23 04:51:58'),
+(290, 4, 'Konten: tambah produk - Scanned Map', '2025-09-23 06:45:53'),
+(291, 1, 'Login', '2025-09-26 13:55:00'),
+(292, 2, 'Login', '2025-09-30 08:06:26'),
+(293, 2, 'Logout', '2025-09-30 08:45:20'),
+(294, 4, 'Login', '2025-10-01 03:07:48'),
+(295, 4, 'Konten: tambah produk - Vector Map', '2025-10-01 04:06:04'),
+(296, 4, 'Konten: tambah produk - Data Converter', '2025-10-01 04:06:57'),
+(297, 4, 'Konten: tambah produk - POI Data', '2025-10-01 04:07:33'),
+(298, 4, 'Konten: tambah produk - Web, Desktop, Mobile Application', '2025-10-01 04:08:28'),
+(299, 4, 'Konten: tambah produk - GPS Tracking System', '2025-10-01 04:09:11');
 
 -- --------------------------------------------------------
 
@@ -552,10 +570,23 @@ CREATE TABLE `products` (
 --
 
 INSERT INTO `products` (`product_id`, `name`, `description`, `image`, `category_id`, `status`, `created_by`, `created_at`, `updated_at`) VALUES
-(1, 'Enterprise Rack Server', 'Server rack enterprise dengan performa tinggi yang dirancang khusus untuk mendukung aplikasi geomatika skala besar. Menyediakan kapasitas penyimpanan besar, kecepatan pemrosesan data spasial yang optimal, serta keandalan 24/7 untuk mendukung kebutuhan survei, pemetaan, hingga analisis geospasial yang kompleks.', 'assets/remotesesing.jpg', 1, 'active', 4, '2025-09-22 07:15:25', '2025-09-22 07:15:25'),
-(2, 'Geographic Information System', 'Sistem informasi geografis yang komprehensif untuk pengolahan, analisis, serta visualisasi data spasial. GIS ini membantu dalam pengambilan keputusan berbasis lokasi, pemetaan interaktif, hingga integrasi data multi-sumber sehingga dapat digunakan oleh berbagai sektor, mulai dari tata ruang, lingkungan, hingga infrastruktur.', 'assets/Geograpic-Information-System.jpg', 1, 'active', 4, '2025-09-22 07:15:25', '2025-09-22 07:15:25'),
-(3, 'ArcGIS For Desktop', 'Perangkat lunak GIS desktop yang menjadi standar industri dalam analisis geospasial. Menyediakan berbagai tools untuk pemetaan, manajemen data spasial, hingga analisis tingkat lanjut, sehingga sangat ideal digunakan oleh pemerintah, perusahaan, maupun akademisi.', 'assets/arcgis_destop.jpg', 2, 'active', 4, '2025-09-22 07:15:25', '2025-09-22 07:15:25'),
-(4, 'ArcGIS Enterprise', 'Platform GIS berbasis enterprise yang dirancang untuk organisasi besar. Mendukung integrasi data spasial lintas divisi, memungkinkan kolaborasi antar pengguna, serta menyediakan kontrol penuh terhadap keamanan dan distribusi informasi geospasial.', 'assets/arcgisportal.jpg', 2, 'active', 4, '2025-09-22 07:15:25', '2025-09-22 07:15:25');
+(1, 'Enterprise Rack Server', 'Server rack enterprise dengan performa tinggi yang dirancang khusus untuk mendukung aplikasi geomatika skala besar. Menyediakan kapasitas penyimpanan besar, kecepatan pemrosesan data spasial yang optimal, serta keandalan 24/7 untuk mendukung kebutuhan survei, pemetaan, hingga analisis geospasial yang kompleks.', 'assets/remotesesing.jpg', 1, 'active', 4, '2025-09-22 08:55:33', '2025-09-22 08:55:33'),
+(2, 'Geographic Information System', 'Sistem informasi geografis yang komprehensif untuk pengolahan, analisis, serta visualisasi data spasial. GIS ini membantu dalam pengambilan keputusan berbasis lokasi, pemetaan interaktif, hingga integrasi data multi-sumber sehingga dapat digunakan oleh berbagai sektor, mulai dari tata ruang, lingkungan, hingga infrastruktur.', 'assets/Geograpic-Information-System.jpg', 1, 'active', 4, '2025-09-22 08:55:33', '2025-09-22 08:55:33'),
+(3, 'ArcGIS For Desktop', 'Perangkat lunak GIS desktop yang menjadi standar industri dalam analisis geospasial. Menyediakan berbagai tools untuk pemetaan, manajemen data spasial, hingga analisis tingkat lanjut, sehingga sangat ideal digunakan oleh pemerintah, perusahaan, maupun akademisi.', 'assets/arcgis_destop.jpg', 2, 'active', 4, '2025-09-22 08:55:33', '2025-09-22 08:55:33'),
+(4, 'ArcGIS Enterprise', 'Platform GIS berbasis enterprise yang dirancang untuk organisasi besar. Mendukung integrasi data spasial lintas divisi, memungkinkan kolaborasi antar pengguna, serta menyediakan kontrol penuh terhadap keamanan dan distribusi informasi geospasial.', 'assets/arcgisportal.jpg', 2, 'active', 4, '2025-09-22 08:55:33', '2025-09-22 08:55:33'),
+(5, 'Coastal Zone Management', 'Sistem manajemen zona pesisir yang dirancang untuk monitoring, perlindungan, serta pengelolaan lingkungan pantai. Membantu dalam konservasi ekosistem pesisir, mitigasi abrasi, hingga perencanaan tata ruang wilayah pesisir.', 'assets/coastal zone.jpg', 3, 'active', 4, '2025-09-23 04:17:40', '2025-09-23 04:18:43'),
+(6, 'Forest & Plantation Inventory', 'Sistem inventarisasi hutan dan perkebunan untuk memantau luas, jenis vegetasi, serta potensi sumber daya kehutanan. Dapat digunakan untuk pengelolaan hutan lestari, perencanaan produksi, maupun konservasi keanekaragaman hayati.', 'assets/products/product_68d2239d23d42.jpg', 3, 'active', 4, '2025-09-23 04:35:41', '2025-09-23 04:35:41'),
+(7, 'Natural Resources Accounting', 'Sistem akuntansi sumber daya alam yang digunakan untuk menghitung nilai ekonomi dari hutan, tambang, air, hingga energi. Mendukung perencanaan pembangunan berkelanjutan dengan data kuantitatif dan komprehensif.', 'assets/products/product_68d22695803fe.jpg', 3, 'active', 4, '2025-09-23 04:48:21', '2025-09-23 04:48:21'),
+(8, 'Environment Monitoring', 'Sistem pemantauan lingkungan yang fokus pada kualitas air, udara, dan tanah. Memberikan data real-time yang penting bagi pengendalian pencemaran, kesehatan lingkungan, hingga perumusan kebijakan berbasis data.', 'assets/products/product_68d226c30f6de.jpg', 3, 'active', 4, '2025-09-23 04:49:07', '2025-09-23 04:49:07'),
+(9, 'Maxar', 'Penyedia citra satelit resolusi tinggi dengan cakupan global. Data dari Maxar mendukung berbagai aplikasi, mulai dari pemetaan kota, pertanian presisi, hingga pemantauan bencana alam.', 'assets/products/product_68d226fce46c8.jpeg', 4, 'active', 4, '2025-09-23 04:50:04', '2025-09-23 04:50:04'),
+(10, 'Planetscope', 'Citra satelit harian yang memudahkan monitoring perubahan lahan, pertanian, hingga lingkungan. Dengan pembaruan data yang cepat, Planetscope sangat berguna untuk mendeteksi dinamika penggunaan lahan secara periodik.', 'assets/products/product_68d2275339a30.png', 4, 'active', 4, '2025-09-23 04:51:31', '2025-09-23 04:51:31'),
+(11, 'Radarsat', 'Data radar satelit yang mampu menembus awan dan digunakan untuk monitoring cuaca, pemetaan wilayah terpencil, serta analisis perubahan permukaan bumi. Cocok untuk wilayah tropis dengan tutupan awan tinggi.', 'assets/products/product_68d2276e0f2db.jpg', 4, 'active', 4, '2025-09-23 04:51:58', '2025-09-23 04:51:58'),
+(12, 'Scanned Map', 'Peta digital hasil scanning dari peta cetak yang bernilai historis. Memberikan referensi penting untuk analisis perubahan lahan, penelitian sejarah, serta pelestarian data spasial lama.', 'assets/products/product_68d24221a5068.jpg', 4, 'active', 4, '2025-09-23 06:45:53', '2025-09-23 06:45:53'),
+(13, 'Vector Map', 'Data vektor berkualitas tinggi untuk analisis spasial dan pembuatan peta tematik. Fleksibel digunakan di berbagai software GIS dan dapat dikustomisasi sesuai kebutuhan analisis', 'assets/products/product_68dca8aca1a78.jpg', 4, 'active', 4, '2025-10-01 04:06:04', '2025-10-01 04:06:04'),
+(14, 'Data Converter', 'Tools konversi data geospasial antar format yang memudahkan interoperabilitas antar sistem. Mendukung berbagai format standar sehingga mempermudah integrasi lintas platform.', 'assets/products/product_68dca8e1b94d6.jpg', 4, 'active', 4, '2025-10-01 04:06:57', '2025-10-01 04:06:57'),
+(15, 'POI Data', 'Database Points of Interest yang berisi lokasi penting seperti fasilitas umum, transportasi, hingga destinasi wisata. Sangat berguna untuk navigasi, analisis lokasi bisnis, serta perencanaan transportasi.', 'assets/products/product_68dca905bdd25.png', 4, 'active', 4, '2025-10-01 04:07:33', '2025-10-01 04:07:33'),
+(16, 'Web, Desktop, Mobile Application', 'Layanan pengembangan aplikasi GIS lintas platform, baik untuk web, desktop, maupun mobile. Aplikasi dapat disesuaikan dengan kebutuhan, mulai dari sistem monitoring, pemetaan interaktif, hingga dashboard analitik.', 'assets/products/product_68dca93ceec07.jpg', 5, 'active', 4, '2025-10-01 04:08:28', '2025-10-01 04:08:28'),
+(17, 'GPS Tracking System', 'Sistem pelacakan GPS yang memungkinkan monitoring kendaraan, aset, maupun personel secara real-time. Cocok digunakan untuk manajemen armada, keamanan aset, hingga pengelolaan logistik yang efisien.', 'assets/products/product_68dca967d10f4.jpeg', 5, 'active', 4, '2025-10-01 04:09:11', '2025-10-01 04:09:11');
 
 -- --------------------------------------------------------
 
@@ -577,11 +608,46 @@ CREATE TABLE `product_categories` (
 --
 
 INSERT INTO `product_categories` (`category_id`, `category_key`, `category_name`, `category_description`, `created_at`, `updated_at`) VALUES
-(1, 'geomatic-applications', 'Geomatic Applications', 'Solusi aplikasi geomatika untuk survei, pemetaan, dan analisis geospasial', '2025-09-22 07:15:25', '2025-09-22 07:15:25'),
-(2, 'software-provider', 'Software Provider', 'Software dan platform GIS terdepan untuk analisis geospasial dan pemetaan', '2025-09-22 07:15:25', '2025-09-22 07:15:25'),
-(3, 'enrm', 'Environment & Natural Resources Management', 'Solusi manajemen lingkungan dan sumber daya alam untuk pembangunan berkelanjutan', '2025-09-22 07:15:25', '2025-09-22 07:15:25'),
-(4, 'gis-data-provider', 'GIS Data Provider', 'Penyedia data geospasial dan citra satelit untuk berbagai kebutuhan pemetaan', '2025-09-22 07:15:25', '2025-09-22 07:15:25'),
-(5, 'gis-information-technology', 'GIS & Information Technology', 'Aplikasi dan sistem teknologi informasi geografis untuk berbagai platform', '2025-09-22 07:15:25', '2025-09-22 07:15:25');
+(1, 'geomatic-applications', 'Geomatic Applications', 'Solusi aplikasi geomatika untuk survei, pemetaan, dan analisis geospasial', '2025-09-22 08:55:33', '2025-09-22 08:55:33'),
+(2, 'software-provider', 'Software Provider', 'Software dan platform GIS terdepan untuk analisis geospasial dan pemetaan', '2025-09-22 08:55:33', '2025-09-22 08:55:33'),
+(3, 'enrm', 'Environment & Natural Resources Management', 'Solusi manajemen lingkungan dan sumber daya alam untuk pembangunan berkelanjutan', '2025-09-22 08:55:33', '2025-09-22 08:55:33'),
+(4, 'gis-data-provider', 'GIS Data Provider', 'Penyedia data geospasial dan citra satelit untuk berbagai kebutuhan pemetaan', '2025-09-22 08:55:33', '2025-09-22 08:55:33'),
+(5, 'gis-information-technology', 'GIS & Information Technology', 'Aplikasi dan sistem teknologi informasi geografis untuk berbagai platform', '2025-09-22 08:55:33', '2025-09-22 08:55:33');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `services`
+--
+
+CREATE TABLE `services` (
+  `service_id` int NOT NULL,
+  `title` varchar(200) NOT NULL,
+  `description` text,
+  `features` text,
+  `image` varchar(255) DEFAULT NULL,
+  `category` enum('foto-dan-lidar','survey','tematik','training','software') NOT NULL,
+  `order_position` int DEFAULT '0',
+  `status` enum('active','inactive') DEFAULT 'active',
+  `created_by` int NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Dumping data for table `services`
+--
+
+INSERT INTO `services` (`service_id`, `title`, `description`, `features`, `image`, `category`, `order_position`, `status`, `created_by`, `created_at`, `updated_at`) VALUES
+(1, 'Pengambilan & Pengolahan Data LIDAR', 'Layanan pengambilan dan pengolahan data LIDAR dengan teknologi terdepan untuk menghasilkan model digital yang akurat.', 'Data Raw LIDAR|Pengolahan dan Pengklasifikasian Point Clouds LIDAR|Digital Surface Model (DSM)|Digital Terrain Model (DTM)|LIDAR Intensity Images', 'assets/Lidar.png', 'foto-dan-lidar', 1, 'active', 4, '2025-09-23 02:35:21', '2025-09-23 02:35:21'),
+(2, 'Pengambilan & Pengolahan Foto Udara Digital', 'Layanan pengambilan dan pengolahan foto udara digital menggunakan teknologi drone dan pesawat terbang.', 'Triangulasi Udara|Stereomodel|Mosaik Orthophoto', 'assets/Data-Lidar.png', 'foto-dan-lidar', 2, 'active', 4, '2025-09-23 02:35:21', '2025-09-23 02:35:21'),
+(3, 'Survey – Hydrografi dan Terestrial dengan GPS dan 3D Mobile System', 'Layanan survey komprehensif menggunakan teknologi GPS dan sistem mobile 3D untuk berbagai kebutuhan pemetaan.', 'Survey karakteristik perairan, danau dan sungai|Survey Topografi|Survey Toponimi Wilayah|Road Survey', 'assets/LandSurvey.png', 'survey', 1, 'active', 4, '2025-09-23 02:35:21', '2025-09-23 02:35:21'),
+(4, 'Pemetaan Penutup Lahan', 'Sasaran dari kegiatan Pemetaan Penutup Lahan adalah menghasilkan informasi geospasial tematik yang akurat dan terkini.', 'Informasi Geospasial Tematik Penutup Lahan skala 1 : 50.000 dalam format NLP dan seamless (Region, provinsi, kabupaten)|Buku Deskripsi Analisis Pembaruan Peta Penutup Lahan|Metadata Pembaruan Peta Penutup Lahan', 'assets/tematik1.png', 'tematik', 1, 'active', 4, '2025-09-23 02:35:21', '2025-09-23 02:35:21'),
+(5, 'Layout Peta Penutup Lahan Provinsi', 'Proses digitasi dan interpolasi 3D untuk menghasilkan peta penutup lahan yang komprehensif dengan analisis ketinggian.', 'Hasil digitasi data penutup lahan dilakukan interpolasi 3D|Data yang digunakan untuk proses penutup lahan yaitu data DSM (Digital Surface Model) dan DTM (Digital Terrain Model)|Setelah dilakukan proses interpolasi akan menghasilkan data ketinggian sesuai vertek di data penutup lahan 2D|Setelah data sudah terisi semua nilai x,y dan z maka melakukan analisis 3D menggunakan extension 3D analyst dengan metode Interpolate shape|Konversi data vektor 2D ke data 3D dengan metode pengambilan ketinggian (Z) dari data DEMNAS dan DTM', 'assets/tematik2.png', 'tematik', 2, 'active', 4, '2025-09-23 02:35:21', '2025-09-23 02:35:21'),
+(6, 'Training Dispotrud', 'Program pelatihan komprehensif untuk penggunaan teknologi GIS dan aplikasi mobile dalam pengumpulan data lapangan.', 'Menggunakan Mobile Application untuk collecting data lapangan|Pembuatan Database Dengan Menggunakan Arcgis Pro(Proses Digitasi, Editing dan Attribut dan pembuatan Geodatabase)|Visualisasi 3D Menggunakan Arcgis Pro', 'assets/Dispotrud.jpeg', 'training', 1, 'active', 4, '2025-09-23 02:35:21', '2025-09-23 02:35:21'),
+(7, 'DDS Application', 'Aplikasi DDS yang dikembangkan khusus untuk kebutuhan manajemen data dan informasi perusahaan.', '', 'assets/ddsaplication.jpeg', 'software', 1, 'active', 4, '2025-09-23 02:35:21', '2025-09-23 02:35:21'),
+(8, 'SIPETA Application', 'Sistem Informasi Peta (SIPETA) untuk manajemen dan visualisasi data geospasial secara terintegrasi.', '', 'assets/sipeta.jpeg', 'software', 2, 'active', 4, '2025-09-23 02:35:21', '2025-09-23 02:35:21'),
+(9, 'WebGIS & Mobile Apps', 'Pengembangan aplikasi WebGIS dan Mobile Apps untuk akses data geospasial yang mudah dan cepat.', '', 'assets/webgis.jpeg', 'software', 3, 'active', 4, '2025-09-23 02:35:21', '2025-09-23 02:35:21');
 
 -- --------------------------------------------------------
 
@@ -727,6 +793,13 @@ ALTER TABLE `product_categories`
   ADD UNIQUE KEY `category_key` (`category_key`);
 
 --
+-- Indexes for table `services`
+--
+ALTER TABLE `services`
+  ADD PRIMARY KEY (`service_id`),
+  ADD KEY `created_by` (`created_by`);
+
+--
 -- Indexes for table `users`
 --
 ALTER TABLE `users`
@@ -792,7 +865,7 @@ ALTER TABLE `live_streaming`
 -- AUTO_INCREMENT for table `log_aktivitas`
 --
 ALTER TABLE `log_aktivitas`
-  MODIFY `log_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=282;
+  MODIFY `log_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=300;
 
 --
 -- AUTO_INCREMENT for table `lowongan`
@@ -810,13 +883,19 @@ ALTER TABLE `popup_images`
 -- AUTO_INCREMENT for table `products`
 --
 ALTER TABLE `products`
-  MODIFY `product_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `product_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
 
 --
 -- AUTO_INCREMENT for table `product_categories`
 --
 ALTER TABLE `product_categories`
   MODIFY `category_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+
+--
+-- AUTO_INCREMENT for table `services`
+--
+ALTER TABLE `services`
+  MODIFY `service_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT for table `users`
@@ -895,6 +974,12 @@ ALTER TABLE `popup_images`
 ALTER TABLE `products`
   ADD CONSTRAINT `products_ibfk_1` FOREIGN KEY (`category_id`) REFERENCES `product_categories` (`category_id`) ON DELETE CASCADE,
   ADD CONSTRAINT `products_ibfk_2` FOREIGN KEY (`created_by`) REFERENCES `users` (`user_id`);
+
+--
+-- Constraints for table `services`
+--
+ALTER TABLE `services`
+  ADD CONSTRAINT `services_ibfk_1` FOREIGN KEY (`created_by`) REFERENCES `users` (`user_id`);
 
 --
 -- Constraints for table `webinar`
