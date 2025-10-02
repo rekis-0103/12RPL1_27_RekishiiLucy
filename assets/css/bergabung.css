@@ -114,10 +114,24 @@
   border: 1px solid #eaeaea;
 }
 
+.filter-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  align-items: flex-end;
+}
+
 .filter-group {
   display: flex;
-  align-items: center;
-  gap: 10px;
+  flex-direction: column;
+  gap: 8px;
+  flex: 1;
+  min-width: 200px;
+}
+
+.filter-group.search-group {
+  flex: 2;
+  min-width: 300px;
 }
 
 .filter-group label {
@@ -126,22 +140,103 @@
   display: flex;
   align-items: center;
   gap: 8px;
+  font-size: 14px;
 }
 
-.filter-group select {
-  padding: 8px 12px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
+.search-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.search-input {
+  width: 100%;
+  padding: 10px 40px 10px 12px;
+  border: 2px solid #ddd;
+  border-radius: 6px;
   background: white;
   font-size: 14px;
   color: #2c3e50;
-  min-width: 150px;
+  transition: all 0.2s ease;
+}
+
+.search-input:focus {
+  outline: none;
+  border-color: #3498db;
+  box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+}
+
+.search-input::placeholder {
+  color: #95a5a6;
+}
+
+.clear-search {
+  position: absolute;
+  right: 8px;
+  background: transparent;
+  border: none;
+  color: #95a5a6;
+  cursor: pointer;
+  padding: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+  font-size: 14px;
+  width: 28px;
+  height: 28px;
+}
+
+.clear-search:hover {
+  background: #f1f5f9;
+  color: #e74c3c;
+}
+
+.filter-group select {
+  padding: 10px 12px;
+  border: 2px solid #ddd;
+  border-radius: 6px;
+  background: white;
+  font-size: 14px;
+  color: #2c3e50;
+  transition: all 0.2s ease;
+  cursor: pointer;
 }
 
 .filter-group select:focus {
   outline: none;
   border-color: #3498db;
-  box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+  box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+}
+
+.btn-search {
+  padding: 10px 20px;
+  white-space: nowrap;
+  align-self: flex-end;
+}
+
+.search-info {
+  margin-top: 15px;
+  padding: 10px 15px;
+  background: #e3f2fd;
+  border-left: 4px solid #2196f3;
+  border-radius: 4px;
+  color: #1565c0;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  animation: slideInDown 0.3s ease-out;
+}
+
+.search-info i {
+  font-size: 16px;
+}
+
+.search-info strong {
+  color: #0d47a1;
+  font-weight: 600;
 }
 
 /* ===== JOB LISTING STYLING ===== */
@@ -273,7 +368,7 @@
 
 .no-jobs p {
   font-size: 16px;
-  margin: 0;
+  margin: 0 0 10px 0;
   font-style: italic;
 }
 
@@ -698,6 +793,15 @@
     grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
     gap: 15px;
   }
+
+  .filter-form {
+    gap: 12px;
+  }
+
+  .filter-group,
+  .filter-group.search-group {
+    min-width: 180px;
+  }
 }
 
 @media (max-width: 768px) {
@@ -726,14 +830,26 @@
     font-size: 16px;
   }
 
-  .filter-group {
+  .filter-form {
     flex-direction: column;
-    align-items: stretch;
-    gap: 8px;
+    gap: 12px;
   }
 
-  .filter-group select {
+  .filter-group,
+  .filter-group.search-group {
     min-width: auto;
+    width: 100%;
+  }
+
+  .btn-search {
+    width: 100%;
+    align-self: stretch;
+  }
+
+  .search-info {
+    flex-direction: column;
+    text-align: center;
+    gap: 8px;
   }
 
   .apply-header {
@@ -808,6 +924,25 @@
     padding: 6px 10px;
     font-size: 13px;
   }
+
+  .filter-section {
+    padding: 12px 15px;
+  }
+
+  .search-input {
+    font-size: 13px;
+    padding: 9px 35px 9px 10px;
+  }
+
+  .filter-group select {
+    font-size: 13px;
+    padding: 9px 10px;
+  }
+
+  .search-info {
+    font-size: 13px;
+    padding: 8px 12px;
+  }
 }
 
 /* ===== ANIMATION ENHANCEMENTS ===== */
@@ -819,6 +954,17 @@
   from {
     opacity: 0;
     transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
   }
   to {
     opacity: 1;
@@ -840,6 +986,7 @@
   }
 }
 
+/* ===== POPUP STYLING ===== */
 /* Popup Overlay */
 .popup-overlay {
   position: fixed;
@@ -912,6 +1059,7 @@
   align-items: center;
   justify-content: center;
   cursor: pointer;
+  transition: all 0.2s ease;
 }
 .popup-ctrl-btn:hover {
   background: rgba(0, 0, 0, 0.75);
@@ -933,9 +1081,13 @@
   background: rgba(255, 255, 255, 0.6);
   border: none;
   cursor: pointer;
+  transition: all 0.2s ease;
 }
 .popup-dot.active {
   background: #fff;
+}
+.popup-dot:hover {
+  background: rgba(255, 255, 255, 0.8);
 }
 
 /* Vertical Popup - Portrait orientation */
@@ -1021,7 +1173,7 @@
   transform: scale(1.1);
 }
 
-/* Responsive Design */
+/* Responsive Popup Design */
 @media (max-width: 768px) {
   .popup-container.vertical {
     max-width: 85%;
@@ -1040,6 +1192,20 @@
     height: 35px;
     font-size: 18px;
   }
+
+  .popup-ctrl-btn {
+    width: 36px;
+    height: 36px;
+  }
+
+  .popup-ctrl-btn.close {
+    width: 40px;
+    height: 36px;
+  }
+
+  .popup-controls {
+    gap: 8px;
+  }
 }
 
 @media (max-width: 480px) {
@@ -1053,6 +1219,27 @@
     width: 30px;
     height: 30px;
     font-size: 16px;
+  }
+
+  .popup-ctrl-btn {
+    width: 32px;
+    height: 32px;
+    font-size: 12px;
+  }
+
+  .popup-ctrl-btn.close {
+    width: 36px;
+    height: 32px;
+  }
+
+  .popup-dot {
+    width: 8px;
+    height: 8px;
+  }
+
+  .popup-controls {
+    gap: 6px;
+    bottom: 8px;
   }
 }
 

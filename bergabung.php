@@ -15,18 +15,27 @@ $isLoggedIn = isset($_SESSION['user_id']);
 $userId = $isLoggedIn ? (int)$_SESSION['user_id'] : null;
 $userRole = $isLoggedIn ? $_SESSION['role'] : null;
 
-// Get filter parameter
+// Get filter parameters
 $status_filter = isset($_GET['status']) ? $_GET['status'] : 'all';
+$search_query = isset($_GET['search']) ? trim($_GET['search']) : '';
 
-// Build query based on filter
+// Build query based on filters
 $whereClause = "WHERE hapus=0";
+
+// Add status filter
 if ($status_filter === 'open') {
     $whereClause .= " AND status='open'";
 } elseif ($status_filter === 'closed') {
     $whereClause .= " AND status='closed'";
 }
 
-// Fetch jobs based on filter
+// Add search filter
+if (!empty($search_query)) {
+    $search_escaped = mysqli_real_escape_string($conn, $search_query);
+    $whereClause .= " AND title LIKE '%$search_escaped%'";
+}
+
+// Fetch jobs based on filters
 $jobs = mysqli_query($conn, "SELECT job_id, title, description, location, salary_range, posted_at, status FROM lowongan $whereClause ORDER BY status ASC, posted_at DESC");
 
 // Fetch active popup images (allow multiple active)
@@ -103,16 +112,54 @@ if ($active_popup_rs && mysqli_num_rows($active_popup_rs) > 0) {
                     <div class="card-body">
                         <!-- Filter Section -->
                         <div class="filter-section">
-                            <div class="filter-group">
-                                <label for="status-filter">
-                                    <i class="fas fa-filter"></i> Filter Status:
-                                </label>
-                                <select id="status-filter" onchange="filterJobs(this.value)">
-                                    <option value="all" <?php echo $status_filter === 'all' ? 'selected' : ''; ?>>Semua Status</option>
-                                    <option value="open" <?php echo $status_filter === 'open' ? 'selected' : ''; ?>>Aktif</option>
-                                    <option value="closed" <?php echo $status_filter === 'closed' ? 'selected' : ''; ?>>Ditutup</option>
-                                </select>
-                            </div>
+                            <form method="GET" action="" id="filterForm" class="filter-form">
+                                <!-- Search Bar -->
+                                <div class="filter-group search-group">
+                                    <label for="search-input">
+                                        <i class="fas fa-search"></i> Cari Pekerjaan:
+                                    </label>
+                                    <div class="search-input-wrapper">
+                                        <input type="text" 
+                                               id="search-input" 
+                                               name="search" 
+                                               placeholder="Masukkan nama pekerjaan..." 
+                                               value="<?php echo htmlspecialchars($search_query); ?>"
+                                               class="search-input">
+                                        <?php if (!empty($search_query)): ?>
+                                            <button type="button" class="clear-search" onclick="clearSearch()" title="Hapus pencarian">
+                                                <i class="fas fa-times"></i>
+                                            </button>
+                                        <?php endif; ?>
+                                    </div>
+                                </div>
+
+                                <!-- Status Filter -->
+                                <div class="filter-group">
+                                    <label for="status-filter">
+                                        <i class="fas fa-filter"></i> Filter Status:
+                                    </label>
+                                    <select id="status-filter" name="status" onchange="document.getElementById('filterForm').submit()">
+                                        <option value="all" <?php echo $status_filter === 'all' ? 'selected' : ''; ?>>Semua Status</option>
+                                        <option value="open" <?php echo $status_filter === 'open' ? 'selected' : ''; ?>>Aktif</option>
+                                        <option value="closed" <?php echo $status_filter === 'closed' ? 'selected' : ''; ?>>Ditutup</option>
+                                    </select>
+                                </div>
+
+                                <button type="submit" class="btn btn-primary btn-search">
+                                    <i class="fas fa-search"></i> Cari
+                                </button>
+                            </form>
+
+                            <?php if (!empty($search_query)): ?>
+                                <div class="search-info">
+                                    <i class="fas fa-info-circle"></i>
+                                    Menampilkan hasil pencarian untuk: <strong>"<?php echo htmlspecialchars($search_query); ?>"</strong>
+                                    <?php 
+                                    $total_results = $jobs ? mysqli_num_rows($jobs) : 0;
+                                    echo " ($total_results hasil ditemukan)";
+                                    ?>
+                                </div>
+                            <?php endif; ?>
                         </div>
 
                         <?php if ($jobs && mysqli_num_rows($jobs) > 0): ?>
@@ -155,7 +202,9 @@ if ($active_popup_rs && mysqli_num_rows($active_popup_rs) > 0) {
                             <div class="no-jobs">
                                 <i class="fas fa-briefcase"></i>
                                 <p>
-                                    <?php if ($status_filter === 'open'): ?>
+                                    <?php if (!empty($search_query)): ?>
+                                        Tidak ada lowongan yang cocok dengan pencarian "<?php echo htmlspecialchars($search_query); ?>".
+                                    <?php elseif ($status_filter === 'open'): ?>
                                         Belum ada lowongan aktif tersedia.
                                     <?php elseif ($status_filter === 'closed'): ?>
                                         Belum ada lowongan yang ditutup.
@@ -163,6 +212,11 @@ if ($active_popup_rs && mysqli_num_rows($active_popup_rs) > 0) {
                                         Tidak ada lowongan tersedia saat ini.
                                     <?php endif; ?>
                                 </p>
+                                <?php if (!empty($search_query) || $status_filter !== 'all'): ?>
+                                    <a href="bergabung.php" class="btn btn-primary btn-sm" style="margin-top: 15px;">
+                                        <i class="fas fa-redo"></i> Tampilkan Semua Lowongan
+                                    </a>
+                                <?php endif; ?>
                             </div>
                         <?php endif; ?>
                     </div>
@@ -199,17 +253,10 @@ if ($active_popup_rs && mysqli_num_rows($active_popup_rs) > 0) {
 
     <script src="js/common.js"></script>
     <script>
-    // ===== FILTER JOBS =====
-    function filterJobs(status) {
-        const currentUrl = new URL(window.location);
-        if (status === 'all') {
-            currentUrl.searchParams.delete('status');
-        } else {
-            currentUrl.searchParams.set('status', status);
-        }
-        // Tambahkan no_popup supaya popup tidak muncul saat filter
-        currentUrl.searchParams.set('no_popup', '1');
-        window.location.href = currentUrl.toString();
+    // ===== CLEAR SEARCH =====
+    function clearSearch() {
+        document.getElementById('search-input').value = '';
+        document.getElementById('filterForm').submit();
     }
 
     // ===== POPUP FUNCTIONALITY (Multiple with slider) =====
