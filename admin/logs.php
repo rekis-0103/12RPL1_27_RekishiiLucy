@@ -8,54 +8,58 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
     exit();
 }
 
-// Get user data
-$user_id = $_SESSION['user_id'];
-$username = $_SESSION['username'];
+// User data
+$user_id   = $_SESSION['user_id'];
+$username  = $_SESSION['username'];
 $full_name = $_SESSION['full_name'];
-$role = $_SESSION['role'];
+$role      = $_SESSION['role'];
 
-// Predefined action options for filtering
-$predefined_actions = [
-    'login' => 'Login',
-    'logout' => 'Logout',
-    'tambah user' => 'Tambah User',
-    'edit user' => 'Edit user',
-    'hapus user' => 'Hapus user',
-    'tambah kegiatan' => 'Tambah kegiatan',
-    'edit kegiatan' => 'Edit kegiatan',
-    'hapus kegiatan' => 'Hapus kegiatan',
-    'tambah webinar' => 'Tambah webinar',
-    'edit webinar' => 'Edit webinar',
-    'hapus webiinar' => 'Hapus webinar',
-    'tambah live_stream' => 'Tambah live stream',
-    'edit live_stream' => 'Edit live stream',
-    'hapus live_stream' => 'Hapus live stream',
-    'tambah galeri' => 'Tambah galeri',
-    'edit galeri' => 'Edit galeri',
-    'hapus galeri' => 'Hapus galeri',
+// Entity utama
+$entities = [
+    'login'       => 'Login',
+    'logout'      => 'Logout',
+    'user'        => 'User',
+    'kegiatan'    => 'Kegiatan',
+    'webinar'     => 'Webinar',
+    'live_stream' => 'Live Stream',
+    'galeri'      => 'Galeri',
+    'layanan'    => 'Layanan',
+    'produk'      => 'Produk',
 ];
 
 // Get filter parameters
-$action_filter = isset($_GET['action']) ? mysqli_real_escape_string($conn, $_GET['action']) : '';
-$date_from = isset($_GET['date_from']) ? mysqli_real_escape_string($conn, $_GET['date_from']) : '';
-$date_to = isset($_GET['date_to']) ? mysqli_real_escape_string($conn, $_GET['date_to']) : '';
-$user_filter = isset($_GET['user_id']) ? mysqli_real_escape_string($conn, $_GET['user_id']) : '';
+$entity_filter = isset($_GET['entity']) ? strtolower(mysqli_real_escape_string($conn, $_GET['entity'])) : '';
+$crud_filter   = isset($_GET['crud']) ? strtolower(mysqli_real_escape_string($conn, $_GET['crud'])) : '';
+$date_from     = isset($_GET['date_from']) ? mysqli_real_escape_string($conn, $_GET['date_from']) : '';
+$date_to       = isset($_GET['date_to']) ? mysqli_real_escape_string($conn, $_GET['date_to']) : '';
+$user_filter   = isset($_GET['user_id']) ? mysqli_real_escape_string($conn, $_GET['user_id']) : '';
 
-// Ambil daftar user yang pernah ada di log
+// Ambil daftar user
 $user_query = "SELECT DISTINCT u.user_id, u.username, u.full_name
                FROM log_aktivitas l
                LEFT JOIN users u ON l.user_id = u.user_id
                ORDER BY u.full_name ASC";
 $user_result = mysqli_query($conn, $user_query);
 
-
 // Build query with filters
 $where_conditions = [];
-$where_conditions[] = "1=1"; // Base condition
+$where_conditions[] = "1=1";
 
-if ($action_filter) {
-    // Use LIKE operator to find actions containing the selected filter
-    $where_conditions[] = "l.action LIKE '%$action_filter%'";
+if ($entity_filter) {
+    if ($crud_filter) {
+        if ($crud_filter === 'create') {
+            $where_conditions[] = "(l.action LIKE '%tambah $entity_filter%' OR l.action LIKE '%create $entity_filter%')";
+        } elseif ($crud_filter === 'read') {
+            $where_conditions[] = "(l.action LIKE '%lihat $entity_filter%' OR l.action LIKE '%view $entity_filter%')";
+        } elseif ($crud_filter === 'update') {
+            $where_conditions[] = "(l.action LIKE '%edit $entity_filter%' OR l.action LIKE '%update $entity_filter%')";
+        } elseif ($crud_filter === 'delete') {
+            $where_conditions[] = "(l.action LIKE '%hapus $entity_filter%' OR l.action LIKE '%delete $entity_filter%')";
+        }
+    } else {
+        // tanpa CRUD → semua aksi entitas
+        $where_conditions[] = "l.action LIKE '%$entity_filter%'";
+    }
 }
 
 if ($date_from) {
@@ -128,15 +132,25 @@ $logs_result = mysqli_query($conn, $logs_query);
                 <div class="filter-form">
                     <form method="GET" class="filter-grid">
                         <div class="form-group">
-                            <label for="action">Aksi</label>
-                            <select id="action" name="action">
-                                <option value="">Semua Aksi</option>
-                                <?php foreach ($predefined_actions as $value => $label): ?>
+                            <label for="entity">Entitas</label>
+                            <select id="entity" name="entity">
+                                <option value="">Semua Entitas</option>
+                                <?php foreach ($entities as $value => $label): ?>
                                     <option value="<?php echo htmlspecialchars($value); ?>"
-                                        <?php echo ($action_filter == $value) ? 'selected' : ''; ?>>
+                                        <?php echo ($entity_filter == $value) ? 'selected' : ''; ?>>
                                         <?php echo htmlspecialchars($label); ?>
                                     </option>
                                 <?php endforeach; ?>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="crud">CRUD</label>
+                            <select id="crud" name="crud" <?php echo $entity_filter ? '' : 'disabled'; ?>>
+                                <option value="">Semua</option>
+                                <option value="create" <?php echo ($crud_filter == 'create') ? 'selected' : ''; ?>>Create</option>
+                                <option value="read" <?php echo ($crud_filter == 'read') ? 'selected' : ''; ?>>Read</option>
+                                <option value="update" <?php echo ($crud_filter == 'update') ? 'selected' : ''; ?>>Update</option>
+                                <option value="delete" <?php echo ($crud_filter == 'delete') ? 'selected' : ''; ?>>Delete</option>
                             </select>
                         </div>
                         <div class="form-group">
@@ -223,7 +237,7 @@ $logs_result = mysqli_query($conn, $logs_query);
                                 <?php endwhile; ?>
                             <?php else: ?>
                                 <tr>
-                                    <td colspan="5" class="text-center">Tidak ada data log</td>
+                                    <td colspan="4" class="text-center">Tidak ada data log</td>
                                 </tr>
                             <?php endif; ?>
                         </tbody>
@@ -233,49 +247,47 @@ $logs_result = mysqli_query($conn, $logs_query);
         </div>
     </div>
 
-    <script src="../js/navbar.js"></script>
     <script>
         function toggleSidebar() {
             const sidebar = document.getElementById('sidebar');
             const toggleBtn = document.querySelector('.mobile-toggle');
-
             sidebar.classList.toggle('active');
-
-            // Sembunyikan tombol ketika sidebar muncul
-            if (sidebar.classList.contains('active')) {
-                toggleBtn.style.display = "none";
-            } else {
-                toggleBtn.style.display = "block";
-            }
+            toggleBtn.style.display = sidebar.classList.contains('active') ? "none" : "block";
         }
 
-        // Tutup sidebar kalau klik di luar
-        document.addEventListener('click', function(event) {
-            const sidebar = document.getElementById('sidebar');
-            const mobileToggle = document.querySelector('.mobile-toggle');
+        // Enable/disable CRUD berdasarkan entity
+        document.getElementById('entity').addEventListener('change', function() {
+            const crudDropdown = document.getElementById('crud');
+            const selectedEntity = this.value;
 
-            if (window.innerWidth <= 768) {
-                if (!sidebar.contains(event.target) && !mobileToggle.contains(event.target)) {
-                    sidebar.classList.remove('active');
-                    mobileToggle.style.display = "block"; // tampilkan kembali tombol
-                }
+            // Daftar entitas yang tidak memerlukan CRUD
+            const nonCrudEntities = ['login', 'logout'];
+
+            if (selectedEntity && !nonCrudEntities.includes(selectedEntity)) {
+                // Entity dipilih dan BUKAN login/logout -> aktifkan CRUD
+                crudDropdown.disabled = false;
+            } else {
+                // Tidak ada entity atau entity adalah login/logout -> nonaktifkan CRUD
+                crudDropdown.disabled = true;
+                crudDropdown.value = '';
             }
         });
 
         function exportLogs() {
-            // Get current filter parameters
             const urlParams = new URLSearchParams(window.location.search);
-            const action = urlParams.get('action') || '';
+            const entity = urlParams.get('entity') || '';
+            const crud = urlParams.get('crud') || '';
             const dateFrom = urlParams.get('date_from') || '';
             const dateTo = urlParams.get('date_to') || '';
+            const userId = urlParams.get('user_id') || '';
 
-            // Create export URL
             let exportUrl = 'export_logs.php?';
-            if (action) exportUrl += 'action=' + action + '&';
+            if (entity) exportUrl += 'entity=' + entity + '&';
+            if (crud) exportUrl += 'crud=' + crud + '&';
             if (dateFrom) exportUrl += 'date_from=' + dateFrom + '&';
-            if (dateTo) exportUrl += 'date_to=' + dateTo;
+            if (dateTo) exportUrl += 'date_to=' + dateTo + '&';
+            if (userId) exportUrl += 'user_id=' + userId;
 
-            // Download the file
             window.location.href = exportUrl;
         }
     </script>
@@ -284,20 +296,20 @@ $logs_result = mysqli_query($conn, $logs_query);
 </html>
 
 <?php
-// Helper function to get appropriate icon for action
+// Helper function untuk ikon
 function getActionIcon($action)
 {
     $action_lower = strtolower($action);
 
     if (strpos($action_lower, 'login') !== false) return 'sign-in-alt';
     if (strpos($action_lower, 'logout') !== false) return 'sign-out-alt';
-    if (strpos($action_lower, 'create') !== false || strpos($action_lower, 'tambah') !== false) return 'plus';
-    if (strpos($action_lower, 'update') !== false || strpos($action_lower, 'edit') !== false) return 'edit';
-    if (strpos($action_lower, 'delete') !== false || strpos($action_lower, 'hapus') !== false) return 'trash';
-    if (strpos($action_lower, 'view') !== false || strpos($action_lower, 'lihat') !== false) return 'eye';
+    if (strpos($action_lower, 'tambah') !== false || strpos($action_lower, 'create') !== false) return 'plus';
+    if (strpos($action_lower, 'edit') !== false || strpos($action_lower, 'update') !== false) return 'edit';
+    if (strpos($action_lower, 'hapus') !== false || strpos($action_lower, 'delete') !== false) return 'trash';
+    if (strpos($action_lower, 'lihat') !== false || strpos($action_lower, 'view') !== false) return 'eye';
     if (strpos($action_lower, 'export') !== false) return 'download';
     if (strpos($action_lower, 'import') !== false) return 'upload';
 
-    return 'user'; // default icon
+    return 'user';
 }
 ?>

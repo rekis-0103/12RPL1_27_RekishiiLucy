@@ -14,26 +14,31 @@ $username = $_SESSION['username'];
 $full_name = $_SESSION['full_name'];
 $role = $_SESSION['role'];
 
-$kegiatan = 0;
-$webinar = 0;
-$livestreaming = 0;
-$galeri = 0;
-$r1 = mysqli_query($conn, "SELECT COUNT(*) c FROM kegiatan");
+$berita = 0;
+$produk = 0;
+$layanan = 0;
+
+$r1 = mysqli_query($conn, "
+    SELECT 
+        (SELECT COUNT(*) FROM kegiatan) +
+        (SELECT COUNT(*) FROM webinar) +
+        (SELECT COUNT(*) FROM live_streaming) +
+        (SELECT COUNT(*) FROM galeri) AS total
+");
 if ($r1) {
-    $kegiatan = (int)mysqli_fetch_assoc($r1)['c'];
+    $berita = (int)mysqli_fetch_assoc($r1)['total'];
 }
-$r2 = mysqli_query($conn, "SELECT COUNT(*) c FROM webinar");
+
+$r2 = mysqli_query($conn, "SELECT COUNT(*) c FROM products");
 if ($r2) {
-    $webinar = (int)mysqli_fetch_assoc($r2)['c'];
+    $produk = (int)mysqli_fetch_assoc($r2)['c'];
 }
-$r3 = mysqli_query($conn, "SELECT COUNT(*) c FROM live_streaming");
+
+$r3 = mysqli_query($conn, "SELECT COUNT(*) c FROM services");
 if ($r3) {
-    $livestreaming = (int)mysqli_fetch_assoc($r3)['c'];
+    $layanan = (int)mysqli_fetch_assoc($r3)['c'];
 }
-$r4 = mysqli_query($conn, "SELECT COUNT(*) c FROM galeri");
-if ($r4) {
-    $galeri = (int)mysqli_fetch_assoc($r4)['c'];
-}
+
 
 //konten terbaru
 $konten_terbaru = mysqli_query($conn, "SELECT * FROM `log_aktivitas` WHERE action LIKE '%Konten%' ORDER BY `log_id` DESC LIMIT 5");
@@ -82,24 +87,19 @@ $konten_terbaru = mysqli_query($conn, "SELECT * FROM `log_aktivitas` WHERE actio
 
             <div class="stats-grid">
                 <div class="stat-card">
-                    <i class="fas fa-calendar"></i>
-                    <h3><?php echo $kegiatan; ?></h3>
-                    <p>kegiatan</p>
+                    <i class="fas fa-newspaper"></i>
+                    <h3><?php echo $berita; ?></h3>
+                    <p>Berita</p>
                 </div>
                 <div class="stat-card">
-                    <i class="fas fa-chalkboard-teacher"></i>
-                    <h3><?php echo $webinar; ?></h3>
-                    <p>Webinar</p>
+                    <i class="fas fa-box-open"></i>
+                    <h3><?php echo $produk; ?></h3>
+                    <p>Produk</p>
                 </div>
                 <div class="stat-card">
-                    <i class="fas fa-video"></i>
-                    <h3><?php echo $livestreaming; ?></h3>
-                    <p>Live Streaming</p>
-                </div>
-                <div class="stat-card">
-                    <i class="fas fa-image"></i>
-                    <h3><?php echo $galeri; ?></h3>
-                    <p>Galeri</p>
+                    <i class="fas fa-hands-helping"></i>
+                    <h3><?php echo $layanan; ?></h3>
+                    <p>Layanan</p>
                 </div>
             </div>
 

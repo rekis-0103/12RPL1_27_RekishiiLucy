@@ -113,6 +113,7 @@ if ($active_popup_rs && mysqli_num_rows($active_popup_rs) > 0) {
                         <!-- Filter Section -->
                         <div class="filter-section">
                             <form method="GET" action="" id="filterForm" class="filter-form">
+                                <input type="hidden" name="no_popup" value="1">
                                 <!-- Search Bar -->
                                 <div class="filter-group search-group">
                                     <label for="search-input">
@@ -213,7 +214,7 @@ if ($active_popup_rs && mysqli_num_rows($active_popup_rs) > 0) {
                                     <?php endif; ?>
                                 </p>
                                 <?php if (!empty($search_query) || $status_filter !== 'all'): ?>
-                                    <a href="bergabung.php" class="btn btn-primary btn-sm" style="margin-top: 15px;">
+                                    <a href="bergabung.php?no_popup=1" class="btn btn-primary btn-sm" style="margin-top: 15px;">
                                         <i class="fas fa-redo"></i> Tampilkan Semua Lowongan
                                     </a>
                                 <?php endif; ?>
