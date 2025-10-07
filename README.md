@@ -26,7 +26,6 @@
 - Berita
 - Hubungi Kami
 - Bergabung
-- Download
 
 ### Admin :
 - All in guest
