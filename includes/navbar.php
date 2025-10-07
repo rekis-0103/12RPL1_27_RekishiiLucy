@@ -42,7 +42,6 @@ if (session_status() === PHP_SESSION_NONE) {
                     Lowongan Kerja
                 </a>
             </li>
-            <li><a href="https://docs.google.com/forms/d/e/1FAIpQLSfvFEpx0w4Ypo9YcRmKH5IX3SI7kgk8DJGbKjUUuOAoC17IZQ/viewform" target="_blank">Download</a></li>
 
             <!-- Auth for Mobile (hidden in desktop, shown in mobile menu) -->
             <li class="nav-auth-mobile">
