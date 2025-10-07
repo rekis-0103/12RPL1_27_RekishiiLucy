@@ -23,7 +23,7 @@
 }
 
 .slide-content {
-  font-family: "Courier New", Courier, monospace;
+  font-family: "Poppins", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   position: absolute;
   top: 50%;
   left: 50%;
@@ -32,9 +32,12 @@
   color: white;
   width: 80%;
   padding: 2rem;
-  border-radius: 12px;
+  border-radius: 16px;
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(8px);
   animation: fadeInUp 0.6s ease-out;
 }
+
 
 .slide-content h1 {
   font-size: 3.5rem;

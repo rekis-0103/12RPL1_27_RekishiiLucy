@@ -86,6 +86,7 @@ $berita_terbaru = mysqli_query($conn, $query_berita_terbaru);
     <link rel="stylesheet" href="assets/css/navbar.css">
     <link rel="stylesheet" href="assets/css/index.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
 </head>
 
 <body>
@@ -96,7 +97,7 @@ $berita_terbaru = mysqli_query($conn, $query_berita_terbaru);
             <div class="slide active">
                 <img src="assets/slider1.jpeg" alt="Business Innovation">
                 <div class="slide-content">
-                    <h1>PT Waindo Specterra</h1>
+                    <h1>PT Waindo SpecTerra</h1>
                 </div>
             </div>
 
