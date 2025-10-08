@@ -145,42 +145,76 @@ $list = mysqli_query($conn, "SELECT a.*, u.full_name, u.email, l.title
             <div class="card">
                 <div class="card-header">
                     <h3><i class="fas fa-users"></i> Daftar Kandidat</h3>
+                    <div class="header-info">
+                        <span class="info-badge">
+                            <i class="fas fa-user-check"></i>
+                            Total: <?php echo ($list ? mysqli_num_rows($list) : 0); ?> Kandidat
+                        </span>
+                    </div>
                 </div>
                 <div class="table-wrap">
                     <table>
                         <thead>
                             <tr>
-                                <th>Nama</th>
-                                <th>Email</th>
-                                <th>Posisi</th>
-                                <th>Status</th>
-                                <th>CV</th>
-                                <th>Jadwal Wawancara</th>
-                                <th>Tanggal Melamar</th>
-                                <th>Aksi</th>
+                                <th><i class="fas fa-user"></i> Nama</th>
+                                <th><i class="fas fa-briefcase"></i> Posisi</th>
+                                <th><i class="fas fa-info-circle"></i> Status</th>
+                                <th><i class="fas fa-calendar-check"></i> Jadwal Wawancara</th>
+                                <th><i class="fas fa-calendar"></i> Tgl Melamar</th>
+                                <th><i class="fas fa-cog"></i> Aksi</th>
                             </tr>
                         </thead>
                         <tbody>
                             <?php if ($list && mysqli_num_rows($list) > 0): ?>
                                 <?php while ($row = mysqli_fetch_assoc($list)): ?>
                                     <tr>
-                                        <td><?php echo htmlspecialchars($row['full_name']); ?></td>
-                                        <td><?php echo htmlspecialchars($row['email']); ?></td>
-                                        <td><?php echo htmlspecialchars($row['title']); ?></td>
-                                        <td><span class="badge status-<?php echo str_replace(' ', '-', $row['status']); ?>"><?php echo htmlspecialchars($row['status']); ?></span></td>
                                         <td>
-                                            <?php if (!empty($row['cv'])): ?>
-                                                <a href="../<?php echo htmlspecialchars($row['cv']); ?>" target="_blank" class="btn btn-secondary btn-sm">
-                                                    <i class="fas fa-file-pdf"></i> Lihat CV
-                                                </a>
+                                            <div class="candidate-info">
+                                                <div class="candidate-name">
+                                                    <i class="fas fa-user-circle"></i>
+                                                    <?php echo htmlspecialchars($row['full_name']); ?>
+                                                </div>
+                                                <div class="candidate-meta">
+                                                    <?php if (!empty($row['no_telepon'])): ?>
+                                                        <span class="meta-item">
+                                                            <i class="fas fa-phone"></i>
+                                                            <?php echo htmlspecialchars($row['no_telepon']); ?>
+                                                        </span>
+                                                    <?php endif; ?>
+                                                    <?php if (!empty($row['pendidikan'])): ?>
+                                                        <span class="meta-item">
+                                                            <i class="fas fa-graduation-cap"></i>
+                                                            <?php echo htmlspecialchars($row['pendidikan']); ?>
+                                                        </span>
+                                                    <?php endif; ?>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="position-cell">
+                                            <strong><?php echo htmlspecialchars($row['title']); ?></strong>
+                                        </td>
+                                        <td>
+                                            <span class="badge status-<?php echo str_replace(' ', '-', $row['status']); ?>">
+                                                <?php echo htmlspecialchars($row['status']); ?>
+                                            </span>
+                                        </td>
+                                        <td class="date-cell">
+                                            <?php if (!empty($row['interview_date'])): ?>
+                                                <div class="interview-date">
+                                                    <i class="fas fa-clock"></i>
+                                                    <?php echo date('d/m/Y H:i', strtotime($row['interview_date'])); ?>
+                                                </div>
                                             <?php else: ?>
-                                                <span class="text-muted">-</span>
+                                                <span class="text-muted">Belum dijadwalkan</span>
                                             <?php endif; ?>
                                         </td>
-                                        <td><?php echo htmlspecialchars($row['interview_date'] ? date('d/m/Y H:i', strtotime($row['interview_date'])) : '-'); ?></td>
-                                        <td><?php echo htmlspecialchars(date('d/m/Y', strtotime($row['applied_at']))); ?></td>
+                                        <td class="date-cell"><?php echo date('d/m/Y', strtotime($row['applied_at'])); ?></td>
                                         <td>
                                             <div class="row-actions">
+                                                <a href="candidate-detail.php?id=<?php echo (int)$row['application_id']; ?>" class="btn btn-info btn-sm">
+                                                    <i class="fas fa-eye"></i> Periksa
+                                                </a>
+                                                
                                                 <?php if ($row['status'] === 'lolos administrasi'): ?>
                                                     <form method="POST" class="inline action-form">
                                                         <input type="hidden" name="action" value="move_to_interview">
@@ -218,7 +252,12 @@ $list = mysqli_query($conn, "SELECT a.*, u.full_name, u.email, l.title
                                 <?php endwhile; ?>
                             <?php else: ?>
                                 <tr>
-                                    <td colspan="8" class="text-center">Belum ada kandidat pada tahap lanjutan</td>
+                                    <td colspan="6" class="text-center">
+                                        <div class="no-data">
+                                            <i class="fas fa-users-slash"></i>
+                                            <p>Belum ada kandidat pada tahap lanjutan</p>
+                                        </div>
+                                    </td>
                                 </tr>
                             <?php endif; ?>
                         </tbody>

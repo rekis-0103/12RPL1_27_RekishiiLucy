@@ -119,7 +119,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
                         $cvEsc = mysqli_real_escape_string($conn, $relPath);
                         
                         $q = "INSERT INTO applications (job_id, user_id, no_telepon, pendidikan, cv, status, applied_at) 
-                             VALUES ($job_id, $user_id, '$noTeleponEsc', '$pendidikanEsc', '$cvEsc', 'pendaftaran diterima', NOW())";
+                             VALUES ($job_id, $user_id, '$noTeleponEsc', '$pendidikanEsc', '$cvEsc', 'pending', NOW())";
                         
                         if (mysqli_query($conn, $q)) {
                             $success = 'Lamaran berhasil dikirim';

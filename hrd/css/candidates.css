@@ -1,4 +1,11 @@
-/* Cards & Alerts */
+/* ==========================================================================
+   CANDIDATES PAGE STYLES
+   ========================================================================== */
+
+/* ==========================================================================
+   CARDS & LAYOUT
+   ========================================================================== */
+
 .card {
   background: #fff;
   border-radius: 10px;
@@ -6,224 +13,657 @@
   margin-bottom: 20px;
   overflow: hidden;
 }
+
 .card-header {
   padding: 20px;
   border-bottom: 1px solid #e5e7eb;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  flex-wrap: wrap;
+  gap: 15px;
 }
+
+.card-header h3 {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0;
+  color: #1f2937;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.header-info {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.info-badge {
+  background: #eff6ff;
+  color: #1e40af;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* ==========================================================================
+   ALERTS
+   ========================================================================== */
+
 .alert {
   padding: 12px 16px;
   border-radius: 6px;
   margin-bottom: 20px;
   font-weight: 500;
 }
+
 .alert-success {
   background: #d1fae5;
   color: #065f46;
   border: 1px solid #a7f3d0;
 }
+
 .alert-danger {
   background: #fee2e2;
   color: #991b1b;
   border: 1px solid #fca5a5;
 }
 
-/* Table */
+/* ==========================================================================
+   TABLE
+   ========================================================================== */
+
 .table-wrap {
   overflow-x: auto;
+  padding: 0;
 }
+
 table {
   width: 100%;
-  border-collapse: collapse;
+  border-collapse: separate;
+  border-spacing: 0;
   font-size: 14px;
 }
-th,
-td {
-  padding: 12px 8px;
-  border-bottom: 1px solid #e5e7eb;
+
+/* Table Header */
+thead {
+  background: #f8fafc;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+th {
+  background: #f8fafc;
+  color: #475569;
+  font-weight: 600;
+  white-space: nowrap;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  padding: 16px 20px;
+  border-bottom: 2px solid #e2e8f0;
   text-align: left;
   vertical-align: middle;
 }
-th {
-  background: #f9fafb;
-  color: #374151;
+
+th:first-child {
+  padding-left: 24px;
+}
+
+th:last-child {
+  padding-right: 24px;
+}
+
+th i {
+  margin-right: 6px;
+  color: #64748b;
+  font-size: 13px;
+}
+
+/* Table Body */
+tbody {
+  background: #fff;
+}
+
+td {
+  padding: 20px;
+  border-bottom: 1px solid #f1f5f9;
+  text-align: left;
+  vertical-align: middle;
+  color: #334155;
+}
+
+td:first-child {
+  padding-left: 24px;
+}
+
+td:last-child {
+  padding-right: 24px;
+}
+
+tbody tr {
+  transition: all 0.2s ease;
+  border-left: 3px solid transparent;
+}
+
+tbody tr:hover {
+  background-color: #f8fafc;
+  border-left-color: #3b82f6;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* ==========================================================================
+   CANDIDATE INFO
+   ========================================================================== */
+
+.candidate-info {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 200px;
+}
+
+.candidate-name {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 600;
+  color: #0f172a;
+  font-size: 15px;
+  margin-bottom: 2px;
+}
+
+.candidate-name i {
+  color: #3b82f6;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+.candidate-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding-left: 28px;
+}
+
+.meta-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: #64748b;
+  line-height: 1.4;
+}
+
+.meta-item i {
+  width: 16px;
+  text-align: center;
+  color: #94a3b8;
+  font-size: 12px;
+  flex-shrink: 0;
+}
+
+/* ==========================================================================
+   TABLE CELLS
+   ========================================================================== */
+
+/* Position Cell */
+.position-cell {
+  color: #0f172a;
+  font-weight: 600;
+  font-size: 14px;
+  min-width: 180px;
+}
+
+/* Date Cell */
+.date-cell {
+  white-space: nowrap;
+  font-size: 13px;
+  color: #475569;
+  font-weight: 500;
+  min-width: 120px;
+}
+
+.interview-date {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: #059669;
+  font-weight: 600;
+  background: #d1fae5;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 13px;
+}
+
+.interview-date i {
+  color: #10b981;
+  font-size: 14px;
+}
+
+/* Email Cell */
+.email-cell {
+  max-width: 200px;
+  word-break: break-word;
+  font-size: 13px;
+  color: #64748b;
+}
+
+/* Phone Cell */
+.phone-cell {
+  white-space: nowrap;
+}
+
+.phone-link {
+  color: #3b82f6;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 500;
+  transition: color 0.2s;
+}
+
+.phone-link:hover {
+  color: #2563eb;
+  text-decoration: underline;
+}
+
+.phone-link i {
+  font-size: 12px;
+}
+
+/* Education Cell */
+.education-cell {
+  max-width: 200px;
+}
+
+.education-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #f1f5f9;
+  padding: 5px 12px;
+  border-radius: 6px;
+  font-size: 12px;
+  color: #475569;
+  border: 1px solid #e2e8f0;
+  font-weight: 500;
+}
+
+.education-badge i {
+  color: #64748b;
+  font-size: 11px;
+}
+
+/* ==========================================================================
+   STATUS BADGES
+   ========================================================================== */
+
+.badge {
+  padding: 6px 14px;
+  border-radius: 6px;
+  font-size: 11px;
   font-weight: 600;
   white-space: nowrap;
-}
-.text-center {
-  text-align: center;
-}
-.text-muted {
-  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  display: inline-block;
+  line-height: 1.2;
 }
 
-/* Status badges */
-.badge {
-  padding: 4px 10px;
-  border-radius: 999px;
-  font-size: 12px;
-  font-weight: 500;
-  white-space: nowrap;
-}
-.status-lolos-administrasi {
+.status-lolos-administrasi,
+.badge-lolos-administrasi {
   background: #fef3c7;
   color: #92400e;
-}
-.status-tes-wawancara {
-  background: #dbeafe;
-  color: #1d4ed8;
-}
-.status-diterima-bekerja {
-  background: #d1fae5;
-  color: #065f46;
-}
-.status-ditolak {
-  background: #fee2e2;
-  color: #991b1b;
+  border: 1px solid #fde68a;
 }
 
-/* Actions */
+.status-tes-wawancara,
+.badge-tes-wawancara,
+.status-tes-\&-wawancara,
+.badge-tes-\&-wawancara {
+  background: #dbeafe;
+  color: #1e40af;
+  border: 1px solid #bfdbfe;
+}
+
+.status-diterima-bekerja,
+.badge-diterima-bekerja {
+  background: #d1fae5;
+  color: #065f46;
+  border: 1px solid #a7f3d0;
+}
+
+.status-ditolak,
+.badge-ditolak {
+  background: #fee2e2;
+  color: #991b1b;
+  border: 1px solid #fca5a5;
+}
+
+/* ==========================================================================
+   ACTIONS & FORMS
+   ========================================================================== */
+
 .row-actions {
   display: flex;
   flex-direction: column;
-  gap: 6px;
-  min-width: 200px;
+  gap: 10px;
+  min-width: 280px;
+  align-items: stretch;
 }
+
 .action-form {
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 8px;
   flex-wrap: wrap;
+  width: 100%;
 }
+
 .inline {
   display: flex;
   align-items: center;
-  gap: 6px;
-  margin-bottom: 4px;
-}
-.input-sm {
-  padding: 6px 8px;
-  border: 1px solid #d1d5db;
-  border-radius: 6px;
-  font-size: 12px;
-  min-width: 100px;
+  gap: 8px;
+  margin-bottom: 0;
 }
 
-/* Buttons */
+/* Input Fields */
+.input-sm {
+  padding: 8px 12px;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  font-size: 13px;
+  min-width: 130px;
+  transition: all 0.2s;
+  font-family: inherit;
+  background: #fff;
+  color: #0f172a;
+}
+
+.input-sm:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.input-sm::placeholder {
+  color: #94a3b8;
+  font-size: 12px;
+}
+
+/* Specific input styling */
+input[type="datetime-local"].input-sm,
+input[type="date"].input-sm {
+  min-width: 160px;
+}
+
+input[type="text"].input-sm {
+  flex: 1;
+  min-width: 140px;
+}
+
+/* ==========================================================================
+   BUTTONS
+   ========================================================================== */
+
 .btn {
-  padding: 6px 10px;
+  padding: 8px 16px;
   border: none;
   border-radius: 6px;
   cursor: pointer;
   display: inline-flex;
   align-items: center;
-  gap: 4px;
+  justify-content: center;
+  gap: 6px;
   text-decoration: none;
   font-size: 12px;
-  font-weight: 500;
-  transition: all 0.2s;
+  font-weight: 600;
+  transition: all 0.2s ease;
   white-space: nowrap;
+  line-height: 1.4;
+  text-transform: none;
+  letter-spacing: 0.3px;
 }
+
 .btn:hover {
   transform: translateY(-1px);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
+
+.btn:active {
+  transform: translateY(0);
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.btn:disabled:hover {
+  transform: none;
+  box-shadow: none;
+}
+
+.btn i {
+  font-size: 13px;
+}
+
+/* Button Variants */
 .btn-primary {
-  background: #2563eb;
+  background: #3b82f6;
   color: #fff;
+  border: 1px solid #3b82f6;
 }
+
 .btn-primary:hover {
-  background: #1d4ed8;
+  background: #2563eb;
+  border-color: #2563eb;
 }
+
 .btn-success {
-  background: #059669;
+  background: #10b981;
   color: #fff;
+  border: 1px solid #10b981;
 }
+
 .btn-success:hover {
-  background: #047857;
+  background: #059669;
+  border-color: #059669;
 }
+
 .btn-danger {
-  background: #dc2626;
+  background: #ef4444;
   color: #fff;
+  border: 1px solid #ef4444;
 }
+
 .btn-danger:hover {
-  background: #b91c1c;
+  background: #dc2626;
+  border-color: #dc2626;
 }
+
 .btn-secondary {
-  background: #6b7280;
+  background: #64748b;
   color: #fff;
+  border: 1px solid #64748b;
 }
+
 .btn-secondary:hover {
-  background: #4b5563;
+  background: #475569;
+  border-color: #475569;
 }
+
+.btn-info {
+  background: #0891b2;
+  color: #fff;
+  border: 1px solid #0891b2;
+}
+
+.btn-info:hover {
+  background: #0e7490;
+  border-color: #0e7490;
+}
+
+/* Button Sizes */
 .btn-sm {
-  padding: 6px 10px;
+  padding: 7px 14px;
   font-size: 12px;
 }
 
-/* Responsive design */
+.btn-sm i {
+  font-size: 12px;
+}
+
+/* ==========================================================================
+   UTILITY CLASSES
+   ========================================================================== */
+
+.text-center {
+  text-align: center;
+}
+
+.text-muted {
+  color: #9ca3af;
+  font-style: italic;
+}
+
+/* ==========================================================================
+   EMPTY STATES
+   ========================================================================== */
+
+.no-data {
+  padding: 40px 20px;
+  text-align: center;
+  color: #9ca3af;
+}
+
+.no-data i {
+  font-size: 48px;
+  margin-bottom: 15px;
+  opacity: 0.5;
+}
+
+.no-data p {
+  margin: 0;
+  font-size: 16px;
+  font-style: italic;
+}
+
+/* ==========================================================================
+   RESPONSIVE DESIGN
+   ========================================================================== */
+
+/* Large Desktop (≤ 1400px) */
+@media (max-width: 1400px) {
+  .row-actions {
+    min-width: 200px;
+  }
+
+  .input-sm {
+    min-width: 100px;
+  }
+}
+
+/* Desktop (≤ 1200px) */
 @media (max-width: 1200px) {
   .row-actions {
     min-width: 180px;
   }
+
   .action-form {
     flex-direction: column;
     align-items: stretch;
+    gap: 6px;
   }
-  .input-sm {
-    min-width: 80px;
-  }
-}
 
-@media (max-width: 992px) {
-  table {
-    font-size: 12px;
-  }
-  th, td {
-    padding: 8px 6px;
-  }
-  .row-actions {
-    min-width: 160px;
-  }
-}
-
-@media (max-width: 768px) {
-  .table-wrap {
-    overflow-x: scroll;
-  }
-  table {
-    min-width: 1000px;
-  }
-  .action-form {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 4px;
-  }
   .input-sm {
     width: 100%;
     min-width: auto;
   }
+
   .btn {
-    justify-content: center;
     width: 100%;
+    justify-content: center;
+  }
+
+  table {
+    font-size: 13px;
+  }
+
+  th,
+  td {
+    padding: 10px 8px;
   }
 }
 
-/* Loading states */
-.btn:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
+/* Tablet (≤ 992px) */
+@media (max-width: 992px) {
+  table {
+    font-size: 12px;
+  }
+
+  th,
+  td {
+    padding: 8px 6px;
+  }
+
+  .row-actions {
+    min-width: 160px;
+  }
+
+  .education-badge {
+    font-size: 11px;
+    padding: 3px 8px;
+  }
 }
 
-/* Table hover effects */
-tbody tr:hover {
-  background-color: #f9fafb;
+/* Mobile (≤ 768px) */
+@media (max-width: 768px) {
+  .table-wrap {
+    overflow-x: scroll;
+  }
+
+  table {
+    min-width: 1400px;
+  }
+
+  .card-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .header-info {
+    width: 100%;
+  }
+
+  .info-badge {
+    width: 100%;
+    justify-content: center;
+  }
 }
 
-/* Better spacing for email column */
-td:nth-child(2) {
-  max-width: 200px;
-  word-break: break-word;
+/* Small Mobile (≤ 480px) */
+@media (max-width: 480px) {
+  .card-header {
+    padding: 15px;
+  }
+
+  th,
+  td {
+    padding: 8px 4px;
+  }
 }

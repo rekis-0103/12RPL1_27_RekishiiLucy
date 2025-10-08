@@ -80,6 +80,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && isset($_
 $detail = null;
 if (isset($_GET['id'])) {
     $id = (int)$_GET['id'];
+
+    mysqli_query($conn, "
+        UPDATE applications 
+        SET status='seleksi administrasi', updated_at=NOW() 
+        WHERE application_id=$id AND status='pending'
+    ");
+
+    
     $detail = mysqli_query($conn, "
         SELECT a.*, u.full_name, u.email, l.title 
         FROM applications a 
@@ -101,7 +109,7 @@ $list = mysqli_query($conn, "
     FROM applications a 
     JOIN users u ON a.user_id=u.user_id 
     JOIN lowongan l ON a.job_id=l.job_id 
-    WHERE a.status IN ('pendaftaran diterima', 'seleksi administrasi') 
+    WHERE a.status IN ('pending', 'seleksi administrasi') 
       AND l.posted_by=$user_id
     ORDER BY a.applied_at DESC
 ");
@@ -155,59 +163,123 @@ $list = mysqli_query($conn, "
                 <div class="alert alert-success"><?php echo $success; ?></div>
             <?php endif; ?>
 
-            <?php if (isset($detail_row)): ?>
+            <?php if (isset($detail)): ?>
                 <div class="card">
                     <div class="card-header">
                         <h3><i class="fas fa-user"></i> Detail Lamaran</h3>
                         <a href="applications.php" class="btn btn-secondary btn-sm">Kembali</a>
                     </div>
                     <div class="card-body">
-                        <div class="detail-grid">
-                            <div>
-                                <div><strong>Nama</strong>: <?php echo htmlspecialchars($detail_row['full_name']); ?></div>
-                                <div><strong>Email</strong>: <?php echo htmlspecialchars($detail_row['email']); ?></div>
-                                <div><strong>Posisi</strong>: <?php echo htmlspecialchars($detail_row['title']); ?></div>
-                                <div><strong>Status</strong>: <span class="badge"><?php echo htmlspecialchars($detail_row['status']); ?></span></div>
-                                <div><strong>Tanggal Lamar</strong>: <?php echo date('d/m/Y H:i', strtotime($detail_row['applied_at'])); ?></div>
-                            </div>
-                            <div>
-                                <div><strong>CV</strong>:
-                                    <?php if (!empty($detail_row['cv'])): ?>
-                                        <a href="../<?php echo htmlspecialchars($detail_row['cv']); ?>" target="_blank">Lihat CV</a>
-                                    <?php else: ?>
-                                        -
-                                    <?php endif; ?>
+                        <div class="detail-section">
+                            <h4><i class="fas fa-user-circle"></i> Informasi Pelamar</h4>
+                            <div class="detail-grid">
+                                <div class="detail-item">
+                                    <div class="detail-label"><i class="fas fa-user"></i> Nama Lengkap</div>
+                                    <div class="detail-value"><?php echo htmlspecialchars($detail['full_name']); ?></div>
                                 </div>
-                                <?php if (!empty($detail_row['reason'])): ?>
-                                    <div><strong>Alasan</strong>: <?php echo htmlspecialchars($detail_row['reason']); ?></div>
+                                <div class="detail-item">
+                                    <div class="detail-label"><i class="fas fa-envelope"></i> Email</div>
+                                    <div class="detail-value"><?php echo htmlspecialchars($detail['email']); ?></div>
+                                </div>
+                                <div class="detail-item">
+                                    <div class="detail-label"><i class="fas fa-phone"></i> Nomor Telepon</div>
+                                    <div class="detail-value">
+                                        <?php echo !empty($detail['no_telepon']) ? htmlspecialchars($detail['no_telepon']) : '-'; ?>
+                                    </div>
+                                </div>
+                                <div class="detail-item">
+                                    <div class="detail-label"><i class="fas fa-graduation-cap"></i> Pendidikan Terakhir</div>
+                                    <div class="detail-value">
+                                        <?php echo !empty($detail['pendidikan']) ? htmlspecialchars($detail['pendidikan']) : '-'; ?>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="detail-section">
+                            <h4><i class="fas fa-briefcase"></i> Informasi Lamaran</h4>
+                            <div class="detail-grid">
+                                <div class="detail-item">
+                                    <div class="detail-label"><i class="fas fa-suitcase"></i> Posisi</div>
+                                    <div class="detail-value"><?php echo htmlspecialchars($detail['title']); ?></div>
+                                </div>
+                                <div class="detail-item">
+                                    <div class="detail-label"><i class="fas fa-info-circle"></i> Status</div>
+                                    <div class="detail-value">
+                                        <span class="badge badge-<?php echo $detail['status']; ?>">
+                                            <?php echo htmlspecialchars($detail['status']); ?>
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="detail-item">
+                                    <div class="detail-label"><i class="fas fa-calendar"></i> Tanggal Lamar</div>
+                                    <div class="detail-value"><?php echo date('d F Y H:i', strtotime($detail['applied_at'])); ?></div>
+                                </div>
+                                <div class="detail-item">
+                                    <div class="detail-label"><i class="fas fa-file-pdf"></i> CV</div>
+                                    <div class="detail-value">
+                                        <?php if (!empty($detail['cv'])): ?>
+                                            <a href="../<?php echo htmlspecialchars($detail['cv']); ?>" target="_blank" class="btn-link">
+                                                <i class="fas fa-download"></i> Lihat/Download CV
+                                            </a>
+                                        <?php else: ?>
+                                            <span class="text-muted">Tidak ada CV</span>
+                                        <?php endif; ?>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <?php if (!empty($detail['reason']) || !empty($detail['interview_date'])): ?>
+                        <div class="detail-section">
+                            <h4><i class="fas fa-comment-alt"></i> Informasi Tambahan</h4>
+                            <div class="detail-grid">
+                                <?php if (!empty($detail['reason'])): ?>
+                                <div class="detail-item full-width">
+                                    <div class="detail-label"><i class="fas fa-sticky-note"></i> Alasan/Catatan</div>
+                                    <div class="detail-value"><?php echo htmlspecialchars($detail['reason']); ?></div>
+                                </div>
                                 <?php endif; ?>
-                                <?php if (!empty($detail_row['interview_date'])): ?>
-                                    <div><strong>Jadwal Wawancara</strong>: <?php echo htmlspecialchars($detail_row['interview_date']); ?></div>
+                                <?php if (!empty($detail['interview_date'])): ?>
+                                <div class="detail-item">
+                                    <div class="detail-label"><i class="fas fa-calendar-check"></i> Jadwal Wawancara</div>
+                                    <div class="detail-value"><?php echo date('d F Y H:i', strtotime($detail['interview_date'])); ?></div>
+                                </div>
                                 <?php endif; ?>
                             </div>
                         </div>
+                        <?php endif; ?>
+
                         <div class="actions">
-                            <form method="POST" class="action-form">
-                                <input type="hidden" name="application_id" value="<?php echo (int)$detail_row['application_id']; ?>">
+                            <form method="POST" class="action-form accept-form">
+                                <h4 class="form-title"><i class="fas fa-check-circle"></i> Terima Lamaran</h4>
+                                <input type="hidden" name="application_id" value="<?php echo (int)$detail['application_id']; ?>">
                                 <input type="hidden" name="action" value="accept_admin">
                                 <div class="form-group">
-                                    <label>Alasan Diterima</label>
-                                    <textarea name="reason" rows="2" required></textarea>
+                                    <label><i class="fas fa-comment"></i> Alasan Diterima <span class="required">*</span></label>
+                                    <textarea name="reason" rows="3" placeholder="Contoh: Memenuhi persyaratan administrasi" required></textarea>
                                 </div>
                                 <div class="form-group">
-                                    <label>Jadwal Wawancara (opsional)</label>
+                                    <label><i class="fas fa-calendar-alt"></i> Jadwal Wawancara (opsional)</label>
                                     <input type="datetime-local" name="interview_date">
+                                    <small class="form-hint">Tentukan jadwal wawancara jika diperlukan</small>
                                 </div>
-                                <button type="submit" class="btn btn-primary"><i class="fas fa-check"></i> Terima (Lolos Administrasi)</button>
+                                <button type="submit" class="btn btn-primary btn-block">
+                                    <i class="fas fa-check"></i> Terima (Lolos Administrasi)
+                                </button>
                             </form>
-                            <form method="POST" class="action-form" onsubmit="return confirm('Yakin tolak lamaran ini?')">
-                                <input type="hidden" name="application_id" value="<?php echo (int)$detail_row['application_id']; ?>">
+                            
+                            <form method="POST" class="action-form reject-form" onsubmit="return confirm('Yakin tolak lamaran ini?')">
+                                <h4 class="form-title"><i class="fas fa-times-circle"></i> Tolak Lamaran</h4>
+                                <input type="hidden" name="application_id" value="<?php echo (int)$detail['application_id']; ?>">
                                 <input type="hidden" name="action" value="reject_admin">
                                 <div class="form-group">
-                                    <label>Alasan Ditolak</label>
-                                    <textarea name="reason" rows="2" required></textarea>
+                                    <label><i class="fas fa-comment"></i> Alasan Ditolak <span class="required">*</span></label>
+                                    <textarea name="reason" rows="3" placeholder="Contoh: Tidak memenuhi persyaratan minimal" required></textarea>
                                 </div>
-                                <button type="submit" class="btn btn-danger"><i class="fas fa-times"></i> Tolak</button>
+                                <button type="submit" class="btn btn-danger btn-block">
+                                    <i class="fas fa-times"></i> Tolak Lamaran
+                                </button>
                             </form>
                         </div>
                     </div>
@@ -215,7 +287,7 @@ $list = mysqli_query($conn, "
             <?php else: ?>
                 <div class="card">
                     <div class="card-header">
-                        <h3><i class="fas fa-inbox"></i> Lamaran (Pendaftaran Diterima)</h3>
+                        <h3><i class="fas fa-inbox"></i> Lamaran Baru (Pendaftaran Diterima)</h3>
                     </div>
                     <div class="table-wrap">
                         <table>
@@ -223,6 +295,8 @@ $list = mysqli_query($conn, "
                                 <tr>
                                     <th>Nama</th>
                                     <th>Posisi</th>
+                                    <th>Telepon</th>
+                                    <th>Pendidikan</th>
                                     <th>Tanggal Lamar</th>
                                     <th>Aksi</th>
                                 </tr>
@@ -233,6 +307,8 @@ $list = mysqli_query($conn, "
                                         <tr>
                                             <td><?php echo htmlspecialchars($row['full_name']); ?></td>
                                             <td><?php echo htmlspecialchars($row['title']); ?></td>
+                                            <td><?php echo !empty($row['no_telepon']) ? htmlspecialchars($row['no_telepon']) : '-'; ?></td>
+                                            <td><?php echo !empty($row['pendidikan']) ? htmlspecialchars($row['pendidikan']) : '-'; ?></td>
                                             <td><?php echo date('d/m/Y H:i', strtotime($row['applied_at'])); ?></td>
                                             <td>
                                                 <a class="btn btn-primary btn-sm" href="applications.php?id=<?php echo (int)$row['application_id']; ?>">
@@ -243,7 +319,7 @@ $list = mysqli_query($conn, "
                                     <?php endwhile; ?>
                                 <?php else: ?>
                                     <tr>
-                                        <td colspan="4" class="text-center">Tidak ada lamaran baru</td>
+                                        <td colspan="6" class="text-center">Tidak ada lamaran baru</td>
                                     </tr>
                                 <?php endif; ?>
                             </tbody>
@@ -251,14 +327,15 @@ $list = mysqli_query($conn, "
                     </div>
                 </div>
             <?php endif; ?>
+            
             <!-- Tabel Semua Pelamar -->
             <div class="card">
                 <div class="card-header">
-                    <h3>Semua Pelamar</h3>
-                    <form method="GET" style="display:flex; gap:10px;">
+                    <h3><i class="fas fa-users"></i> Semua Pelamar</h3>
+                    <form method="GET" class="filter-form">
                         <select name="status_filter" class="form-control">
                             <option value="" <?= empty($_GET['status_filter']) ? 'selected' : '' ?>>-- Semua Status --</option>
-                            <option value="pendaftaran diterima" <?= ($_GET['status_filter'] ?? '') === 'pendaftaran diterima' ? 'selected' : '' ?>>Pendaftaran Diterima</option>
+                            <option value="pending" <?= ($_GET['status_filter'] ?? '') === 'pending' ? 'selected' : '' ?>>Pending</option>
                             <option value="seleksi administrasi" <?= ($_GET['status_filter'] ?? '') === 'seleksi administrasi' ? 'selected' : '' ?>>Seleksi Administrasi</option>
                             <option value="lolos administrasi" <?= ($_GET['status_filter'] ?? '') === 'lolos administrasi' ? 'selected' : '' ?>>Lolos Administrasi</option>
                             <option value="tes & wawancara" <?= ($_GET['status_filter'] ?? '') === 'tes & wawancara' ? 'selected' : '' ?>>Tes & Wawancara</option>
@@ -266,9 +343,12 @@ $list = mysqli_query($conn, "
                             <option value="ditolak" <?= ($_GET['status_filter'] ?? '') === 'ditolak' ? 'selected' : '' ?>>Ditolak</option>
                         </select>
 
-                        <button type="submit" class="btn btn-primary">Filter</button>
-                        <a href="export_pdf.php?status=<?= $_GET['status_filter'] ?? '' ?>"
-                            class="btn btn-danger">Export PDF</a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-filter"></i> Filter
+                        </button>
+                        <a href="export_pdf.php?status=<?= $_GET['status_filter'] ?? '' ?>" class="btn btn-danger">
+                            <i class="fas fa-file-pdf"></i> Export PDF
+                        </a>
                     </form>
                 </div>
                 <div class="card-body table-wrap">
@@ -278,7 +358,9 @@ $list = mysqli_query($conn, "
                                 <th>No</th>
                                 <th>Nama</th>
                                 <th>Nama Pekerjaan</th>
-                                <th>tempat</th>
+                                <th>Tempat</th>
+                                <th>Telepon</th>
+                                <th>Pendidikan</th>
                                 <th>Status</th>
                                 <th>Tanggal Lamar</th>
                             </tr>
@@ -291,39 +373,45 @@ $list = mysqli_query($conn, "
                             }
 
                             $sql = "SELECT u.full_name AS nama, 
-               l.title AS nama_pekerjaan, 
-               l.location AS tempat, 
-               a.status, 
-               a.applied_at AS tanggal_lamar
-        FROM applications a
-        JOIN users u ON u.user_id = a.user_id
-        JOIN lowongan l ON l.job_id = a.job_id
-        WHERE l.posted_by=$user_id $filter
-        ORDER BY a.applied_at DESC";
+                                           l.title AS nama_pekerjaan, 
+                                           l.location AS tempat, 
+                                           a.no_telepon,
+                                           a.pendidikan,
+                                           a.status, 
+                                           a.applied_at AS tanggal_lamar
+                                    FROM applications a
+                                    JOIN users u ON u.user_id = a.user_id
+                                    JOIN lowongan l ON l.job_id = a.job_id
+                                    WHERE l.posted_by=$user_id $filter
+                                    ORDER BY a.applied_at DESC";
 
                             $result = mysqli_query($conn, $sql);
 
                             if ($result && mysqli_num_rows($result) > 0) {
                                 $no = 1;
                                 while ($row = mysqli_fetch_assoc($result)) {
+                                    $telepon = !empty($row['no_telepon']) ? htmlspecialchars($row['no_telepon']) : '-';
+                                    $pendidikan = !empty($row['pendidikan']) ? htmlspecialchars($row['pendidikan']) : '-';
+                                    
                                     echo "<tr>
-                <td>{$no}</td>
-                <td>{$row['nama']}</td>
-                <td>{$row['nama_pekerjaan']}</td>
-                <td>{$row['tempat']}</td>
-                <td>{$row['status']}</td>
-                <td>{$row['tanggal_lamar']}</td>
-              </tr>";
+                                            <td>{$no}</td>
+                                            <td>" . htmlspecialchars($row['nama']) . "</td>
+                                            <td>" . htmlspecialchars($row['nama_pekerjaan']) . "</td>
+                                            <td>" . htmlspecialchars($row['tempat']) . "</td>
+                                            <td>{$telepon}</td>
+                                            <td>{$pendidikan}</td>
+                                            <td><span class='badge badge-" . htmlspecialchars($row['status']) . "'>" . htmlspecialchars($row['status']) . "</span></td>
+                                            <td>" . date('d/m/Y H:i', strtotime($row['tanggal_lamar'])) . "</td>
+                                          </tr>";
                                     $no++;
                                 }
                             } else {
                                 echo "<tr>
-            <td colspan='6' class='text-center'>Tidak ada data untuk filter ini</td>
-          </tr>";
+                                        <td colspan='8' class='text-center'>Tidak ada data untuk filter ini</td>
+                                      </tr>";
                             }
                             ?>
                         </tbody>
-
                     </table>
                 </div>
             </div>

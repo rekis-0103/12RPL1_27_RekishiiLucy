@@ -23,7 +23,7 @@ $total_candidates = 0; // lolos administrasi + tes & wawancara
 $qs1 = mysqli_query($conn, "SELECT COUNT(*) AS c FROM lowongan WHERE status='open' AND hapus=0");
 if ($qs1) { $total_active_jobs = (int)mysqli_fetch_assoc($qs1)['c']; }
 
-$qs2 = mysqli_query($conn, "SELECT COUNT(*) AS c FROM applications WHERE status='pendaftaran diterima'");
+$qs2 = mysqli_query($conn, "SELECT COUNT(*) AS c FROM applications WHERE status='pending'");
 if ($qs2) { $total_new_apps = (int)mysqli_fetch_assoc($qs2)['c']; }
 
 $qs3 = mysqli_query($conn, "SELECT COUNT(*) AS c FROM applications WHERE status='seleksi administrasi'");

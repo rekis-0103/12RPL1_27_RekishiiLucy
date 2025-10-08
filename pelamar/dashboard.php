@@ -27,7 +27,7 @@ $r2 = mysqli_query($conn, "SELECT COUNT(*) c FROM applications WHERE user_id=$us
 if ($r2) {
     $sent_apps = (int)mysqli_fetch_assoc($r2)['c'];
 }
-$r3 = mysqli_query($conn, "SELECT COUNT(*) c FROM applications WHERE user_id=$user_id AND status IN ('pendaftaran diterima','seleksi administrasi')");
+$r3 = mysqli_query($conn, "SELECT COUNT(*) c FROM applications WHERE user_id=$user_id AND status IN ('pending','seleksi administrasi')");
 if ($r3) {
     $waiting = (int)mysqli_fetch_assoc($r3)['c'];
 }
