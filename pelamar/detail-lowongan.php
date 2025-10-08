@@ -60,41 +60,84 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
         $error = 'Anda sudah mengirim lamaran untuk lowongan ini sebelumnya.';
         logActivity($conn, $user_id, 'Gagal kirim lamaran (sudah apply)');
     } else {
-        // Ensure cv upload dir
-        $uploadDir = __DIR__ . '/../uploads/cv/';
-        if (!is_dir($uploadDir)) {
-            @mkdir($uploadDir, 0775, true);
-        }
-
-        if (!isset($_FILES['cv']) || $_FILES['cv']['error'] !== UPLOAD_ERR_OK) {
-            $error = 'Unggah CV gagal. Pastikan file dipilih.';
-            logActivity($conn, $user_id, 'Gagal kirim lamaran (CV tidak valid)');
+        $noTelepon = isset($_POST['no_telepon']) ? trim($_POST['no_telepon']) : '';
+        $pendidikanJenjang = isset($_POST['pendidikan_jenjang']) ? trim($_POST['pendidikan_jenjang']) : '';
+        $pendidikanJurusan = isset($_POST['pendidikan_jurusan']) ? trim($_POST['pendidikan_jurusan']) : '';
+        $pendidikanSarjana = isset($_POST['pendidikan_sarjana']) ? trim($_POST['pendidikan_sarjana']) : '';
+        
+        // Validation
+        if (empty($noTelepon)) {
+            $error = 'Nomor telepon harus diisi!';
+        } elseif (!is_numeric($noTelepon)) {
+            $error = 'Nomor telepon harus berupa angka!';
+        } elseif (empty($pendidikanJenjang)) {
+            $error = 'Pendidikan terakhir harus dipilih!';
         } else {
-            $ext = pathinfo($_FILES['cv']['name'], PATHINFO_EXTENSION);
-            $safeName = 'cv_' . $user_id . '_' . $job_id . '_' . time() . '.' . strtolower($ext);
-            $targetPath = $uploadDir . $safeName;
-            $relPath = 'uploads/cv/' . $safeName;
-            $allowed = ['pdf', 'doc', 'docx'];
-            
-            if (!in_array(strtolower($ext), $allowed)) {
-                $error = 'Format CV harus PDF/DOC/DOCX';
-                logActivity($conn, $user_id, 'Gagal kirim lamaran (format CV salah)');
-            } elseif (move_uploaded_file($_FILES['cv']['tmp_name'], $targetPath)) {
-                $q = "INSERT INTO applications (job_id, user_id, cv, status, applied_at) VALUES ($job_id, $user_id, '" . esc($conn, $relPath) . "', 'pendaftaran diterima', NOW())";
-                if (mysqli_query($conn, $q)) {
-                    $success = 'Lamaran berhasil dikirim';
-                    logActivity($conn, $user_id, "Kirim lamaran (job #$job_id)");
-                    $hasApplied = true;
-                    // Refresh job data
-                    $result = mysqli_query($conn, $query);
-                    $job = mysqli_fetch_assoc($result);
+            // Build pendidikan string based on jenjang
+            $pendidikanFinal = '';
+            if ($pendidikanJenjang === 'SMA') {
+                $pendidikanFinal = 'SMA';
+            } elseif ($pendidikanJenjang === 'SMK') {
+                if (empty($pendidikanJurusan)) {
+                    $error = 'Jurusan SMK harus diisi!';
                 } else {
-                    $error = 'Gagal mengirim lamaran';
-                    logActivity($conn, $user_id, 'Gagal kirim lamaran (database error)');
+                    $pendidikanFinal = 'SMK - ' . $pendidikanJurusan;
                 }
-            } else {
-                $error = 'Gagal menyimpan file CV';
-                logActivity($conn, $user_id, 'Gagal kirim lamaran (simpan CV gagal)');
+            } elseif ($pendidikanJenjang === 'Kuliah') {
+                if (empty($pendidikanSarjana) || empty($pendidikanJurusan)) {
+                    $error = 'Jenjang sarjana dan jurusan harus diisi!';
+                } else {
+                    $pendidikanFinal = 'Kuliah ' . $pendidikanSarjana . ' - ' . $pendidikanJurusan;
+                }
+            }
+            
+            // If no validation errors, proceed with file upload
+            if (empty($error)) {
+                // Ensure cv upload dir
+                $uploadDir = __DIR__ . '/../uploads/cv/';
+                if (!is_dir($uploadDir)) {
+                    @mkdir($uploadDir, 0775, true);
+                }
+
+                if (!isset($_FILES['cv']) || $_FILES['cv']['error'] !== UPLOAD_ERR_OK) {
+                    $error = 'Unggah CV gagal. Pastikan file dipilih.';
+                    logActivity($conn, $user_id, 'Gagal kirim lamaran (CV tidak valid)');
+                } else {
+                    $ext = pathinfo($_FILES['cv']['name'], PATHINFO_EXTENSION);
+                    $safeName = 'cv_' . $user_id . '_' . $job_id . '_' . time() . '.' . strtolower($ext);
+                    $targetPath = $uploadDir . $safeName;
+                    $relPath = 'uploads/cv/' . $safeName;
+                    $allowed = ['pdf', 'doc', 'docx'];
+                    
+                    if (!in_array(strtolower($ext), $allowed)) {
+                        $error = 'Format CV harus PDF/DOC/DOCX';
+                        logActivity($conn, $user_id, 'Gagal kirim lamaran (format CV salah)');
+                    } elseif (move_uploaded_file($_FILES['cv']['tmp_name'], $targetPath)) {
+                        // Escape inputs
+                        $noTeleponEsc = mysqli_real_escape_string($conn, $noTelepon);
+                        $pendidikanEsc = mysqli_real_escape_string($conn, $pendidikanFinal);
+                        $cvEsc = mysqli_real_escape_string($conn, $relPath);
+                        
+                        $q = "INSERT INTO applications (job_id, user_id, no_telepon, pendidikan, cv, status, applied_at) 
+                             VALUES ($job_id, $user_id, '$noTeleponEsc', '$pendidikanEsc', '$cvEsc', 'pendaftaran diterima', NOW())";
+                        
+                        if (mysqli_query($conn, $q)) {
+                            $success = 'Lamaran berhasil dikirim';
+                            logActivity($conn, $user_id, "Kirim lamaran (job #$job_id)");
+                            $hasApplied = true;
+                            // Refresh job data
+                            $result = mysqli_query($conn, $query);
+                            $job = mysqli_fetch_assoc($result);
+                        } else {
+                            $error = 'Gagal mengirim lamaran';
+                            logActivity($conn, $user_id, 'Gagal kirim lamaran (database error)');
+                            unlink($targetPath); // Delete uploaded file
+                        }
+                    } else {
+                        $error = 'Gagal menyimpan file CV';
+                        logActivity($conn, $user_id, 'Gagal kirim lamaran (simpan CV gagal)');
+                    }
+                }
             }
         }
     }
@@ -255,13 +298,87 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
                                 </div>
                                 
                                 <div class="apply-form-container" id="applyFormContainer" <?php echo !$show_apply_form ? 'style="display:none;"' : ''; ?>>
-                                    <form method="POST" enctype="multipart/form-data" class="apply-form-detail">
+                                    <form method="POST" enctype="multipart/form-data" class="apply-form-detail" id="applicationForm">
                                         <input type="hidden" name="action" value="apply">
+                                        
+                                        <!-- Phone Number -->
                                         <div class="form-group">
-                                            <label for="cv"><i class="fas fa-file-pdf"></i> Upload CV (PDF/DOC/DOCX)</label>
+                                            <label for="no_telepon">
+                                                <i class="fas fa-phone"></i> Nomor Telepon <span style="color: red;">*</span>
+                                            </label>
+                                            <input type="number" 
+                                                   id="no_telepon" 
+                                                   name="no_telepon" 
+                                                   class="form-control" 
+                                                   placeholder="Contoh: 081234567890"
+                                                   required>
+                                            <small class="form-text">Masukkan nomor telepon yang dapat dihubungi.</small>
+                                        </div>
+
+                                        <!-- Education Level -->
+                                        <div class="form-group">
+                                            <label for="pendidikan_jenjang">
+                                                <i class="fas fa-graduation-cap"></i> Pendidikan Terakhir <span style="color: red;">*</span>
+                                            </label>
+                                            <select id="pendidikan_jenjang" 
+                                                    name="pendidikan_jenjang" 
+                                                    class="form-control" 
+                                                    required
+                                                    onchange="handleEducationChange()">
+                                                <option value="">-- Pilih Jenjang Pendidikan --</option>
+                                                <option value="SMA">SMA</option>
+                                                <option value="SMK">SMK</option>
+                                                <option value="Kuliah">Kuliah</option>
+                                            </select>
+                                        </div>
+
+                                        <!-- SMK Major (Hidden by default) -->
+                                        <div class="form-group" id="smk_jurusan_group" style="display: none;">
+                                            <label for="smk_jurusan">
+                                                <i class="fas fa-book"></i> Jurusan SMK <span style="color: red;">*</span>
+                                            </label>
+                                            <input type="text" 
+                                                   id="smk_jurusan" 
+                                                   name="pendidikan_jurusan" 
+                                                   class="form-control" 
+                                                   placeholder="Contoh: Teknik Komputer Jaringan">
+                                        </div>
+
+                                        <!-- University Degree Level (Hidden by default) -->
+                                        <div class="form-group" id="sarjana_group" style="display: none;">
+                                            <label for="pendidikan_sarjana">
+                                                <i class="fas fa-user-graduate"></i> Jenjang Sarjana <span style="color: red;">*</span>
+                                            </label>
+                                            <select id="pendidikan_sarjana" 
+                                                    name="pendidikan_sarjana" 
+                                                    class="form-control">
+                                                <option value="">-- Pilih Jenjang Sarjana --</option>
+                                                <option value="D3">D3 (Diploma 3)</option>
+                                                <option value="D4">D4 (Diploma 4)</option>
+                                                <option value="S1">S1 (Sarjana)</option>
+                                                <option value="S2">S2 (Magister)</option>
+                                                <option value="S3">S3 (Doktor)</option>
+                                            </select>
+                                        </div>
+
+                                        <!-- University Major (Hidden by default) -->
+                                        <div class="form-group" id="kuliah_jurusan_group" style="display: none;">
+                                            <label for="kuliah_jurusan">
+                                                <i class="fas fa-book-open"></i> Jurusan / Program Studi <span style="color: red;">*</span>
+                                            </label>
+                                            <input type="text" 
+                                                   id="kuliah_jurusan" 
+                                                   class="form-control" 
+                                                   placeholder="Contoh: Teknik Informatika">
+                                        </div>
+                                        
+                                        <!-- CV Upload -->
+                                        <div class="form-group">
+                                            <label for="cv"><i class="fas fa-file-pdf"></i> Upload CV (PDF/DOC/DOCX) <span style="color: red;">*</span></label>
                                             <input type="file" id="cv" name="cv" accept=".pdf,.doc,.docx" required>
                                             <small class="form-text">Maksimal ukuran file 5MB. Format yang diterima: PDF, DOC, DOCX</small>
                                         </div>
+                                        
                                         <div class="form-actions">
                                             <button type="submit" class="btn btn-primary btn-lg">
                                                 <i class="fas fa-paper-plane"></i> Kirim Lamaran
@@ -305,6 +422,102 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
             document.getElementById('applyFormContainer').style.display = 'none';
             document.querySelector('.apply-section').classList.remove('show-form');
         }
+        
+        // Handle Education Level Change
+        function handleEducationChange() {
+            const jenjang = document.getElementById('pendidikan_jenjang').value;
+            const smkJurusanGroup = document.getElementById('smk_jurusan_group');
+            const sarjanaGroup = document.getElementById('sarjana_group');
+            const kuliahJurusanGroup = document.getElementById('kuliah_jurusan_group');
+            
+            const smkJurusan = document.getElementById('smk_jurusan');
+            const sarjanaSelect = document.getElementById('pendidikan_sarjana');
+            const kuliahJurusan = document.getElementById('kuliah_jurusan');
+            
+            // Hide all conditional fields first
+            smkJurusanGroup.style.display = 'none';
+            sarjanaGroup.style.display = 'none';
+            kuliahJurusanGroup.style.display = 'none';
+            
+            // Remove required attributes
+            smkJurusan.removeAttribute('required');
+            sarjanaSelect.removeAttribute('required');
+            kuliahJurusan.removeAttribute('required');
+            
+            // Clear values
+            smkJurusan.value = '';
+            sarjanaSelect.value = '';
+            kuliahJurusan.value = '';
+            
+            // Show relevant fields based on selection
+            if (jenjang === 'SMK') {
+                smkJurusanGroup.style.display = 'block';
+                smkJurusan.setAttribute('required', 'required');
+            } else if (jenjang === 'Kuliah') {
+                sarjanaGroup.style.display = 'block';
+                kuliahJurusanGroup.style.display = 'block';
+                sarjanaSelect.setAttribute('required', 'required');
+                kuliahJurusan.setAttribute('required', 'required');
+                
+                // For college, we need to use a hidden input to pass the jurusan
+                if (!document.getElementById('hidden_kuliah_jurusan')) {
+                    const hiddenInput = document.createElement('input');
+                    hiddenInput.type = 'hidden';
+                    hiddenInput.id = 'hidden_kuliah_jurusan';
+                    hiddenInput.name = 'pendidikan_jurusan';
+                    document.getElementById('applicationForm').appendChild(hiddenInput);
+                }
+            }
+        }
+        
+        // Update hidden input when kuliah jurusan changes
+        document.addEventListener('DOMContentLoaded', function() {
+            const kuliahJurusan = document.getElementById('kuliah_jurusan');
+            if (kuliahJurusan) {
+                kuliahJurusan.addEventListener('input', function() {
+                    const hiddenInput = document.getElementById('hidden_kuliah_jurusan');
+                    if (hiddenInput) {
+                        hiddenInput.value = this.value;
+                    }
+                });
+            }
+        });
+        
+        // Form validation before submit
+        document.getElementById('applicationForm').addEventListener('submit', function(e) {
+            const jenjang = document.getElementById('pendidikan_jenjang').value;
+            
+            if (jenjang === 'SMK') {
+                const jurusan = document.getElementById('smk_jurusan').value.trim();
+                if (!jurusan) {
+                    e.preventDefault();
+                    alert('Jurusan SMK harus diisi!');
+                    return false;
+                }
+            } else if (jenjang === 'Kuliah') {
+                const sarjana = document.getElementById('pendidikan_sarjana').value;
+                const jurusan = document.getElementById('kuliah_jurusan').value.trim();
+                
+                if (!sarjana) {
+                    e.preventDefault();
+                    alert('Jenjang Sarjana harus dipilih!');
+                    return false;
+                }
+                if (!jurusan) {
+                    e.preventDefault();
+                    alert('Jurusan harus diisi!');
+                    return false;
+                }
+                
+                // Update hidden input
+                const hiddenInput = document.getElementById('hidden_kuliah_jurusan');
+                if (hiddenInput) {
+                    hiddenInput.value = jurusan;
+                }
+            }
+            
+            return true;
+        });
         
         document.addEventListener('click', function(event) {
             const sidebar = document.getElementById('sidebar');
