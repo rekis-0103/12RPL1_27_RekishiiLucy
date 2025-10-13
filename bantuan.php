@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="assets/css/common.css">
+    <link rel="stylesheet" href="assets/css/navbar.css">
+    <link rel="stylesheet" href="assets/css/pages.css">
+    <link rel="stylesheet" href="assets/css/bantuan.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <title>PT Waindo SpecTerra</title>
+</head>
+
+<body>
+    <?php include 'includes/navbar.php'; ?>
+
+    <div class="page-container">
+        <div class="page-header">
+            <div class="container">
+                <h1>Panduan Pengguna</h1>
+                <p>Pelajari cara menggunakan aplikasi Waindo SpecTerra dengan mudah</p>
+            </div>
+        </div>
+
+        <div class="page-content">
+            <div class="container">
+
+                <!-- App Description -->
+                <div class="app-description">
+                    <h2>Deskripsi Aplikasi</h2>
+                    <p>Aplikasi ini merupakan hasil <b>Re-Development website Company Profile PT Waindo SpecTerra</b>, yang dikembangkan untuk memperbarui tampilan, meningkatkan fungsionalitas, serta menambahkan fitur <b>E-Recruitment</b> guna mendukung proses rekrutmen karyawan secara digital.</p>
+                    <p>Re-development dilakukan untuk menggantikan versi lama yang masih bersifat statis menjadi sistem berbasis website dinamis dan interaktif. Selain itu, fitur utama yang dikembangkan dalam versi terbaru ini adalah modul E-Recruitment, yang memungkinkan calon pelamar untuk melamar pekerjaan secara online tanpa perlu mengirim berkas fisik. Melalui fitur ini, HRD dapat mengelola lowongan pekerjaan, menyaring pelamar, memantau status lamaran, serta melakukan komunikasi langsung melalui sistem.</p>
+                </div>
+
+                <!-- App Specifications -->
+                <div class="app-specs">
+                    <h2>Spesifikasi Aplikasi</h2>
+                    <div class="specs-grid">
+                        <div class="spec-card">
+                            <div class="spec-icon">
+                                <i class="fas fa-tools"></i>
+                            </div>
+                            <h3>Tools</h3>
+                            <ul>
+                                <li>Visual Studio Code</li>
+                                <li>Laragon</li>
+                            </ul>
+                        </div>
+                        <div class="spec-card">
+                            <div class="spec-icon">
+                                <i class="fas fa-code"></i>
+                            </div>
+                            <h3>Front End</h3>
+                            <ul>
+                                <li>HTML</li>
+                                <li>CSS</li>
+                                <li>JavaScript</li>
+                            </ul>
+                        </div>
+                        <div class="spec-card">
+                            <div class="spec-icon">
+                                <i class="fas fa-server"></i>
+                            </div>
+                            <h3>Back End</h3>
+                            <ul>
+                                <li>PHP</li>
+                            </ul>
+                        </div>
+                        <div class="spec-card">
+                            <div class="spec-icon">
+                                <i class="fas fa-database"></i>
+                            </div>
+                            <h3>Database</h3>
+                            <ul>
+                                <li>MySQL</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Search Box -->
+                <div class="manual-search">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="searchManual" placeholder="Cari panduan...">
+                </div>
+
+                <!-- Manual Sections -->
+                <div class="manual-sections">
+
+                <div class="manual-section" id="navigasi">
+                        <div class="section-number">1</div>
+                        <div class="section-content">
+                            <h2>Menu Navigasi</h2>
+                            <p class="section-desc">Menu navigasi yang mengarahkan pengguna untuk berpindah antar halaman</p>
+
+                            <div class="manual-image">
+                                <img src="uploads/user-manual/nav.png" alt="Halaman Beranda">
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Section 2: Beranda -->
+                    <div class="manual-section" id="beranda">
+                        <div class="section-number">2</div>
+                        <div class="section-content">
+                            <h2>Halaman Beranda</h2>
+                            <p class="section-desc">Halaman utama dari company profile PT Waindo SpecTerra</p>
+                            <div class="features-list">
+                                <div class="feature-item">
+                                    <span class="feature-label">a</span>
+                                    <div class="feature-content">
+                                        <h4>Slider</h4>
+                                        <p>Menampilkan slider gambar utama</p>
+                                        <div class="feature-image">
+                                            <img src="uploads/user-manual/slider.png" alt="Hero Slider"><br>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="feature-item">
+                                    <span class="feature-label">b</span>
+                                    <div class="feature-content">
+                                        <h4>Visi & Misi</h4>
+                                        <p>Menampilkan Visi dan Misi dari perusahaan</p>
+                                        <div class="feature-image">
+                                            <img src="uploads/user-manual/visimisi.png" alt="Menu Navigasi">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="feature-item">
+                                    <span class="feature-label">c</span>
+                                    <div class="feature-content">
+                                        <h4>Berita Terbaru</h4>
+                                        <p>Bagian yang menampilkan 3 berita dan informasi terbaru</p>
+                                        <div class="feature-image">
+                                            <img src="uploads/user-manual/beritaterbaru.png" alt="Informasi Perusahaan">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Section 3: Tentang Kami -->
+                    <div class="manual-section" id="tentang">
+                        <div class="section-number">3</div>
+                        <div class="section-content">
+                            <h2>Halaman Tentang Kami</h2>
+                            <p class="section-desc">Halaman yang berisi deskripsi perusahaan dan tim yang ada pada perusahaan</p>
+
+                            <div class="features-list">
+                                <div class="feature-item">
+                                    <span class="feature-label">a</span>
+                                    <div class="feature-content">
+                                        <h4>Deskripsi perusahaan</h4>
+                                        <p>Membaca informasi tentang perusahaan</p>
+                                        <div class="feature-image">
+                                            <img src="uploads/user-manual/deskripsiperusahaan.png" alt="Profil Perusahaan">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="feature-item">
+                                    <span class="feature-label">b</span>
+                                    <div class="feature-content">
+                                        <h4>Tim Kami</h4>
+                                        <p>Melihat tim profesional yang bekerja di PT Waindo SpecTerra beserta divisi nya</p>
+                                        <div class="feature-image">
+                                            <img src="uploads/user-manual/tim.png" alt="Visi & Misi">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="feature-item">
+                                    <span class="feature-label">c</span>
+                                    <div class="feature-content">
+                                        <h4>Deskripsi Tim</h4>
+                                        <p>Melihat deskripsi dari setiap orang pada tim kami</p>
+                                        <div class="feature-image">
+                                            <img src="uploads/user-manual/deskripsitim.png" alt="Tim Kami">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Section 4: Produk -->
+                    <div class="manual-section" id="produk">
+                        <div class="section-number">4</div>
+                        <div class="section-content">
+                            <h2>Halaman Produk</h2>
+                            <p class="section-desc">Halaman yang menampilkan seluruh produk yang ditawarkan oleh Waindo SpecTerra.</p>
+
+                            <div class="features-list">
+                                <div class="feature-item">
+                                    <span class="feature-label">a</span>
+                                    <div class="feature-content">
+                                        <h4>Kategori Produk</h4>
+                                        <p>Melihat daftar kategori untuk semua produk</p>
+                                        <div class="feature-image">
+                                            <img src="uploads/user-manual/kategoriproduk.png" alt="Katalog Produk">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="feature-item">
+                                    <span class="feature-label">b</span>
+                                    <div class="feature-content">
+                                        <h4>List Produk</h4>
+                                        <p>Menampilkan produk beserta gambar dan bisa dilihat detail dari masing-masing produk untuk melihat deskripsi lengkap dari produk tersebut</p>
+                                        <div class="feature-image">
+                                            <img src="uploads/user-manual/listproduk-dan-deskripsi.png" alt="Detail Produk">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Section 5: Layanan -->
+                    <div class="manual-section" id="layanan">
+                        <div class="section-number">5</div>
+                        <div class="section-content">
+                            <h2>Halaman Layanan</h2>
+                            <p class="section-desc">Halaman yang menjelaskan berbagai layanan profesional</p>
+
+                            <div class="features-list">
+                                <div class="feature-item">
+                                    <span class="feature-label">a</span>
+                                    <div class="feature-content">
+                                        <h4>Jenis Layanan</h4>
+                                        <p>Melihat berbagai jenis layanan konsultasi dan implementasi yang ditawarkan</p>
+                                        <div class="feature-image">
+                                            <img src="uploads/user-manual/jenislayanan.png" alt="Jenis Layanan">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="feature-item">
+                                    <span class="feature-label">b</span>
+                                    <div class="feature-content">
+                                        <h4>List Layanan</h4>
+                                        <p>Melihat layanan yang disediakan</p>
+                                        <div class="feature-image">
+                                            <img src="uploads/user-manual/listlayanan.png" alt="Proses Layanan">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Section 6: Mitra Kerja -->
+                    <div class="manual-section" id="mitra">
+                        <div class="section-number">6</div>
+                        <div class="section-content">
+                            <h2>Halaman Mitra Kerja</h2>
+                            <p class="section-desc">Halaman yang menampilkan daftar mitra Pemerintahan dan BUMN yang telah bekerja sama dengan PT Waindo SpecTerra
+                            </p>
+                            <div class="manual-image">
+                                <img src="uploads/user-manual/Mitra-Kerja.png" alt="Halaman Mitra Kerja">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Section 7: Berita -->
+                    <div class="manual-section" id="berita">
+                        <div class="section-number">7</div>
+                        <div class="section-content">
+                            <h2>Halaman Berita</h2>
+                            <p class="section-desc">Halaman yang menampilkan berita, webinar, Live Streaming, dan Galeri</p>
+
+                            <div class="manual-image">
+                                <img src="uploads/user-manual/berita.png" alt="Halaman Berita">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Section 8: Hubungi Kami -->
+                    <div class="manual-section" id="kontak">
+                        <div class="section-number">8</div>
+                        <div class="section-content">
+                            <h2>Halaman Hubungi Kami</h2>
+                            <p class="section-desc">Halaman yang menampilkan Alamat, Telepon, Fax, Email dan lokasi perusahaan yang ada pada google maps</p>
+
+                            <div class="manual-image">
+                                <img src="uploads/user-manual/hubungi.png" alt="Halaman Hubungi Kami">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Section 9: Lowongan Kerja -->
+                    <div class="manual-section" id="lowongan">
+                        <div class="section-number">9</div>
+                        <div class="section-content">
+                            <h2>Halaman Lowongan Kerja</h2>
+                            <p class="section-desc">Halaman yang menampilkan daftar lowongan pekerjaan yang ada</p>
+
+                            <div class="manual-image">
+                                <img src="uploads/user-manual/lowongan.png" alt="Halaman Lowongan Kerja">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="manual-section" id="login">
+                        <div class="section-number">10</div>
+                        <div class="section-content">
+                            <h2>Halaman Login dan Register</h2>
+                            <p class="section-desc">Halaman yang menampilkan login dan register pengguna</p>
+
+                            <div class="features-list">
+                                <div class="feature-item">
+                                    <span class="feature-label">a</span>
+                                    <div class="feature-content">
+                                        <h4>Login</h4>
+                                        <p>Input username dan password, jika benar maka akan diarahkan ke dashboard sesuai hak akses masing-masing</p>
+                                        <div class="feature-image">
+                                            <img src="uploads/user-manual/login.png" alt="Jenis Layanan">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="feature-item">
+                                    <span class="feature-label">b</span>
+                                    <div class="feature-content">
+                                        <h4>Register</h4>
+                                        <p>Input username, email, nama lengkap, password, konfirmasi password untuk mendaftarkan pengguna sebagai pelamar untuk keperluan melamar pekerjaan</p>
+                                        <div class="feature-image">
+                                            <img src="uploads/user-manual/register.png" alt="Proses Layanan">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>PT Waindo Specterra</h3>
+                    <p>Total Solution for Digital Information</p>
+                </div>
+                <div class="footer-section">
+                    <ul>
+                        <h4>Kontak</h4>
+                        <p>Alamat : Kompleks Perkantoran Pejaten Raya #7-8 Jl. Pejaten Raya No.2 Jakarta Selatan 12510</p>
+                        <p>Telepon : 021 7986816; 7986405</p>
+                        <p>Fax : 021 7995539</p>
+                        <p>Email : marketing@waindo.co.id</p>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Social</h4>
+                    <p><a href="https://www.instagram.com/waindo_specterra?igshid=fysfd3j6l41n"><i class="fa-brands fa-instagram"></i> @waindo_specterra</a></p>
+                    <p><a href="https://x.com/WSpecterra?s=08"><i class="fa-brands fa-twitter"></i> @WSpecterra</a></p>
+                    <p><a href="https://www.instagram.com/waindo_specterra?igshid=fysfd3j6l41n"><i class="fa-brands fa-facebook"></i> @waindo_specterra</a></p>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <script>
+        // FAQ Toggle
+        document.querySelectorAll('.faq-question').forEach(question => {
+            question.addEventListener('click', () => {
+                const faqItem = question.parentElement;
+                const isActive = faqItem.classList.contains('active');
+
+                // Close all FAQ items
+                document.querySelectorAll('.faq-item').forEach(item => {
+                    item.classList.remove('active');
+                });
+
+                // Open clicked item if it wasn't active
+                if (!isActive) {
+                    faqItem.classList.add('active');
+                }
+            });
+        });
+
+        // Search functionality
+        document.getElementById('searchManual').addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            const sections = document.querySelectorAll('.manual-section');
+
+            sections.forEach(section => {
+                const text = section.textContent.toLowerCase();
+                if (text.includes(searchTerm)) {
+                    section.style.display = 'flex';
+                } else {
+                    section.style.display = 'none';
+                }
+            });
+        });
+
+        // Smooth scroll for quick links
+        document.querySelectorAll('.quick-link-item').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href');
+                const targetSection = document.querySelector(targetId);
+                if (targetSection) {
+                    targetSection.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>

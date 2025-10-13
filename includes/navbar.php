@@ -42,6 +42,7 @@ if (session_status() === PHP_SESSION_NONE) {
                     Lowongan Kerja
                 </a>
             </li>
+            <li><a href="bantuan.php" <?php echo (basename($_SERVER['PHP_SELF']) == 'bantuan.php') ? 'class="active"' : ''; ?>>Bantuan</a></li>
 
             <!-- Auth for Mobile (hidden in desktop, shown in mobile menu) -->
             <li class="nav-auth-mobile">
