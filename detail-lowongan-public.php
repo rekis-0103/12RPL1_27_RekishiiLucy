@@ -40,7 +40,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $isLoggedIn && $userRole === 'pelam
     $pendidikanJenjang = isset($_POST['pendidikan_jenjang']) ? trim($_POST['pendidikan_jenjang']) : '';
     $pendidikanJurusan = isset($_POST['pendidikan_jurusan']) ? trim($_POST['pendidikan_jurusan']) : '';
     $pendidikanSarjana = isset($_POST['pendidikan_sarjana']) ? trim($_POST['pendidikan_sarjana']) : '';
-    
+
     // Validation
     if (empty($noTelepon)) {
         $errorMessage = 'Nomor telepon harus diisi!';
@@ -66,19 +66,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $isLoggedIn && $userRole === 'pelam
                 $pendidikanFinal = 'Kuliah ' . $pendidikanSarjana . ' - ' . $pendidikanJurusan;
             }
         }
-        
+
         // If no validation errors, proceed with file upload
         if (empty($errorMessage)) {
             // Handle CV upload
             if (isset($_FILES['cv']) && $_FILES['cv']['error'] === UPLOAD_ERR_OK) {
                 $allowedExtensions = ['pdf', 'doc', 'docx'];
                 $maxFileSize = 5 * 1024 * 1024; // 5MB
-                
+
                 $fileName = $_FILES['cv']['name'];
                 $fileSize = $_FILES['cv']['size'];
                 $fileTmpName = $_FILES['cv']['tmp_name'];
                 $fileExtension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
-                
+
                 if (!in_array($fileExtension, $allowedExtensions)) {
                     $errorMessage = 'Format file CV tidak valid. Gunakan PDF, DOC, atau DOCX.';
                 } elseif ($fileSize > $maxFileSize) {
@@ -87,25 +87,37 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $isLoggedIn && $userRole === 'pelam
                     // Generate unique filename
                     $newFileName = 'cv_' . $userId . '_' . $jobId . '_' . time() . '.' . $fileExtension;
                     $uploadPath = 'uploads/cv/' . $newFileName;
-                    
+
                     // Create directory if not exists
                     if (!is_dir('uploads/cv/')) {
                         mkdir('uploads/cv/', 0755, true);
                     }
-                    
+
                     if (move_uploaded_file($fileTmpName, $uploadPath)) {
                         // Escape inputs
                         $noTeleponEsc = mysqli_real_escape_string($conn, $noTelepon);
                         $pendidikanEsc = mysqli_real_escape_string($conn, $pendidikanFinal);
                         $cvEsc = mysqli_real_escape_string($conn, $uploadPath);
-                        
+
                         // Insert application
                         $insertQuery = "INSERT INTO applications (job_id, user_id, no_telepon, pendidikan, cv, status, applied_at) 
                                        VALUES ($jobId, $userId, '$noTeleponEsc', '$pendidikanEsc', '$cvEsc', 'pending', NOW())";
-                        
+
                         if (mysqli_query($conn, $insertQuery)) {
                             $successMessage = 'Lamaran berhasil dikirim!';
                             $hasApplied = true;
+
+                            if (mysqli_query($conn, $insertQuery)) {
+                                $successMessage = 'Lamaran berhasil dikirim!';
+                                $hasApplied = true;
+
+                                // Catat ke log aktivitas
+                                $action = 'Melamar pekerjaan: ' . $job['title'];
+                                $log_query = "INSERT INTO log_aktivitas (user_id, action) VALUES (?, ?)";
+                                $log_stmt = mysqli_prepare($conn, $log_query);
+                                mysqli_stmt_bind_param($log_stmt, "is", $userId, $action);
+                                mysqli_stmt_execute($log_stmt);
+                            }
                         } else {
                             $errorMessage = 'Gagal mengirim lamaran. Silakan coba lagi.';
                             unlink($uploadPath); // Delete uploaded file
@@ -123,6 +135,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $isLoggedIn && $userRole === 'pelam
 ?>
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -133,6 +146,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $isLoggedIn && $userRole === 'pelam
     <link rel="stylesheet" href="assets/css/bergabung.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
+
 <body>
     <?php include 'includes/navbar.php'; ?>
 
@@ -285,12 +299,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $isLoggedIn && $userRole === 'pelam
                                             <label for="no_telepon">
                                                 <i class="fas fa-phone"></i> Nomor Telepon <span style="color: red;">*</span>
                                             </label>
-                                            <input type="number" 
-                                                   id="no_telepon" 
-                                                   name="no_telepon" 
-                                                   class="form-control" 
-                                                   placeholder="Contoh: 081234567890"
-                                                   required>
+                                            <input type="number"
+                                                id="no_telepon"
+                                                name="no_telepon"
+                                                class="form-control"
+                                                placeholder="Contoh: 081234567890"
+                                                required>
                                             <small class="form-text">Masukkan nomor telepon yang dapat dihubungi.</small>
                                         </div>
 
@@ -299,11 +313,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $isLoggedIn && $userRole === 'pelam
                                             <label for="pendidikan_jenjang">
                                                 <i class="fas fa-graduation-cap"></i> Pendidikan Terakhir <span style="color: red;">*</span>
                                             </label>
-                                            <select id="pendidikan_jenjang" 
-                                                    name="pendidikan_jenjang" 
-                                                    class="form-control" 
-                                                    required
-                                                    onchange="handleEducationChange()">
+                                            <select id="pendidikan_jenjang"
+                                                name="pendidikan_jenjang"
+                                                class="form-control"
+                                                required
+                                                onchange="handleEducationChange()">
                                                 <option value="">-- Pilih Jenjang Pendidikan --</option>
                                                 <option value="SMA">SMA</option>
                                                 <option value="SMK">SMK</option>
@@ -316,11 +330,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $isLoggedIn && $userRole === 'pelam
                                             <label for="smk_jurusan">
                                                 <i class="fas fa-book"></i> Jurusan SMK <span style="color: red;">*</span>
                                             </label>
-                                            <input type="text" 
-                                                   id="smk_jurusan" 
-                                                   name="pendidikan_jurusan" 
-                                                   class="form-control" 
-                                                   placeholder="Contoh: Teknik Komputer Jaringan">
+                                            <input type="text"
+                                                id="smk_jurusan"
+                                                name="pendidikan_jurusan"
+                                                class="form-control"
+                                                placeholder="Contoh: Teknik Komputer Jaringan">
                                         </div>
 
                                         <!-- University Degree Level (Hidden by default) -->
@@ -328,9 +342,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $isLoggedIn && $userRole === 'pelam
                                             <label for="pendidikan_sarjana">
                                                 <i class="fas fa-user-graduate"></i> Jenjang Sarjana <span style="color: red;">*</span>
                                             </label>
-                                            <select id="pendidikan_sarjana" 
-                                                    name="pendidikan_sarjana" 
-                                                    class="form-control">
+                                            <select id="pendidikan_sarjana"
+                                                name="pendidikan_sarjana"
+                                                class="form-control">
                                                 <option value="">-- Pilih Jenjang Sarjana --</option>
                                                 <option value="D3">D3 (Diploma 3)</option>
                                                 <option value="D4">D4 (Diploma 4)</option>
@@ -345,10 +359,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $isLoggedIn && $userRole === 'pelam
                                             <label for="kuliah_jurusan">
                                                 <i class="fas fa-book-open"></i> Jurusan / Program Studi <span style="color: red;">*</span>
                                             </label>
-                                            <input type="text" 
-                                                   id="kuliah_jurusan" 
-                                                   class="form-control" 
-                                                   placeholder="Contoh: Teknik Informatika">
+                                            <input type="text"
+                                                id="kuliah_jurusan"
+                                                class="form-control"
+                                                placeholder="Contoh: Teknik Informatika">
                                         </div>
 
                                         <!-- CV Upload -->
@@ -356,11 +370,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $isLoggedIn && $userRole === 'pelam
                                             <label for="cv">
                                                 <i class="fas fa-file-upload"></i> Upload CV <span style="color: red;">*</span>
                                             </label>
-                                            <input type="file" 
-                                                   id="cv" 
-                                                   name="cv" 
-                                                   accept=".pdf,.doc,.docx" 
-                                                   required>
+                                            <input type="file"
+                                                id="cv"
+                                                name="cv"
+                                                accept=".pdf,.doc,.docx"
+                                                required>
                                             <small class="form-text">Format: PDF, DOC, DOCX. Maksimal 5MB.</small>
                                         </div>
 
@@ -417,26 +431,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $isLoggedIn && $userRole === 'pelam
             const smkJurusanGroup = document.getElementById('smk_jurusan_group');
             const sarjanaGroup = document.getElementById('sarjana_group');
             const kuliahJurusanGroup = document.getElementById('kuliah_jurusan_group');
-            
+
             const smkJurusan = document.getElementById('smk_jurusan');
             const sarjanaSelect = document.getElementById('pendidikan_sarjana');
             const kuliahJurusan = document.getElementById('kuliah_jurusan');
-            
+
             // Hide all conditional fields first
             smkJurusanGroup.style.display = 'none';
             sarjanaGroup.style.display = 'none';
             kuliahJurusanGroup.style.display = 'none';
-            
+
             // Remove required attributes
             smkJurusan.removeAttribute('required');
             sarjanaSelect.removeAttribute('required');
             kuliahJurusan.removeAttribute('required');
-            
+
             // Clear values
             smkJurusan.value = '';
             sarjanaSelect.value = '';
             kuliahJurusan.value = '';
-            
+
             // Show relevant fields based on selection
             if (jenjang === 'SMK') {
                 smkJurusanGroup.style.display = 'block';
@@ -446,7 +460,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $isLoggedIn && $userRole === 'pelam
                 kuliahJurusanGroup.style.display = 'block';
                 sarjanaSelect.setAttribute('required', 'required');
                 kuliahJurusan.setAttribute('required', 'required');
-                
+
                 // For college, we need to use a hidden input to pass the jurusan
                 // Let's create it dynamically
                 if (!document.getElementById('hidden_kuliah_jurusan')) {
@@ -460,7 +474,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $isLoggedIn && $userRole === 'pelam
                 // SMA doesn't need any additional fields
             }
         }
-        
+
         // Update hidden input when kuliah jurusan changes
         document.addEventListener('DOMContentLoaded', function() {
             const kuliahJurusan = document.getElementById('kuliah_jurusan');
@@ -473,11 +487,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $isLoggedIn && $userRole === 'pelam
                 });
             }
         });
-        
+
         // Form validation before submit
         document.getElementById('applicationForm').addEventListener('submit', function(e) {
             const jenjang = document.getElementById('pendidikan_jenjang').value;
-            
+
             if (jenjang === 'SMK') {
                 const jurusan = document.getElementById('smk_jurusan').value.trim();
                 if (!jurusan) {
@@ -488,7 +502,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $isLoggedIn && $userRole === 'pelam
             } else if (jenjang === 'Kuliah') {
                 const sarjana = document.getElementById('pendidikan_sarjana').value;
                 const jurusan = document.getElementById('kuliah_jurusan').value.trim();
-                
+
                 if (!sarjana) {
                     e.preventDefault();
                     alert('Jenjang Sarjana harus dipilih!');
@@ -499,16 +513,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $isLoggedIn && $userRole === 'pelam
                     alert('Jurusan harus diisi!');
                     return false;
                 }
-                
+
                 // Update hidden input
                 const hiddenInput = document.getElementById('hidden_kuliah_jurusan');
                 if (hiddenInput) {
                     hiddenInput.value = jurusan;
                 }
             }
-            
+
             return true;
         });
     </script>
 </body>
+
 </html>

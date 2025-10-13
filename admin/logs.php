@@ -37,7 +37,8 @@ $user_filter   = isset($_GET['user_id']) ? mysqli_real_escape_string($conn, $_GE
 // Ambil daftar user
 $user_query = "SELECT DISTINCT u.user_id, u.username, u.full_name
                FROM log_aktivitas l
-               LEFT JOIN users u ON l.user_id = u.user_id
+               JOIN users u ON l.user_id = u.user_id
+               WHERE u.user_id IS NOT NULL
                ORDER BY u.full_name ASC";
 $user_result = mysqli_query($conn, $user_query);
 
