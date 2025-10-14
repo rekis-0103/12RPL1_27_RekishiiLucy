@@ -329,6 +329,315 @@
                         </div>
                     </div>
 
+                    <div class="manual-section" id="lowongan">
+                        <div class="section-number">11</div>
+                        <div class="section-content">
+                            <h2>Dropdown dashboard-logout</h2>
+                            <p class="section-desc">ketika sudah login, sistem menampilkan dropdown dashboard untuk ke halaman dashboard sesuai hak akses masing masing dan logout untuk keluar dari sesi user tersebut</p>
+
+                            <div class="manual-image">
+                                <img src="uploads/user-manual/dashboard-logout.png" alt="Halaman Lowongan Kerja">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="manual-section" id="lowongan">
+                        <div class="section-number">12</div>
+                        <div class="section-content">
+                            <h2>Halaman Dashboard Admin</h2>
+                            <p class="section-desc">Halaman yang menampilkan ringkasan total user, lowongan aktif, lamaran masuk, dan aktivitas terbaru</p>
+
+                            <div class="manual-image">
+                                <img src="uploads/user-manual/dashboard-admin.png" alt="Halaman Lowongan Kerja">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="manual-section" id="login">
+                        <div class="section-number">13</div>
+                        <div class="section-content">
+                            <h2>Halaman Kelola akun</h2>
+                            <p class="section-desc">Halaman untuk mengelola data pengguna sistem</p>
+
+                            <div class="features-list">
+                                <div class="feature-item">
+                                    <span class="feature-label">a</span>
+                                    <div class="feature-content">
+                                        <h4>Tambah User</h4>
+                                        <p>Inout username, nama lengkap, password, email, dan role untuk mendaftarkan pengguna ke dalam sistem</p>
+                                        <div class="feature-image">
+                                            <img src="uploads/user-manual/tambah-user.png" alt="Jenis Layanan">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="feature-item">
+                                    <span class="feature-label">b</span>
+                                    <div class="feature-content">
+                                        <h4>Daftar User</h4>
+                                        <p>Menampilkan daftar user yang ada pada sistem, bisa di filter berdasarkan role dan status.</p>
+                                        <div class="feature-image">
+                                            <img src="uploads/user-manual/daftar-user.png" alt="Proses Layanan">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="feature-item">
+                                    <span class="feature-label">c</span>
+                                    <div class="feature-content">
+                                        <h4>Edit User</h4>
+                                        <p>Edit data dari user yang ada pada sistem</p>
+                                        <div class="feature-image">
+                                            <img src="uploads/user-manual/edit-user.png" alt="Proses Layanan">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="feature-item">
+                                    <span class="feature-label">d</span>
+                                    <div class="feature-content">
+                                        <h4>Reset Password</h4>
+                                        <p>Untuk membuat password baru dari user.</p>
+                                        <div class="feature-image">
+                                            <img src="uploads/user-manual/reset-pass.png" alt="Proses Layanan">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="feature-item">
+                                    <span class="feature-label">e</span>
+                                    <div class="feature-content">
+                                        <h4>Hapus Akun</h4>
+                                        <p>Untuk menghapus data akun dari user, jika akun sudah di hapus maka tidak akan bisa di kembalikan</p>
+                                        <div class="feature-image">
+                                            <img src="uploads/user-manual/hapus-akun.png" alt="Proses Layanan">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="manual-section" id="login">
+                        <div class="section-number">14</div>
+                        <div class="section-content">
+                            <h2>Halaman Log Aktivitas</h2>
+                            <p class="section-desc">Halaman untuk melihat semua aktivitas pengguna terhadap sistem</p>
+
+                            <div class="features-list">
+                                <div class="feature-item">
+                                    <span class="feature-label">a</span>
+                                    <div class="feature-content">
+                                        <h4>Filter Log</h4>
+                                        <p>Memfilter log agar lebih mudah untuk mencari aktivitas</p>
+                                        <div class="feature-image">
+                                            <img src="uploads/user-manual/filter-log.png" alt="Jenis Layanan">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="feature-item">
+                                    <span class="feature-label">b</span>
+                                    <div class="feature-content">
+                                        <h4>Daftar Log Aktivitas</h4>
+                                        <p>Menampilkan daftar aktivitas pengguna terhadap sistem</p>
+                                        <div class="feature-image">
+                                            <img src="uploads/user-manual/daftar-log.png" alt="Proses Layanan">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="feature-item">
+                                    <span class="feature-label">c</span>
+                                    <div class="feature-content">
+                                        <h4>Export Log</h4>
+                                        <p>Mendownload file bentuk .csv berdasarkan tabel daftar log aktivitas.</p>
+                                        <div class="feature-image">
+                                            <img src="uploads/user-manual/export-log.png" alt="Proses Layanan">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="manual-section" id="login">
+                        <div class="section-number">15</div>
+                        <div class="section-content">
+                            <h2>Halaman Dashboard HRD</h2>
+                            <p class="section-desc">Halaman yang menampilkan ringkasan lowongan aktif, lamaran masuk, seleksi administrasi, kandidat, dan lamaran terbaru </p>
+                            <div class="manual-image">
+                                <img src="uploads/user-manual/dashboard-hrd.png" alt="dashboard-hrd">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="manual-section" id="login">
+                        <div class="section-number">16</div>
+                        <div class="section-content">
+                            <h2>Halaman Kelola Lowongan</h2>
+                            <p class="section-desc">Halaman untuk mengelola pop up gambar lowongan dan mengelola lowongan</p>
+
+                            <div class="features-list">
+                                <div class="feature-item">
+                                    <span class="feature-label">a</span>
+                                    <div class="feature-content">
+                                        <h4>Tambah pop up lowongan</h4>
+                                        <p>Menambah pop up agar bisa ditampilkan di halaman lowongan kerja</p>
+                                        <div class="feature-image">
+                                            <img src="uploads/user-manual/tambah-popup.png" alt="Jenis Layanan">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="feature-item">
+                                    <span class="feature-label">b</span>
+                                    <div class="feature-content">
+                                        <h4>Daftar pop up lowongan</h4>
+                                        <p>Menampilkan daftar pup up yang tersedia agar bisa di edit, hapus, dan aktif/nonaktif</p>
+                                        <div class="feature-image">
+                                            <img src="uploads/user-manual/daftar-popup.png" alt="Proses Layanan">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="feature-item">
+                                    <span class="feature-label">c</span>
+                                    <div class="feature-content">
+                                        <h4>Edit pop up lowongan</h4>
+                                        <p>Mengedit data pop up lowongan</p>
+                                        <div class="feature-image">
+                                            <img src="uploads/user-manual/edit-popup.png" alt="Proses Layanan">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="feature-item">
+                                    <span class="feature-label">d</span>
+                                    <div class="feature-content">
+                                        <h4>Hapus pop up lowongan</h4>
+                                        <p>Menghapus pup up lowongan</p>
+                                        <div class="feature-image">
+                                            <img src="uploads/user-manual/hapus-popup.png" alt="Proses Layanan">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="feature-item">
+                                    <span class="feature-label">e</span>
+                                    <div class="feature-content">
+                                        <h4>Tambah Lowongan</h4>
+                                        <p>Menambah lowongan dengan input judul, range gaji, deskripsi, persyaratan, lokasi, dan status agar pelamar bisa melamar pekerjaan</p>
+                                        <div class="feature-image">
+                                            <img src="uploads/user-manual/tambah-lowongan.png" alt="Proses Layanan">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="feature-item">
+                                    <span class="feature-label">f</span>
+                                    <div class="feature-content">
+                                        <h4>Daftar Lowongan</h4>
+                                        <p>Menampilkan daftar lowongan yang telah dibuat, ada aksi untuk edit, hapus, dan buka/tutup lowongan</p>
+                                        <div class="feature-image">
+                                            <img src="uploads/user-manual/daftar-lowongan.png" alt="Proses Layanan">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="feature-item">
+                                    <span class="feature-label">g</span>
+                                    <div class="feature-content">
+                                        <h4>Edit Lowongan</h4>
+                                        <p>Mengedit lowongan untuk memperbarui data lowongan pekerjaan</p>
+                                        <div class="feature-image">
+                                            <img src="uploads/user-manual/edit-lowongan.png" alt="Proses Layanan">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="feature-item">
+                                    <span class="feature-label">h</span>
+                                    <div class="feature-content">
+                                        <h4>Hapus Lowongan</h4>
+                                        <p>Menghapus lowongan yang sudah ada</p>
+                                        <div class="feature-image">
+                                            <img src="uploads/user-manual/hapus-lowongan.png" alt="Proses Layanan">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="manual-section" id="login">
+                        <div class="section-number">17</div>
+                        <div class="section-content">
+                            <h2>Halaman Kelola Lamaran</h2>
+                            <p class="section-desc">Halaman untuk mengelola pelamar agar bisa lanjut ke tahap tes & wawancara atau ditolak</p>
+
+                            <div class="features-list">
+                                <div class="feature-item">
+                                    <span class="feature-label">a</span>
+                                    <div class="feature-content">
+                                        <h4>Daftar Pelamar</h4>
+                                        <p>Menampilkan daftar singkat dari pelamar</p>
+                                        <div class="feature-image">
+                                            <img src="uploads/user-manual/daftar-pelamar.png" alt="Jenis Layanan">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="feature-item">
+                                    <span class="feature-label">b</span>
+                                    <div class="feature-content">
+                                        <h4>Detail lamaran</h4>
+                                        <p>Menampilkan detail dari informasi pelamar</p>
+                                        <div class="feature-image">
+                                            <img src="uploads/user-manual/detail-pelamar.png" alt="Proses Layanan">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="feature-item">
+                                    <span class="feature-label">c</span>
+                                    <div class="feature-content">
+                                        <h4>Daftar Semua Pelamar</h4>
+                                        <p>Menampilkan daftar pelamar dari semua status, dengan bisa di filter dan di export pdf</p>
+                                        <div class="feature-image">
+                                            <img src="uploads/user-manual/daftar-semua-pelamar.png" alt="Proses Layanan">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="feature-item">
+                                    <span class="feature-label">d</span>
+                                    <div class="feature-content">
+                                        <h4>Export PDF pelamar</h4>
+                                        <p>Mendownload file .pdf berdasarkan tabel daftar semua pelamar</p>
+                                        <div class="feature-image">
+                                            <img src="uploads/user-manual/export-pdf-pelamar.png" alt="Proses Layanan">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="manual-section" id="login">
+                        <div class="section-number">18</div>
+                        <div class="section-content">
+                            <h2>Halaman Kelola Kandidat</h2>
+                            <p class="section-desc">Halaman untuk mengelola kandidat agar diterima bekerja atau ditolak</p>
+
+                            <div class="features-list">
+                                <div class="feature-item">
+                                    <span class="feature-label">a</span>
+                                    <div class="feature-content">
+                                        <h4>Daftar Kandidat</h4>
+                                        <p>Menampilkan daftar singkat dari Kandidat agar bisa diterima bekerja atau ditolak</p>
+                                        <div class="feature-image">
+                                            <img src="uploads/user-manual/daftar-kandidat.png" alt="Jenis Layanan">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="feature-item">
+                                    <span class="feature-label">b</span>
+                                    <div class="feature-content">
+                                        <h4>Detail Kandidat</h4>
+                                        <p>Menampilkan detail dari informasi kandidat</p>
+                                        <div class="feature-image">
+                                            <img src="uploads/user-manual/detail-kandidat.png" alt="Proses Layanan">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
                 </div>
             </div>

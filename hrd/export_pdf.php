@@ -29,7 +29,7 @@ class PDF extends FPDF {
         $this->Image('../assets/logo.png', 15, 13, 45); 
         // Nama Perusahaan
         $this->SetFont('Arial','B',14);
-        $this->Cell(0,7,'PT Waindo Specterra',0,1,'C');
+        $this->Cell(0,7,'PT Waindo SpecTerra',0,1,'C');
         $this->SetFont('Arial','',10);
         $this->Cell(0,7,'Kompleks Perkantoran Pejaten Raya #7-8',0,1,'C');
         $this->Cell(0,7,'Jl. Pejaten Raya No.2 Jakarta Selatan 12510',0,1,'C');
