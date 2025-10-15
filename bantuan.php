@@ -639,6 +639,221 @@
                         </div>
                     </div>
 
+                    <div class="manual-section" id="login">
+                        <div class="section-number">19</div>
+                        <div class="section-content">
+                            <h2>Halaman Dashboard Pelamar</h2>
+                            <p class="section-desc">Halaman yang menampilkan ringkasan lowongan tersedia, lamaran terkirim, menunggu review, diterima, dan lamaran terbaru</p>
+                            <div class="manual-image">
+                                <img src="uploads/user-manual/dashboard-pelamar.png" alt="dashboard-hrd">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="manual-section" id="login">
+                        <div class="section-number">20</div>
+                        <div class="section-content">
+                            <h2>Halaman Profil</h2>
+                            <p class="section-desc">Halaman yang menampilkan profil dan bisa untuk update profil</p>
+                            <div class="manual-image">
+                                <img src="uploads/user-manual/profil.png" alt="dashboard-hrd">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="manual-section" id="login">
+                        <div class="section-number">21</div>
+                        <div class="section-content">
+                            <h2>Halaman Lihat Lowongan</h2>
+                            <p class="section-desc">Halaman yang menampilkan daftar lowongan, detail lowongan dan melamar pekerjaan</p>
+                            <div class="manual-image">
+                                <img src="uploads/user-manual/lihat-lowongan.png" alt="dashboard-hrd">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="manual-section" id="login">
+                        <div class="section-number">22</div>
+                        <div class="section-content">
+                            <h2>Halaman Dashboard Konten</h2>
+                            <p class="section-desc">Halaman yang menampilkan ringkasan berita, produk, layanan, dan konten terbaru</p>
+                            <div class="manual-image">
+                                <img src="uploads/user-manual/dashboard-konten.png" alt="dashboard-hrd">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="manual-section" id="login">
+                        <div class="section-number">23</div>
+                        <div class="section-content">
+                            <h2>Halaman Kelola Berita</h2>
+                            <p class="section-desc">Halaman untuk mengelola berita agar bisa ditampilkan pada halaman berita</p>
+
+                            <div class="features-list">
+                                <div class="feature-item">
+                                    <span class="feature-label">a</span>
+                                    <div class="feature-content">
+                                        <h4>Tambah Kegiatan</h4>
+                                        <p>Menambah kegiatan berupa input judul, deskripsi, dan foto yang bisa lebih dari 1. untuk bisa menambah ke dalam kegiatan</p>
+                                        <div class="feature-image">
+                                            <img src="uploads/user-manual/tambah-kegiatan.png" alt="Jenis Layanan">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="feature-item">
+                                    <span class="feature-label">b</span>
+                                    <div class="feature-content">
+                                        <h4>Daftar Kegiatan</h4>
+                                        <p>Menampilkan daftar dari kegiatan yang ada pada sistem</p>
+                                        <div class="feature-image">
+                                            <img src="uploads/user-manual/daftar-kegiatan.png" alt="Proses Layanan">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="feature-item">
+                                    <span class="feature-label">c</span>
+                                    <div class="feature-content">
+                                        <h4>Edit Kegiatan</h4>
+                                        <p>Mengedit kegiatan untuk bisa diperbarui isi dari kegiatan tersebut</p>
+                                        <div class="feature-image">
+                                            <img src="uploads/user-manual/edit-kegiatan.png" alt="Proses Layanan">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="feature-item">
+                                    <span class="feature-label">d</span>
+                                    <div class="feature-content">
+                                        <h4>Hapus Kegiatan</h4>
+                                        <p>Menghapus kegiatan dari sistem dengan ada konfirmasi sebelum menghapus kegiatan</p>
+                                        <div class="feature-image">
+                                            <img src="uploads/user-manual/hapus-kegiatan.png" alt="Proses Layanan">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="feature-item">
+                                    <span class="feature-label">e</span>
+                                    <div class="feature-content">
+                                        <h4>Tambah Webinar</h4>
+                                        <p>Menambah webinar dengan input judul dan gambar untuk bisa menambahkan webinar</p>
+                                        <div class="feature-image">
+                                            <img src="uploads/user-manual/tambah-webinar.png" alt="Jenis Layanan">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="feature-item">
+                                    <span class="feature-label">f</span>
+                                    <div class="feature-content">
+                                        <h4>Daftar Webinar</h4>
+                                        <p>Menampilkan daftar dari webinar yang ada pada sistem</p>
+                                        <div class="feature-image">
+                                            <img src="uploads/user-manual/daftar-webinar.png" alt="Proses Layanan">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="feature-item">
+                                    <span class="feature-label">g</span>
+                                    <div class="feature-content">
+                                        <h4>Edit Webinar</h4>
+                                        <p>Mengedit webinar untuk bisa diperbarui isi dari webinar tersebut</p>
+                                        <div class="feature-image">
+                                            <img src="uploads/user-manual/edit-webinar.png" alt="Proses Layanan">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="feature-item">
+                                    <span class="feature-label">h</span>
+                                    <div class="feature-content">
+                                        <h4>Hapus Webinar</h4>
+                                        <p>Menghapus webinar dari sistem dengan ada konfirmasi sebelum menghapus webinar</p>
+                                        <div class="feature-image">
+                                            <img src="uploads/user-manual/hapus-webinar.png" alt="Proses Layanan">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="feature-item">
+                                    <span class="feature-label">i</span>
+                                    <div class="feature-content">
+                                        <h4>Tambah Live Streaming</h4>
+                                        <p>Menambah live streaming dengan input judul tipe dan url/file untuk bisa menambahkan live streaming</p>
+                                        <div class="feature-image">
+                                            <img src="uploads/user-manual/tambah-live.png" alt="Jenis Layanan">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="feature-item">
+                                    <span class="feature-label">j</span>
+                                    <div class="feature-content">
+                                        <h4>Daftar Live Streaming</h4>
+                                        <p>Menampilkan daftar dari live streaming yang ada pada sistem</p>
+                                        <div class="feature-image">
+                                            <img src="uploads/user-manual/daftar-live.png" alt="Proses Layanan">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="feature-item">
+                                    <span class="feature-label">k</span>
+                                    <div class="feature-content">
+                                        <h4>Edit Live Streaming</h4>
+                                        <p>Mengedit live streaming untuk bisa diperbarui isi dari live streaming tersebut</p>
+                                        <div class="feature-image">
+                                            <img src="uploads/user-manual/edit-live.png" alt="Proses Layanan">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="feature-item">
+                                    <span class="feature-label">l</span>
+                                    <div class="feature-content">
+                                        <h4>Hapus Live Streaming</h4>
+                                        <p>Menghapus live streaming dari sistem dengan ada konfirmasi sebelum menghapus live streaming</p>
+                                        <div class="feature-image">
+                                            <img src="uploads/user-manual/hapus-live.png" alt="Proses Layanan">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="feature-item">
+                                    <span class="feature-label">m</span>
+                                    <div class="feature-content">
+                                        <h4>Tambah Galeri</h4>
+                                        <p>Menambah webinar dengan input judul dan gambar lebih dari satu untuk bisa menambahkan galeri</p>
+                                        <div class="feature-image">
+                                            <img src="uploads/user-manual/tambah-galeri.png" alt="Jenis Layanan">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="feature-item">
+                                    <span class="feature-label">n</span>
+                                    <div class="feature-content">
+                                        <h4>Daftar Galeri</h4>
+                                        <p>Menampilkan daftar dari galeri yang ada pada sistem</p>
+                                        <div class="feature-image">
+                                            <img src="uploads/user-manual/daftar-galeri.png" alt="Proses Layanan">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="feature-item">
+                                    <span class="feature-label">o</span>
+                                    <div class="feature-content">
+                                        <h4>Edit Galeri</h4>
+                                        <p>Mengedit galeri untuk bisa diperbarui isi dari galeri tersebut</p>
+                                        <div class="feature-image">
+                                            <img src="uploads/user-manual/edit-galeri.png" alt="Proses Layanan">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="feature-item">
+                                    <span class="feature-label">p</span>
+                                    <div class="feature-content">
+                                        <h4>Hapus Galeri</h4>
+                                        <p>Menghapus galeri dari sistem dengan ada konfirmasi sebelum menghapus galeri</p>
+                                        <div class="feature-image">
+                                            <img src="uploads/user-manual/hapus-galeri.png" alt="Proses Layanan">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
             </div>
         </div>
