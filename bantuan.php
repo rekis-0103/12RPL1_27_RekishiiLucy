@@ -854,6 +854,108 @@
                         </div>
                     </div>
 
+                    <div class="manual-section" id="login">
+                        <div class="section-number">24</div>
+                        <div class="section-content">
+                            <h2>Halaman Kelola Produk</h2>
+                            <p class="section-desc">Halaman untuk mengelola produk untuk tambah, edit, dan hapus produk</p>
+
+                            <div class="features-list">
+                                <div class="feature-item">
+                                    <span class="feature-label">a</span>
+                                    <div class="feature-content">
+                                        <h4>Tambah Produk</h4>
+                                        <p>Menambahkan produk dengan input nama produk, kategori, deskripsi, dan gambar produk untuk bisa menambahkan produk ke sistem</p>
+                                        <div class="feature-image">
+                                            <img src="uploads/user-manual/tambah-produk.png" alt="Jenis Layanan">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="feature-item">
+                                    <span class="feature-label">b</span>
+                                    <div class="feature-content">
+                                        <h4>Daftar Produk</h4>
+                                        <p>Menampilkan daftar dari produk yang ada pada sistem</p>
+                                        <div class="feature-image">
+                                            <img src="uploads/user-manual/daftar-produk.png" alt="Proses Layanan">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="feature-item">
+                                    <span class="feature-label">c</span>
+                                    <div class="feature-content">
+                                        <h4>Edit Produk</h4>
+                                        <p>Mengedit produk untuk bisa memperbarui isi dari produk tersebut</p>
+                                        <div class="feature-image">
+                                            <img src="uploads/user-manual/edit-produk.png" alt="Proses Layanan">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="feature-item">
+                                    <span class="feature-label">d</span>
+                                    <div class="feature-content">
+                                        <h4>Hapus Produk</h4>
+                                        <p>Menghapus produk dari sistem dengan ada konfirmasi sebelum menghapus produk tersebut</p>
+                                        <div class="feature-image">
+                                            <img src="uploads/user-manual/hapus-produk.png" alt="Proses Layanan">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="manual-section" id="login">
+                        <div class="section-number">25</div>
+                        <div class="section-content">
+                            <h2>Halaman Kelola Layanan</h2>
+                            <p class="section-desc">Halaman untuk mengelola layanan untuk tambah, edit, dan hapus layanan</p>
+
+                            <div class="features-list">
+                                <div class="feature-item">
+                                    <span class="feature-label">a</span>
+                                    <div class="feature-content">
+                                        <h4>Tambah Layanan</h4>
+                                        <p>Menambahkan layanan dengan input judul layanan, kategori, deskripsi, fitur, dan gambar untuk bisa menambahkan layanan ke sistem</p>
+                                        <div class="feature-image">
+                                            <img src="uploads/user-manual/tambah-layanan.png" alt="Jenis Layanan">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="feature-item">
+                                    <span class="feature-label">b</span>
+                                    <div class="feature-content">
+                                        <h4>Daftar Layanan</h4>
+                                        <p>Menampilkan daftar dari layanan yang ada pada sistem</p>
+                                        <div class="feature-image">
+                                            <img src="uploads/user-manual/daftar-layanan.png" alt="Proses Layanan">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="feature-item">
+                                    <span class="feature-label">c</span>
+                                    <div class="feature-content">
+                                        <h4>Edit Layanan</h4>
+                                        <p>Mengedit layanan untuk bisa memperbarui isi dari layanan tersebut</p>
+                                        <div class="feature-image">
+                                            <img src="uploads/user-manual/edit-layanan.png" alt="Proses Layanan">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="feature-item">
+                                    <span class="feature-label">d</span>
+                                    <div class="feature-content">
+                                        <h4>Hapus Layanan</h4>
+                                        <p>Menghapus Layanan dari sistem dengan ada konfirmasi sebelum menghapus layanan tersebut</p>
+                                        <div class="feature-image">
+                                            <img src="uploads/user-manual/hapus-layanan.png" alt="Proses Layanan">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
             </div>
         </div>
