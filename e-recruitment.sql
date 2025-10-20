@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Oct 01, 2025 at 04:37 AM
+-- Generation Time: Oct 17, 2025 at 03:11 AM
 -- Server version: 8.0.30
 -- PHP Version: 8.2.29
 
@@ -31,6 +31,8 @@ CREATE TABLE `applications` (
   `application_id` int NOT NULL,
   `job_id` int NOT NULL,
   `user_id` int NOT NULL,
+  `no_telepon` varchar(20) NOT NULL,
+  `pendidikan` varchar(100) NOT NULL,
   `cv` varchar(255) NOT NULL,
   `status` varchar(255) NOT NULL,
   `reason` text,
@@ -44,8 +46,10 @@ CREATE TABLE `applications` (
 -- Dumping data for table `applications`
 --
 
-INSERT INTO `applications` (`application_id`, `job_id`, `user_id`, `cv`, `status`, `reason`, `interview_date`, `start_date`, `applied_at`, `updated_at`) VALUES
-(1, 1, 2, 'uploads/cv/cv_2_1_1755673380.pdf', 'tes & wawancara', 'ya ya saya setuju dengan anda', '2025-09-18 11:20:00', '2025-08-22', '2025-08-20 07:03:00', '2025-09-12 04:21:50');
+INSERT INTO `applications` (`application_id`, `job_id`, `user_id`, `no_telepon`, `pendidikan`, `cv`, `status`, `reason`, `interview_date`, `start_date`, `applied_at`, `updated_at`) VALUES
+(1, 1, 2, '08451327899', 'SMA', 'uploads/cv/cv_2_1_1755673380.pdf', 'tes & wawancara', 'ya ya saya setuju dengan anda', '2025-09-18 11:20:00', NULL, '2025-08-20 07:03:00', '2025-09-12 04:21:50'),
+(3, 2, 2, '0812345678910', 'SMK - Rekayasa Perangkat Lunak', 'uploads/cv/cv_2_2_1759825828.pdf', 'seleksi administrasi', NULL, NULL, NULL, '2025-10-07 08:30:28', '2025-10-14 06:03:21'),
+(4, 1, 8, '081231231231', 'SMK - Rekayasa Perangkat Lunak', 'uploads/cv/cv_8_1_1759890857.pdf', 'seleksi administrasi', NULL, NULL, NULL, '2025-10-08 02:34:17', '2025-10-08 06:15:23');
 
 -- --------------------------------------------------------
 
@@ -492,7 +496,65 @@ INSERT INTO `log_aktivitas` (`log_id`, `user_id`, `action`, `log_time`) VALUES
 (296, 4, 'Konten: tambah produk - Data Converter', '2025-10-01 04:06:57'),
 (297, 4, 'Konten: tambah produk - POI Data', '2025-10-01 04:07:33'),
 (298, 4, 'Konten: tambah produk - Web, Desktop, Mobile Application', '2025-10-01 04:08:28'),
-(299, 4, 'Konten: tambah produk - GPS Tracking System', '2025-10-01 04:09:11');
+(299, 4, 'Konten: tambah produk - GPS Tracking System', '2025-10-01 04:09:11'),
+(300, 2, 'Login', '2025-10-02 04:08:44'),
+(301, 2, 'Logout', '2025-10-02 07:16:54'),
+(302, 3, 'Login', '2025-10-02 07:17:02'),
+(303, 4, 'Login', '2025-10-03 01:36:36'),
+(304, 4, 'Logout', '2025-10-03 04:16:13'),
+(305, 1, 'Login', '2025-10-03 04:16:21'),
+(306, 2, 'Login', '2025-10-04 08:26:14'),
+(307, 2, 'Logout', '2025-10-04 08:28:19'),
+(308, 1, 'Login', '2025-10-04 08:28:27'),
+(309, 1, 'Logout', '2025-10-04 08:29:36'),
+(310, 3, 'Login', '2025-10-04 08:29:42'),
+(311, 3, 'Logout', '2025-10-04 08:30:33'),
+(312, 4, 'Login', '2025-10-04 08:30:40'),
+(313, 4, 'Logout', '2025-10-04 09:17:11'),
+(314, 1, 'Login', '2025-10-06 02:46:13'),
+(315, 1, 'Logout', '2025-10-06 02:46:18'),
+(316, 1, 'Login', '2025-10-07 02:41:59'),
+(317, 1, 'Logout', '2025-10-07 02:43:07'),
+(318, 3, 'Login', '2025-10-07 02:43:18'),
+(319, 3, 'Logout', '2025-10-07 02:47:45'),
+(320, 2, 'Login', '2025-10-07 02:48:08'),
+(321, 2, 'Logout', '2025-10-07 02:48:39'),
+(322, 4, 'Login', '2025-10-07 02:48:58'),
+(323, 4, 'Logout', '2025-10-07 02:50:02'),
+(324, 4, 'Login', '2025-10-07 04:11:22'),
+(325, 4, 'Konten: edit produk - Satellite Image Services and Remote Sensing', '2025-10-07 04:13:22'),
+(326, 4, 'Logout', '2025-10-07 04:13:34'),
+(327, 2, 'Login', '2025-10-07 06:41:06'),
+(328, 2, 'Logout', '2025-10-07 07:36:23'),
+(329, 2, 'Login', '2025-10-07 08:19:49'),
+(330, NULL, 'membuat User baru', '2025-10-08 02:10:42'),
+(331, 8, 'Login', '2025-10-08 02:10:59'),
+(332, 8, 'Logout', '2025-10-08 05:55:12'),
+(333, 3, 'Login', '2025-10-08 05:55:21'),
+(334, 3, 'Logout', '2025-10-08 07:38:56'),
+(335, 1, 'Login', '2025-10-08 07:39:04'),
+(336, 1, 'Logout', '2025-10-08 07:43:17'),
+(337, 1, 'Login', '2025-10-08 07:43:23'),
+(338, 2, 'Login', '2025-10-13 04:31:18'),
+(339, 2, 'Logout', '2025-10-13 04:31:55'),
+(340, 1, 'Login', '2025-10-14 01:14:01'),
+(341, 3, 'Login', '2025-10-14 06:02:26'),
+(342, 3, 'HRD: ubah status lowongan #2 -> closed', '2025-10-14 06:27:52'),
+(343, 3, 'HRD: ubah status lowongan #2 -> open', '2025-10-14 06:27:54'),
+(344, 3, 'Logout', '2025-10-14 07:05:42'),
+(345, 2, 'Login', '2025-10-14 07:05:48'),
+(346, 2, 'Logout', '2025-10-14 07:14:18'),
+(347, 8, 'Login', '2025-10-14 07:14:55'),
+(348, 8, 'Logout', '2025-10-14 07:25:33'),
+(349, 4, 'Login', '2025-10-15 01:20:24'),
+(350, 1, 'Login', '2025-10-17 02:33:30'),
+(351, 1, 'Logout', '2025-10-17 02:33:49'),
+(352, 1, 'Login', '2025-10-17 02:42:02'),
+(353, 1, 'Logout', '2025-10-17 02:43:23'),
+(354, 2, 'Login', '2025-10-17 02:49:16'),
+(355, 2, 'Logout', '2025-10-17 02:49:35'),
+(356, 8, 'Login', '2025-10-17 02:49:49'),
+(357, 8, 'Logout', '2025-10-17 03:10:03');
 
 -- --------------------------------------------------------
 
@@ -520,7 +582,7 @@ CREATE TABLE `lowongan` (
 
 INSERT INTO `lowongan` (`job_id`, `title`, `description`, `requirements`, `location`, `salary_range`, `status`, `posted_by`, `posted_at`, `updated_at`, `hapus`) VALUES
 (1, 'Programmer Frontend', 'Jadi Programmer Frontend', '- S1 informasika\r\n- Pengalaman 20 tahun\r\n- mampu bekerja dibawah tekanan\r\n- Fresh Graduate', 'PT. Waindo Specterra', '10.000.000 - 15.000.000', 'open', 3, '2025-08-20 07:01:47', '2025-09-15 04:07:52', 0),
-(2, 'Programmer Backend', 'Jadi Programmer Backend', '- Fresh Graduate\r\n- S1 Informatika\r\n- Pengalaman Kerja 10 tahun', 'PT. Waindo Specterra', '20.000.000 - 30.000.000', 'open', 3, '2025-09-15 02:52:56', '2025-09-15 02:53:18', 0);
+(2, 'Programmer Backend', 'Jadi Programmer Backend', '- Fresh Graduate\r\n- S1 Informatika\r\n- Pengalaman Kerja 10 tahun', 'PT. Waindo Specterra', '20.000.000 - 30.000.000', 'open', 3, '2025-09-15 02:52:56', '2025-10-14 06:27:54', 0);
 
 -- --------------------------------------------------------
 
@@ -570,7 +632,7 @@ CREATE TABLE `products` (
 --
 
 INSERT INTO `products` (`product_id`, `name`, `description`, `image`, `category_id`, `status`, `created_by`, `created_at`, `updated_at`) VALUES
-(1, 'Enterprise Rack Server', 'Server rack enterprise dengan performa tinggi yang dirancang khusus untuk mendukung aplikasi geomatika skala besar. Menyediakan kapasitas penyimpanan besar, kecepatan pemrosesan data spasial yang optimal, serta keandalan 24/7 untuk mendukung kebutuhan survei, pemetaan, hingga analisis geospasial yang kompleks.', 'assets/remotesesing.jpg', 1, 'active', 4, '2025-09-22 08:55:33', '2025-09-22 08:55:33'),
+(1, 'Satellite Image Services and Remote Sensing', 'Satellite Image \\\"Services and Remote Sensing\\\" menyediakan layanan citra satelit resolusi tinggi yang dirancang untuk mendukung berbagai kebutuhan analisis spasial dan pemantauan lingkungan. Dengan teknologi penginderaan jauh terkini, layanan ini memungkinkan akuisisi data multispektral dan radar secara cepat dan akurat. Cocok untuk keperluan pemetaan lahan, deteksi perubahan tutupan wilayah, perencanaan tata ruang, hingga pemantauan sumber daya alam secara berkelanjutan. Dilengkapi dengan sistem pengolahan data berbasis cloud untuk efisiensi akses, penyimpanan, dan analisis citra satelit dalam skala besar.', 'assets/remotesesing.jpg', 1, 'active', 4, '2025-09-22 08:55:33', '2025-10-07 04:13:22'),
 (2, 'Geographic Information System', 'Sistem informasi geografis yang komprehensif untuk pengolahan, analisis, serta visualisasi data spasial. GIS ini membantu dalam pengambilan keputusan berbasis lokasi, pemetaan interaktif, hingga integrasi data multi-sumber sehingga dapat digunakan oleh berbagai sektor, mulai dari tata ruang, lingkungan, hingga infrastruktur.', 'assets/Geograpic-Information-System.jpg', 1, 'active', 4, '2025-09-22 08:55:33', '2025-09-22 08:55:33'),
 (3, 'ArcGIS For Desktop', 'Perangkat lunak GIS desktop yang menjadi standar industri dalam analisis geospasial. Menyediakan berbagai tools untuk pemetaan, manajemen data spasial, hingga analisis tingkat lanjut, sehingga sangat ideal digunakan oleh pemerintah, perusahaan, maupun akademisi.', 'assets/arcgis_destop.jpg', 2, 'active', 4, '2025-09-22 08:55:33', '2025-09-22 08:55:33'),
 (4, 'ArcGIS Enterprise', 'Platform GIS berbasis enterprise yang dirancang untuk organisasi besar. Mendukung integrasi data spasial lintas divisi, memungkinkan kolaborasi antar pengguna, serta menyediakan kontrol penuh terhadap keamanan dan distribusi informasi geospasial.', 'assets/arcgisportal.jpg', 2, 'active', 4, '2025-09-22 08:55:33', '2025-09-22 08:55:33'),
@@ -677,7 +739,8 @@ INSERT INTO `users` (`user_id`, `username`, `password`, `email`, `full_name`, `r
 (3, 'hrd01', '5c2e4a2563f9f4427955422fe1402762', 'siti@gmail.com', 'Siti', 'hrd', 'active', '2025-08-19 03:54:54', 0),
 (4, 'konten01', '26ed30f28908645239254ff4f88c1b75', 'rian@gmail.com', 'Rian', 'konten', 'active', '2025-08-19 03:54:54', 0),
 (6, 'agus01', '01c3c766ce47082b1b130daedd347ffd', 'agus123@gmail.com', 'Agus Agus', 'hrd', 'active', '2025-08-25 01:34:19', 0),
-(7, 'rekis', 'ef14d8aeff3c7255004a18508133b8ad', 'weioewhifewhuifwhui@gmail.com', 'rekishii lucy', 'hrd', 'active', '2025-08-25 01:48:43', 0);
+(7, 'rekis', 'ef14d8aeff3c7255004a18508133b8ad', 'weioewhifewhuifwhui@gmail.com', 'rekishii lucy', 'hrd', 'active', '2025-08-25 01:48:43', 0),
+(8, 'pelamar02', 'cc03e747a6afbbcbf8be7668acfebee5', 'ewqodijqoijdqijodwqiojwdjioqjidqjodoi@gmail.com', 'test123', 'pelamar', 'active', '2025-10-08 02:10:42', 0);
 
 -- --------------------------------------------------------
 
@@ -823,7 +886,7 @@ ALTER TABLE `webinar`
 -- AUTO_INCREMENT for table `applications`
 --
 ALTER TABLE `applications`
-  MODIFY `application_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `application_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `content_categories`
@@ -865,7 +928,7 @@ ALTER TABLE `live_streaming`
 -- AUTO_INCREMENT for table `log_aktivitas`
 --
 ALTER TABLE `log_aktivitas`
-  MODIFY `log_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=300;
+  MODIFY `log_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=358;
 
 --
 -- AUTO_INCREMENT for table `lowongan`
@@ -901,7 +964,7 @@ ALTER TABLE `services`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `user_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `user_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT for table `webinar`
