@@ -364,7 +364,7 @@
                                     <span class="feature-label">a</span>
                                     <div class="feature-content">
                                         <h4>Tambah User</h4>
-                                        <p>Inout username, nama lengkap, password, email, dan role untuk mendaftarkan pengguna ke dalam sistem</p>
+                                        <p>Input username, nama lengkap, password, email, dan role untuk mendaftarkan pengguna ke dalam sistem</p>
                                         <div class="feature-image">
                                             <img src="uploads/user-manual/tambah-user.png" alt="Jenis Layanan">
                                         </div>
@@ -487,7 +487,7 @@
                                     <span class="feature-label">b</span>
                                     <div class="feature-content">
                                         <h4>Daftar pop up lowongan</h4>
-                                        <p>Menampilkan daftar pup up yang tersedia agar bisa di edit, hapus, dan aktif/nonaktif</p>
+                                        <p>Menampilkan daftar pop up yang tersedia agar bisa di edit, hapus, dan aktif/nonaktif</p>
                                         <div class="feature-image">
                                             <img src="uploads/user-manual/daftar-popup.png" alt="Proses Layanan">
                                         </div>
@@ -507,7 +507,7 @@
                                     <span class="feature-label">d</span>
                                     <div class="feature-content">
                                         <h4>Hapus pop up lowongan</h4>
-                                        <p>Menghapus pup up lowongan</p>
+                                        <p>Menghapus pop up lowongan</p>
                                         <div class="feature-image">
                                             <img src="uploads/user-manual/hapus-popup.png" alt="Proses Layanan">
                                         </div>
