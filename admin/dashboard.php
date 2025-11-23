@@ -65,6 +65,7 @@ $recent_activity_result = mysqli_query($conn, $recent_activity_query);
                 <li><a href="dashboard.php" class="active"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
                 <li><a href="users.php"><i class="fas fa-users"></i> Kelola User</a></li>
                 <li><a href="logs.php"><i class="fas fa-history"></i> Log Aktivitas</a></li>
+                <li><a href="pendidikan.php"><i class="fas fa-graduation-cap"></i> Pendidikan</a></li>
                 <li><a href="../index.php"><i class="fas fa-home"></i> Beranda</a></li>
                 <li><a href="../logout.php"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
             </ul>
