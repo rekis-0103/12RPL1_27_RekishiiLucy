@@ -159,3 +159,286 @@
   box-shadow: 0 8px 25px rgba(59, 130, 246, 0.5),
     0 4px 15px rgba(59, 130, 246, 0.3);
 }
+
+/* Add to existing pofile.css */
+
+/* Full width form group */
+.form-group.full-width {
+  grid-column: 1 / -1;
+}
+
+/* Required field indicator */
+.required {
+  color: #dc2626;
+  margin-left: 2px;
+}
+
+/* CV Card Styling */
+.cv-card {
+  background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+  border: 2px solid #3b82f6;
+  margin-bottom: 24px;
+  animation: slideDown 0.5s ease;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.cv-card .card-header {
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+  color: white;
+  border-bottom: none;
+}
+
+.cv-card .card-header h3 {
+  color: white;
+}
+
+.cv-card .card-header h3 i {
+  color: #fef3c7;
+}
+
+/* CV Info Container */
+.cv-info {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 8px;
+  background: white;
+  border-radius: 12px;
+}
+
+.cv-icon {
+  flex-shrink: 0;
+  width: 80px;
+  height: 80px;
+  background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
+}
+
+.cv-icon i {
+  font-size: 2.5rem;
+  color: white;
+}
+
+.cv-details {
+  flex: 1;
+}
+
+.cv-details h4 {
+  margin: 0 0 8px 0;
+  color: #1e293b;
+  font-size: 1.1rem;
+  font-weight: 600;
+  word-break: break-all;
+}
+
+.cv-meta {
+  margin: 0;
+  color: #64748b;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.cv-meta i {
+  color: #2563eb;
+}
+
+.cv-meta .separator {
+  color: #cbd5e1;
+}
+
+.cv-actions {
+  display: flex;
+  gap: 10px;
+  flex-direction: column;
+}
+
+.btn-view {
+  padding: 12px 24px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 0.95rem;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  white-space: nowrap;
+  min-width: 140px;
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+  color: white;
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+}
+
+.btn-view:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
+  background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+}
+
+.btn-view:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
+}
+
+/* Form text helper */
+.form-text {
+  display: block;
+  margin-top: 6px;
+  font-size: 0.875rem;
+  color: #64748b;
+  font-style: italic;
+}
+
+.form-text i {
+  color: #3b82f6;
+  margin-right: 4px;
+}
+
+/* Select styling */
+.form-group select {
+  width: 100%;
+  padding: 12px 16px;
+  border: 2px solid #e2e8f0;
+  border-radius: 10px;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  background-color: #ffffff;
+  cursor: pointer;
+}
+
+.form-group select:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+/* File input styling */
+.form-group input[type="file"] {
+  padding: 10px;
+  border: 2px dashed #cbd5e1;
+  background: #f8fafc;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.form-group input[type="file"]:hover {
+  border-color: #3b82f6;
+  background: #eff6ff;
+}
+
+/* Label with icon */
+.form-group label i {
+  margin-right: 6px;
+  color: #3b82f6;
+}
+
+/* Form actions */
+.form-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.form-actions .btn {
+  flex: 1;
+  max-width: 200px;
+}
+
+.btn-secondary {
+  background: linear-gradient(135deg, #64748b 0%, #475569 100%);
+  color: white;
+  box-shadow: 0 4px 12px rgba(100, 116, 139, 0.3);
+}
+
+.btn-secondary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(100, 116, 139, 0.4);
+}
+
+/* Button with icon */
+.btn i {
+  margin-right: 8px;
+}
+
+/* Enhanced alert with icons */
+.alert i {
+  margin-right: 8px;
+  font-size: 1.1rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 992px) {
+  .cv-info {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .cv-actions {
+    width: 100%;
+  }
+
+  .btn-view {
+    width: 100%;
+  }
+}
+
+@media (max-width: 768px) {
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .form-group.full-width {
+    grid-column: 1;
+  }
+
+  .cv-icon {
+    width: 60px;
+    height: 60px;
+  }
+
+  .cv-icon i {
+    font-size: 2rem;
+  }
+
+  .form-actions {
+    flex-direction: column;
+  }
+
+  .form-actions .btn {
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .cv-meta {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+
+  .cv-meta .separator {
+    display: none;
+  }
+
+  .cv-details h4 {
+    font-size: 0.95rem;
+  }
+}

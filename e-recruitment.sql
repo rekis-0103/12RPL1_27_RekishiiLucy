@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Oct 17, 2025 at 03:11 AM
+-- Generation Time: Nov 23, 2025 at 04:56 AM
 -- Server version: 8.0.30
 -- PHP Version: 8.2.29
 
@@ -33,6 +33,8 @@ CREATE TABLE `applications` (
   `user_id` int NOT NULL,
   `no_telepon` varchar(20) NOT NULL,
   `pendidikan` varchar(100) NOT NULL,
+  `id_jenjang_pendidikan` int DEFAULT NULL,
+  `id_jurusan_pendidikan` int DEFAULT NULL,
   `cv` varchar(255) NOT NULL,
   `status` varchar(255) NOT NULL,
   `reason` text,
@@ -46,10 +48,10 @@ CREATE TABLE `applications` (
 -- Dumping data for table `applications`
 --
 
-INSERT INTO `applications` (`application_id`, `job_id`, `user_id`, `no_telepon`, `pendidikan`, `cv`, `status`, `reason`, `interview_date`, `start_date`, `applied_at`, `updated_at`) VALUES
-(1, 1, 2, '08451327899', 'SMA', 'uploads/cv/cv_2_1_1755673380.pdf', 'tes & wawancara', 'ya ya saya setuju dengan anda', '2025-09-18 11:20:00', NULL, '2025-08-20 07:03:00', '2025-09-12 04:21:50'),
-(3, 2, 2, '0812345678910', 'SMK - Rekayasa Perangkat Lunak', 'uploads/cv/cv_2_2_1759825828.pdf', 'seleksi administrasi', NULL, NULL, NULL, '2025-10-07 08:30:28', '2025-10-14 06:03:21'),
-(4, 1, 8, '081231231231', 'SMK - Rekayasa Perangkat Lunak', 'uploads/cv/cv_8_1_1759890857.pdf', 'seleksi administrasi', NULL, NULL, NULL, '2025-10-08 02:34:17', '2025-10-08 06:15:23');
+INSERT INTO `applications` (`application_id`, `job_id`, `user_id`, `no_telepon`, `pendidikan`, `id_jenjang_pendidikan`, `id_jurusan_pendidikan`, `cv`, `status`, `reason`, `interview_date`, `start_date`, `applied_at`, `updated_at`) VALUES
+(1, 1, 2, '08451327899', 'SMA', NULL, NULL, 'uploads/cv/cv_2_1_1755673380.pdf', 'tes & wawancara', 'ya ya saya setuju dengan anda', '2025-09-18 11:20:00', NULL, '2025-08-20 07:03:00', '2025-09-12 04:21:50'),
+(3, 2, 2, '0812345678910', 'SMK - Rekayasa Perangkat Lunak', NULL, NULL, 'uploads/cv/cv_2_2_1759825828.pdf', 'seleksi administrasi', NULL, NULL, NULL, '2025-10-07 08:30:28', '2025-10-14 06:03:21'),
+(4, 1, 8, '081231231231', 'SMK - Rekayasa Perangkat Lunak', NULL, NULL, 'uploads/cv/cv_8_1_1759890857.pdf', 'seleksi administrasi', NULL, NULL, NULL, '2025-10-08 02:34:17', '2025-10-08 06:15:23');
 
 -- --------------------------------------------------------
 
@@ -104,6 +106,54 @@ INSERT INTO `galeri_foto` (`foto_id`, `galeri_id`, `foto`) VALUES
 (1, 1, 'uploads/galeri/1756174887_3.jpeg'),
 (2, 1, 'uploads/galeri/1756174887_2.jpeg'),
 (3, 1, 'uploads/galeri/1756174887_1.jpeg');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `jenjang_pendidikan`
+--
+
+CREATE TABLE `jenjang_pendidikan` (
+  `id_jenjang` int NOT NULL,
+  `nama_jenjang` varchar(50) NOT NULL,
+  `kode_jenjang` varchar(10) NOT NULL,
+  `punya_jurusan` tinyint(1) DEFAULT '0' COMMENT '0 = tidak ada jurusan, 1 = ada jurusan',
+  `status` tinyint(1) DEFAULT '1',
+  `dibuat_pada` timestamp NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Dumping data for table `jenjang_pendidikan`
+--
+
+INSERT INTO `jenjang_pendidikan` (`id_jenjang`, `nama_jenjang`, `kode_jenjang`, `punya_jurusan`, `status`, `dibuat_pada`) VALUES
+(1, 'SMA', 'SMA', 0, 1, '2025-11-23 02:14:47'),
+(2, 'SMK', 'SMK', 1, 1, '2025-11-23 02:14:47'),
+(3, 'S1', 'S1', 1, 1, '2025-11-23 02:14:47');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `jurusan_pendidikan`
+--
+
+CREATE TABLE `jurusan_pendidikan` (
+  `id_jurusan` int NOT NULL,
+  `id_jenjang` int NOT NULL,
+  `nama_jurusan` varchar(100) NOT NULL,
+  `status` tinyint(1) DEFAULT '1',
+  `dibuat_pada` timestamp NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Dumping data for table `jurusan_pendidikan`
+--
+
+INSERT INTO `jurusan_pendidikan` (`id_jurusan`, `id_jenjang`, `nama_jurusan`, `status`, `dibuat_pada`) VALUES
+(1, 2, 'Rekayasa Perangkat Lunak', 1, '2025-11-23 02:14:47'),
+(2, 2, 'Desain Komunikasi Visual', 1, '2025-11-23 02:14:47'),
+(3, 3, 'Teknik Informatika', 1, '2025-11-23 02:14:47'),
+(4, 3, 'Desain Komunikasi Visual', 1, '2025-11-23 02:14:47');
 
 -- --------------------------------------------------------
 
@@ -554,7 +604,54 @@ INSERT INTO `log_aktivitas` (`log_id`, `user_id`, `action`, `log_time`) VALUES
 (354, 2, 'Login', '2025-10-17 02:49:16'),
 (355, 2, 'Logout', '2025-10-17 02:49:35'),
 (356, 8, 'Login', '2025-10-17 02:49:49'),
-(357, 8, 'Logout', '2025-10-17 03:10:03');
+(357, 8, 'Logout', '2025-10-17 03:10:03'),
+(358, 2, 'Login', '2025-10-20 02:57:49'),
+(359, 2, 'Logout', '2025-10-20 02:59:35'),
+(360, 3, 'Login', '2025-10-20 02:59:43'),
+(361, 3, 'Logout', '2025-10-20 03:03:50'),
+(362, 1, 'Login', '2025-10-20 03:03:56'),
+(363, 1, 'Logout', '2025-10-20 03:07:55'),
+(364, 2, 'Login', '2025-10-20 03:12:10'),
+(365, 2, 'Logout', '2025-10-20 03:24:37'),
+(366, 8, 'Login', '2025-10-20 03:24:46'),
+(367, 8, 'Logout', '2025-10-20 03:29:42'),
+(368, 3, 'Login', '2025-10-20 03:29:50'),
+(369, 3, 'Login', '2025-10-22 03:34:12'),
+(370, 3, 'Logout', '2025-10-22 03:38:43'),
+(371, 1, 'Login', '2025-10-22 03:38:48'),
+(372, 1, 'Login', '2025-10-23 01:10:33'),
+(373, 1, 'Logout', '2025-10-23 01:10:42'),
+(374, 1, 'Login', '2025-10-23 01:11:00'),
+(375, 1, 'Logout', '2025-10-23 01:13:53'),
+(376, 3, 'Login', '2025-10-23 01:14:31'),
+(377, 3, 'Logout', '2025-10-23 01:16:23'),
+(378, 2, 'Login', '2025-10-23 01:16:39'),
+(379, 2, 'Logout', '2025-10-23 01:18:08'),
+(380, 4, 'Login', '2025-10-23 01:18:20'),
+(381, 4, 'Logout', '2025-10-23 01:22:26'),
+(382, 1, 'Login', '2025-10-23 06:44:35'),
+(383, 1, 'Logout', '2025-10-23 06:50:59'),
+(384, 3, 'Login', '2025-10-23 06:51:10'),
+(385, 3, 'Logout', '2025-10-23 06:58:57'),
+(386, 8, 'Login', '2025-10-23 07:01:10'),
+(387, 8, 'Logout', '2025-10-23 07:02:58'),
+(388, 4, 'Login', '2025-10-23 07:03:05'),
+(389, 4, 'Logout', '2025-10-23 09:48:23'),
+(390, 2, 'Login', '2025-10-23 09:48:33'),
+(391, 2, 'Login', '2025-10-28 08:41:50'),
+(392, 2, 'Login', '2025-11-22 02:29:51'),
+(393, 2, 'Logout', '2025-11-22 02:34:04'),
+(394, 3, 'Login', '2025-11-22 02:34:17'),
+(395, 2, 'Login', '2025-11-22 13:19:49'),
+(396, 2, 'Logout', '2025-11-22 14:15:05'),
+(397, 1, 'Login', '2025-11-22 14:15:13'),
+(398, 1, 'Login', '2025-11-23 02:26:09'),
+(399, 1, 'Admin: edit jenjang pendidikan \'SMA\' - tanpa jurusan → dengan jurusan', '2025-11-23 02:37:26'),
+(400, 1, 'Admin: edit jenjang pendidikan \'SMA\' - dengan jurusan → tanpa jurusan', '2025-11-23 02:37:36'),
+(401, 1, 'Admin: edit jenjang pendidikan \'SMA\' - tanpa jurusan → dengan jurusan', '2025-11-23 03:02:20'),
+(402, 1, 'Admin: edit jenjang pendidikan \'SMA\' - dengan jurusan → tanpa jurusan', '2025-11-23 03:02:25'),
+(403, 1, 'Logout', '2025-11-23 04:52:53'),
+(404, 2, 'Login', '2025-11-23 04:53:36');
 
 -- --------------------------------------------------------
 
@@ -775,7 +872,9 @@ INSERT INTO `webinar` (`webinar_id`, `judul`, `gambar`, `created_at`, `category_
 ALTER TABLE `applications`
   ADD PRIMARY KEY (`application_id`),
   ADD KEY `relasi_user` (`user_id`),
-  ADD KEY `relasi_job` (`job_id`);
+  ADD KEY `relasi_job` (`job_id`),
+  ADD KEY `fk_applications_jenjang` (`id_jenjang_pendidikan`),
+  ADD KEY `fk_applications_jurusan` (`id_jurusan_pendidikan`);
 
 --
 -- Indexes for table `content_categories`
@@ -797,6 +896,20 @@ ALTER TABLE `galeri`
 ALTER TABLE `galeri_foto`
   ADD PRIMARY KEY (`foto_id`),
   ADD KEY `galeri_id` (`galeri_id`);
+
+--
+-- Indexes for table `jenjang_pendidikan`
+--
+ALTER TABLE `jenjang_pendidikan`
+  ADD PRIMARY KEY (`id_jenjang`),
+  ADD UNIQUE KEY `kode_jenjang` (`kode_jenjang`);
+
+--
+-- Indexes for table `jurusan_pendidikan`
+--
+ALTER TABLE `jurusan_pendidikan`
+  ADD PRIMARY KEY (`id_jurusan`),
+  ADD KEY `id_jenjang` (`id_jenjang`);
 
 --
 -- Indexes for table `kegiatan`
@@ -907,6 +1020,18 @@ ALTER TABLE `galeri_foto`
   MODIFY `foto_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
+-- AUTO_INCREMENT for table `jenjang_pendidikan`
+--
+ALTER TABLE `jenjang_pendidikan`
+  MODIFY `id_jenjang` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+
+--
+-- AUTO_INCREMENT for table `jurusan_pendidikan`
+--
+ALTER TABLE `jurusan_pendidikan`
+  MODIFY `id_jurusan` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+
+--
 -- AUTO_INCREMENT for table `kegiatan`
 --
 ALTER TABLE `kegiatan`
@@ -928,7 +1053,7 @@ ALTER TABLE `live_streaming`
 -- AUTO_INCREMENT for table `log_aktivitas`
 --
 ALTER TABLE `log_aktivitas`
-  MODIFY `log_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=358;
+  MODIFY `log_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=405;
 
 --
 -- AUTO_INCREMENT for table `lowongan`
@@ -980,6 +1105,8 @@ ALTER TABLE `webinar`
 -- Constraints for table `applications`
 --
 ALTER TABLE `applications`
+  ADD CONSTRAINT `fk_applications_jenjang` FOREIGN KEY (`id_jenjang_pendidikan`) REFERENCES `jenjang_pendidikan` (`id_jenjang`) ON DELETE SET NULL,
+  ADD CONSTRAINT `fk_applications_jurusan` FOREIGN KEY (`id_jurusan_pendidikan`) REFERENCES `jurusan_pendidikan` (`id_jurusan`) ON DELETE SET NULL,
   ADD CONSTRAINT `relasi_job` FOREIGN KEY (`job_id`) REFERENCES `lowongan` (`job_id`) ON DELETE CASCADE ON UPDATE RESTRICT,
   ADD CONSTRAINT `relasi_user` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE ON UPDATE RESTRICT;
 
@@ -994,6 +1121,12 @@ ALTER TABLE `galeri`
 --
 ALTER TABLE `galeri_foto`
   ADD CONSTRAINT `galeri_foto_ibfk_1` FOREIGN KEY (`galeri_id`) REFERENCES `galeri` (`galeri_id`) ON DELETE CASCADE;
+
+--
+-- Constraints for table `jurusan_pendidikan`
+--
+ALTER TABLE `jurusan_pendidikan`
+  ADD CONSTRAINT `jurusan_pendidikan_ibfk_1` FOREIGN KEY (`id_jenjang`) REFERENCES `jenjang_pendidikan` (`id_jenjang`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `kegiatan`
