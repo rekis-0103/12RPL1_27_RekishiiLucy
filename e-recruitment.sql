@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Nov 23, 2025 at 04:56 AM
+-- Generation Time: Nov 24, 2025 at 12:28 PM
 -- Server version: 8.0.30
 -- PHP Version: 8.2.29
 
@@ -32,7 +32,6 @@ CREATE TABLE `applications` (
   `job_id` int NOT NULL,
   `user_id` int NOT NULL,
   `no_telepon` varchar(20) NOT NULL,
-  `pendidikan` varchar(100) NOT NULL,
   `id_jenjang_pendidikan` int DEFAULT NULL,
   `id_jurusan_pendidikan` int DEFAULT NULL,
   `cv` varchar(255) NOT NULL,
@@ -48,10 +47,8 @@ CREATE TABLE `applications` (
 -- Dumping data for table `applications`
 --
 
-INSERT INTO `applications` (`application_id`, `job_id`, `user_id`, `no_telepon`, `pendidikan`, `id_jenjang_pendidikan`, `id_jurusan_pendidikan`, `cv`, `status`, `reason`, `interview_date`, `start_date`, `applied_at`, `updated_at`) VALUES
-(1, 1, 2, '08451327899', 'SMA', NULL, NULL, 'uploads/cv/cv_2_1_1755673380.pdf', 'tes & wawancara', 'ya ya saya setuju dengan anda', '2025-09-18 11:20:00', NULL, '2025-08-20 07:03:00', '2025-09-12 04:21:50'),
-(3, 2, 2, '0812345678910', 'SMK - Rekayasa Perangkat Lunak', NULL, NULL, 'uploads/cv/cv_2_2_1759825828.pdf', 'seleksi administrasi', NULL, NULL, NULL, '2025-10-07 08:30:28', '2025-10-14 06:03:21'),
-(4, 1, 8, '081231231231', 'SMK - Rekayasa Perangkat Lunak', NULL, NULL, 'uploads/cv/cv_8_1_1759890857.pdf', 'seleksi administrasi', NULL, NULL, NULL, '2025-10-08 02:34:17', '2025-10-08 06:15:23');
+INSERT INTO `applications` (`application_id`, `job_id`, `user_id`, `no_telepon`, `id_jenjang_pendidikan`, `id_jurusan_pendidikan`, `cv`, `status`, `reason`, `interview_date`, `start_date`, `applied_at`, `updated_at`) VALUES
+(5, 3, 2, '0812345678910', 3, 3, 'cv_2_1763881705.pdf', 'pending', NULL, NULL, NULL, '2025-11-24 12:09:31', NULL);
 
 -- --------------------------------------------------------
 
@@ -651,7 +648,25 @@ INSERT INTO `log_aktivitas` (`log_id`, `user_id`, `action`, `log_time`) VALUES
 (401, 1, 'Admin: edit jenjang pendidikan \'SMA\' - tanpa jurusan → dengan jurusan', '2025-11-23 03:02:20'),
 (402, 1, 'Admin: edit jenjang pendidikan \'SMA\' - dengan jurusan → tanpa jurusan', '2025-11-23 03:02:25'),
 (403, 1, 'Logout', '2025-11-23 04:52:53'),
-(404, 2, 'Login', '2025-11-23 04:53:36');
+(404, 2, 'Login', '2025-11-23 04:53:36'),
+(405, 2, 'Update profil: No. Telepon: \'belum diisi\' → \'0812345678910\', Jenjang Pendidikan: \'belum diisi\' → \'S1\', Jurusan: \'belum diisi\' → \'Teknik Informatika\', CV: Upload CV baru \'cv_2_1763881705.pdf\'', '2025-11-23 07:08:25'),
+(406, 2, 'Logout', '2025-11-23 07:24:10'),
+(407, 3, 'Login', '2025-11-23 07:24:19'),
+(408, 2, 'Login', '2025-11-24 02:09:09'),
+(409, 2, 'Logout', '2025-11-24 02:10:57'),
+(410, 3, 'Login', '2025-11-24 02:11:04'),
+(411, 3, 'Login', '2025-11-24 11:31:41'),
+(412, 3, 'HRD: tambah lowongan #3 - Divisi IT', '2025-11-24 11:55:18'),
+(413, 3, 'Logout', '2025-11-24 11:55:24'),
+(414, 2, 'Login', '2025-11-24 11:55:31'),
+(415, 2, 'Logout', '2025-11-24 11:55:42'),
+(416, 8, 'Login', '2025-11-24 11:55:51'),
+(417, 8, 'Update profil: No. Telepon: \'belum diisi\' → \'08131278923178\', Jenjang Pendidikan: \'belum diisi\' → \'SMK\', Jurusan: \'belum diisi\' → \'Desain Komunikasi Visual\', CV: Upload CV baru \'cv_8_1763985384.pdf\'', '2025-11-24 11:56:24'),
+(418, 8, 'Logout', '2025-11-24 11:56:48'),
+(419, 2, 'Login', '2025-11-24 12:09:10'),
+(420, 2, 'Kirim lamaran (job #3)', '2025-11-24 12:09:31'),
+(421, 2, 'Logout', '2025-11-24 12:21:55'),
+(422, 3, 'Login', '2025-11-24 12:22:01');
 
 -- --------------------------------------------------------
 
@@ -668,6 +683,8 @@ CREATE TABLE `lowongan` (
   `salary_range` varchar(50) DEFAULT NULL,
   `status` enum('open','closed') DEFAULT 'open',
   `posted_by` int DEFAULT NULL,
+  `req_jenjang_pendidikan` int DEFAULT NULL,
+  `req_jurusan_pendidikan` int DEFAULT NULL,
   `posted_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NULL DEFAULT NULL,
   `hapus` int NOT NULL DEFAULT '0'
@@ -677,9 +694,8 @@ CREATE TABLE `lowongan` (
 -- Dumping data for table `lowongan`
 --
 
-INSERT INTO `lowongan` (`job_id`, `title`, `description`, `requirements`, `location`, `salary_range`, `status`, `posted_by`, `posted_at`, `updated_at`, `hapus`) VALUES
-(1, 'Programmer Frontend', 'Jadi Programmer Frontend', '- S1 informasika\r\n- Pengalaman 20 tahun\r\n- mampu bekerja dibawah tekanan\r\n- Fresh Graduate', 'PT. Waindo Specterra', '10.000.000 - 15.000.000', 'open', 3, '2025-08-20 07:01:47', '2025-09-15 04:07:52', 0),
-(2, 'Programmer Backend', 'Jadi Programmer Backend', '- Fresh Graduate\r\n- S1 Informatika\r\n- Pengalaman Kerja 10 tahun', 'PT. Waindo Specterra', '20.000.000 - 30.000.000', 'open', 3, '2025-09-15 02:52:56', '2025-10-14 06:27:54', 0);
+INSERT INTO `lowongan` (`job_id`, `title`, `description`, `requirements`, `location`, `salary_range`, `status`, `posted_by`, `req_jenjang_pendidikan`, `req_jurusan_pendidikan`, `posted_at`, `updated_at`, `hapus`) VALUES
+(3, 'Divisi IT', 'Bekerja pada divisi IT', '1. Bekerja On-Site\r\n2. Berpengalaman dalam mengurus project\r\n3. Bersedia mengikuti jam kerja yang tertera', 'PT Waindo Specterra', '10.000.000 - 15.000.000', 'open', 3, 3, 3, '2025-11-24 11:55:18', NULL, 0);
 
 -- --------------------------------------------------------
 
@@ -820,6 +836,10 @@ CREATE TABLE `users` (
   `password` varchar(255) NOT NULL,
   `email` varchar(100) NOT NULL,
   `full_name` varchar(100) DEFAULT NULL,
+  `no_telepon` varchar(20) DEFAULT NULL,
+  `id_jenjang_pendidikan` int DEFAULT NULL,
+  `id_jurusan_pendidikan` int DEFAULT NULL,
+  `cv_filename` varchar(255) DEFAULT NULL,
   `role` enum('admin','pelamar','hrd','konten') CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT 'pelamar',
   `status` enum('active','inactive') DEFAULT 'active',
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
@@ -830,14 +850,14 @@ CREATE TABLE `users` (
 -- Dumping data for table `users`
 --
 
-INSERT INTO `users` (`user_id`, `username`, `password`, `email`, `full_name`, `role`, `status`, `created_at`, `hapus`) VALUES
-(1, 'admin01', '0192023a7bbd73250516f069df18b500', 'admin@gmail.com', 'Admin', 'admin', 'active', '2025-08-19 03:54:54', 0),
-(2, 'pelamar01', '9c5fa085ce256c7c598f6710584ab25d', 'rekishiilucy123@gmail.com', 'Budi Santoso', 'pelamar', 'active', '2025-08-19 03:54:54', 0),
-(3, 'hrd01', '5c2e4a2563f9f4427955422fe1402762', 'siti@gmail.com', 'Siti', 'hrd', 'active', '2025-08-19 03:54:54', 0),
-(4, 'konten01', '26ed30f28908645239254ff4f88c1b75', 'rian@gmail.com', 'Rian', 'konten', 'active', '2025-08-19 03:54:54', 0),
-(6, 'agus01', '01c3c766ce47082b1b130daedd347ffd', 'agus123@gmail.com', 'Agus Agus', 'hrd', 'active', '2025-08-25 01:34:19', 0),
-(7, 'rekis', 'ef14d8aeff3c7255004a18508133b8ad', 'weioewhifewhuifwhui@gmail.com', 'rekishii lucy', 'hrd', 'active', '2025-08-25 01:48:43', 0),
-(8, 'pelamar02', 'cc03e747a6afbbcbf8be7668acfebee5', 'ewqodijqoijdqijodwqiojwdjioqjidqjodoi@gmail.com', 'test123', 'pelamar', 'active', '2025-10-08 02:10:42', 0);
+INSERT INTO `users` (`user_id`, `username`, `password`, `email`, `full_name`, `no_telepon`, `id_jenjang_pendidikan`, `id_jurusan_pendidikan`, `cv_filename`, `role`, `status`, `created_at`, `hapus`) VALUES
+(1, 'admin01', '0192023a7bbd73250516f069df18b500', 'admin@gmail.com', 'Admin', NULL, NULL, NULL, NULL, 'admin', 'active', '2025-08-19 03:54:54', 0),
+(2, 'pelamar01', '9c5fa085ce256c7c598f6710584ab25d', 'rekishiilucy123@gmail.com', 'Budi Santoso', '0812345678910', 3, 3, 'cv_2_1763881705.pdf', 'pelamar', 'active', '2025-08-19 03:54:54', 0),
+(3, 'hrd01', '5c2e4a2563f9f4427955422fe1402762', 'siti@gmail.com', 'Siti', NULL, NULL, NULL, NULL, 'hrd', 'active', '2025-08-19 03:54:54', 0),
+(4, 'konten01', '26ed30f28908645239254ff4f88c1b75', 'rian@gmail.com', 'Rian', NULL, NULL, NULL, NULL, 'konten', 'active', '2025-08-19 03:54:54', 0),
+(6, 'agus01', '01c3c766ce47082b1b130daedd347ffd', 'agus123@gmail.com', 'Agus Agus', NULL, NULL, NULL, NULL, 'hrd', 'active', '2025-08-25 01:34:19', 0),
+(7, 'rekis', 'ef14d8aeff3c7255004a18508133b8ad', 'weioewhifewhuifwhui@gmail.com', 'rekishii lucy', NULL, NULL, NULL, NULL, 'hrd', 'active', '2025-08-25 01:48:43', 0),
+(8, 'pelamar02', 'cc03e747a6afbbcbf8be7668acfebee5', 'ewqodijqoijdqijodwqiojwdjioqjidqjodoi@gmail.com', 'test123', '08131278923178', 2, 2, 'cv_8_1763985384.pdf', 'pelamar', 'active', '2025-10-08 02:10:42', 0);
 
 -- --------------------------------------------------------
 
@@ -944,7 +964,9 @@ ALTER TABLE `log_aktivitas`
 --
 ALTER TABLE `lowongan`
   ADD PRIMARY KEY (`job_id`),
-  ADD KEY `posted_by` (`posted_by`);
+  ADD KEY `posted_by` (`posted_by`),
+  ADD KEY `fk_lowongan_jenjang` (`req_jenjang_pendidikan`),
+  ADD KEY `fk_lowongan_jurusan` (`req_jurusan_pendidikan`);
 
 --
 -- Indexes for table `popup_images`
@@ -982,7 +1004,9 @@ ALTER TABLE `users`
   ADD PRIMARY KEY (`user_id`),
   ADD UNIQUE KEY `username` (`username`),
   ADD UNIQUE KEY `email` (`email`),
-  ADD UNIQUE KEY `username_2` (`username`);
+  ADD UNIQUE KEY `username_2` (`username`),
+  ADD KEY `fk_users_jenjang` (`id_jenjang_pendidikan`),
+  ADD KEY `fk_users_jurusan` (`id_jurusan_pendidikan`);
 
 --
 -- Indexes for table `webinar`
@@ -999,7 +1023,7 @@ ALTER TABLE `webinar`
 -- AUTO_INCREMENT for table `applications`
 --
 ALTER TABLE `applications`
-  MODIFY `application_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `application_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `content_categories`
@@ -1023,7 +1047,7 @@ ALTER TABLE `galeri_foto`
 -- AUTO_INCREMENT for table `jenjang_pendidikan`
 --
 ALTER TABLE `jenjang_pendidikan`
-  MODIFY `id_jenjang` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `id_jenjang` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT for table `jurusan_pendidikan`
@@ -1053,13 +1077,13 @@ ALTER TABLE `live_streaming`
 -- AUTO_INCREMENT for table `log_aktivitas`
 --
 ALTER TABLE `log_aktivitas`
-  MODIFY `log_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=405;
+  MODIFY `log_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=423;
 
 --
 -- AUTO_INCREMENT for table `lowongan`
 --
 ALTER TABLE `lowongan`
-  MODIFY `job_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `job_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `popup_images`
@@ -1156,6 +1180,8 @@ ALTER TABLE `log_aktivitas`
 -- Constraints for table `lowongan`
 --
 ALTER TABLE `lowongan`
+  ADD CONSTRAINT `fk_lowongan_jenjang` FOREIGN KEY (`req_jenjang_pendidikan`) REFERENCES `jenjang_pendidikan` (`id_jenjang`) ON DELETE SET NULL,
+  ADD CONSTRAINT `fk_lowongan_jurusan` FOREIGN KEY (`req_jurusan_pendidikan`) REFERENCES `jurusan_pendidikan` (`id_jurusan`) ON DELETE SET NULL,
   ADD CONSTRAINT `lowongan_ibfk_1` FOREIGN KEY (`posted_by`) REFERENCES `users` (`user_id`) ON DELETE SET NULL;
 
 --
@@ -1176,6 +1202,13 @@ ALTER TABLE `products`
 --
 ALTER TABLE `services`
   ADD CONSTRAINT `services_ibfk_1` FOREIGN KEY (`created_by`) REFERENCES `users` (`user_id`);
+
+--
+-- Constraints for table `users`
+--
+ALTER TABLE `users`
+  ADD CONSTRAINT `fk_users_jenjang` FOREIGN KEY (`id_jenjang_pendidikan`) REFERENCES `jenjang_pendidikan` (`id_jenjang`) ON DELETE SET NULL,
+  ADD CONSTRAINT `fk_users_jurusan` FOREIGN KEY (`id_jurusan_pendidikan`) REFERENCES `jurusan_pendidikan` (`id_jurusan`) ON DELETE SET NULL;
 
 --
 -- Constraints for table `webinar`

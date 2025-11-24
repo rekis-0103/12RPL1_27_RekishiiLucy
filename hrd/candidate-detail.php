@@ -93,12 +93,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
     }
 }
 
-// Fetch candidate details
+// Fetch candidate details with education data
 $detail = mysqli_query($conn, "
-    SELECT a.*, u.full_name, u.email, l.title 
+    SELECT a.*, u.full_name, u.email, l.title,
+    jenjang.nama_jenjang,
+    jurusan.nama_jurusan
     FROM applications a 
     JOIN users u ON a.user_id = u.user_id 
     JOIN lowongan l ON a.job_id = l.job_id 
+    LEFT JOIN jenjang_pendidikan jenjang ON a.id_jenjang_pendidikan = jenjang.id_jenjang
+    LEFT JOIN jurusan_pendidikan jurusan ON a.id_jurusan_pendidikan = jurusan.id_jurusan
     WHERE a.application_id = $candidate_id
 ");
 
@@ -202,7 +206,16 @@ if ($detail && mysqli_num_rows($detail) > 0) {
                             <div class="detail-item">
                                 <div class="detail-label"><i class="fas fa-graduation-cap"></i> Pendidikan Terakhir</div>
                                 <div class="detail-value">
-                                    <?php echo !empty($candidate['pendidikan']) ? htmlspecialchars($candidate['pendidikan']) : '<span class="text-muted">Tidak ada</span>'; ?>
+                                    <?php 
+                                    if (!empty($candidate['nama_jenjang'])) {
+                                        echo htmlspecialchars($candidate['nama_jenjang']);
+                                        if (!empty($candidate['nama_jurusan'])) {
+                                            echo ' - ' . htmlspecialchars($candidate['nama_jurusan']);
+                                        }
+                                    } else {
+                                        echo '<span class="text-muted">Tidak ada</span>';
+                                    }
+                                    ?>
                                 </div>
                             </div>
                         </div>
@@ -253,76 +266,109 @@ if ($detail && mysqli_num_rows($detail) > 0) {
                             </div>
                             <?php endif; ?>
                             <?php if (!empty($candidate['start_date'])): ?>
-<div class="detail-item">
-    <div class="detail-label"><i class="fas fa-calendar-day"></i> Tanggal Mulai Bekerja</div>
-    <div class="detail-value"><?php echo date('d F Y', strtotime($candidate['start_date'])); ?></div>
-</div>
-<?php endif; ?>
+                            <div class="detail-item">
+                                <div class="detail-label"><i class="fas fa-calendar-day"></i> Tanggal Mulai Bekerja</div>
+                                <div class="detail-value"><?php echo date('d F Y', strtotime($candidate['start_date'])); ?></div>
+                            </div>
+                            <?php endif; ?>
 
-<?php if (!empty($candidate['reason'])): ?>
-<div class="detail-item">
-    <div class="detail-label"><i class="fas fa-sticky-note"></i> Catatan/Alasan</div>
-    <div class="detail-value"><?php echo nl2br(htmlspecialchars($candidate['reason'])); ?></div>
-</div>
-<?php endif; ?>
-</div>
-</div>
-<?php endif; ?>
+                            <?php if (!empty($candidate['reason'])): ?>
+                            <div class="detail-item full-width">
+                                <div class="detail-label"><i class="fas fa-sticky-note"></i> Catatan/Alasan</div>
+                                <div class="detail-value"><?php echo nl2br(htmlspecialchars($candidate['reason'])); ?></div>
+                            </div>
+                            <?php endif; ?>
+                        </div>
+                    </div>
+                    <?php endif; ?>
 
-<!-- =======================
-     Form Aksi HRD
-======================= -->
-<div class="detail-section">
-    <h4><i class="fas fa-tasks"></i> Aksi HRD</h4>
-    <div class="action-grid">
-        <!-- Pindah ke Tahap Tes & Wawancara -->
-        <?php if ($candidate['status'] === 'lolos administrasi'): ?>
-        <form method="POST" class="action-form">
-            <input type="hidden" name="application_id" value="<?php echo $candidate['application_id']; ?>">
-            <input type="hidden" name="action" value="move_to_interview">
-            <input type="datetime-local" name="interview_date" class="input-sm" placeholder="Tanggal Wawancara">
-            <button type="submit" class="btn btn-primary">
-                <i class="fas fa-calendar-check"></i> Jadwalkan Wawancara
-            </button>
-        </form>
-        <?php endif; ?>
+                    <!-- Form Aksi HRD -->
+                    <div class="detail-section">
+                        <h4><i class="fas fa-tasks"></i> Aksi HRD</h4>
+                        <div class="actions">
+                            <!-- Pindah ke Tahap Tes & Wawancara -->
+                            <?php if ($candidate['status'] === 'lolos administrasi'): ?>
+                            <form method="POST" class="action-form accept-form">
+                                <h4 class="form-title"><i class="fas fa-calendar-check"></i> Jadwalkan Wawancara</h4>
+                                <input type="hidden" name="application_id" value="<?php echo $candidate['application_id']; ?>">
+                                <input type="hidden" name="action" value="move_to_interview">
+                                <div class="form-group">
+                                    <label><i class="fas fa-calendar-alt"></i> Tanggal Wawancara</label>
+                                    <input type="datetime-local" name="interview_date" class="form-control" placeholder="Tanggal Wawancara">
+                                </div>
+                                <button type="submit" class="btn btn-primary btn-block">
+                                    <i class="fas fa-calendar-check"></i> Jadwalkan Wawancara
+                                </button>
+                            </form>
+                            <?php endif; ?>
 
-        <!-- Terima Bekerja -->
-        <?php if ($candidate['status'] === 'tes & wawancara'): ?>
-        <form method="POST" class="action-form">
-            <input type="hidden" name="application_id" value="<?php echo $candidate['application_id']; ?>">
-            <input type="hidden" name="action" value="accept_hire">
-            <input type="date" name="start_date" class="input-sm" placeholder="Tanggal Mulai" required>
-            <input type="text" name="reason" class="input-sm" placeholder="Catatan (opsional)">
-            <button type="submit" class="btn btn-success">
-                <i class="fas fa-user-check"></i> Terima Bekerja
-            </button>
-        </form>
+                            <!-- Terima Bekerja -->
+                            <?php if ($candidate['status'] === 'tes & wawancara'): ?>
+                            <form method="POST" class="action-form accept-form" onsubmit="return confirm('Yakin terima kandidat ini?')">
+                                <h4 class="form-title"><i class="fas fa-user-check"></i> Terima Bekerja</h4>
+                                <input type="hidden" name="application_id" value="<?php echo $candidate['application_id']; ?>">
+                                <input type="hidden" name="action" value="accept_hire">
+                                <div class="form-group">
+                                    <label><i class="fas fa-calendar-alt"></i> Tanggal Mulai <span class="required">*</span></label>
+                                    <input type="date" name="start_date" class="form-control" required>
+                                </div>
+                                <div class="form-group">
+                                    <label><i class="fas fa-comment"></i> Catatan (opsional)</label>
+                                    <input type="text" name="reason" class="form-control" placeholder="Catatan untuk kandidat">
+                                </div>
+                                <button type="submit" class="btn btn-primary btn-block">
+                                    <i class="fas fa-user-check"></i> Terima Bekerja
+                                </button>
+                            </form>
 
-        <!-- Tolak Setelah Wawancara -->
-        <form method="POST" class="action-form">
-            <input type="hidden" name="application_id" value="<?php echo $candidate['application_id']; ?>">
-            <input type="hidden" name="action" value="reject_after_interview">
-            <input type="text" name="reason" class="input-sm" placeholder="Alasan Penolakan" required>
-            <button type="submit" class="btn btn-danger">
-                <i class="fas fa-user-times"></i> Tolak Kandidat
-            </button>
-        </form>
-        <?php endif; ?>
+                            <!-- Tolak Setelah Wawancara -->
+                            <form method="POST" class="action-form reject-form" onsubmit="return confirm('Yakin tolak kandidat ini?')">
+                                <h4 class="form-title"><i class="fas fa-user-times"></i> Tolak Kandidat</h4>
+                                <input type="hidden" name="application_id" value="<?php echo $candidate['application_id']; ?>">
+                                <input type="hidden" name="action" value="reject_after_interview">
+                                <div class="form-group">
+                                    <label><i class="fas fa-comment"></i> Alasan Penolakan <span class="required">*</span></label>
+                                    <textarea name="reason" class="form-control" rows="3" placeholder="Contoh: Tidak memenuhi standar wawancara" required></textarea>
+                                </div>
+                                <button type="submit" class="btn btn-danger btn-block">
+                                    <i class="fas fa-user-times"></i> Tolak Kandidat
+                                </button>
+                            </form>
+                            <?php endif; ?>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
     </div>
-</div>
 
-</div>
-</div>
-</div>
-</div>
+    <script src="../js/navbar.js"></script>
+    <script>
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const toggleBtn = document.querySelector('.mobile-toggle');
 
-<script>
-function toggleSidebar() {
-    const sidebar = document.getElementById("sidebar");
-    sidebar.classList.toggle("open");
-}
-</script>
+            sidebar.classList.toggle('active');
+
+            if (sidebar.classList.contains('active')) {
+                toggleBtn.style.display = "none";
+            } else {
+                toggleBtn.style.display = "block";
+            }
+        }
+
+        document.addEventListener('click', function(event) {
+            const sidebar = document.getElementById('sidebar');
+            const mobileToggle = document.querySelector('.mobile-toggle');
+
+            if (window.innerWidth <= 768) {
+                if (!sidebar.contains(event.target) && !mobileToggle.contains(event.target)) {
+                    sidebar.classList.remove('active');
+                    mobileToggle.style.display = "block";
+                }
+            }
+        });
+    </script>
 </body>
 </html>
-                                

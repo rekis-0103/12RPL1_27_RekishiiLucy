@@ -31,13 +31,12 @@ function logActivity($conn, $actor_user_id, $action)
 function uploadPopupImage($file, $orientation) {
     $uploadDir = '../uploads/popups/';
     
-    // Create directory if it doesn't exist
     if (!is_dir($uploadDir)) {
         mkdir($uploadDir, 0777, true);
     }
     
     $allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif'];
-    $maxFileSize = 5 * 1024 * 1024; // 5MB
+    $maxFileSize = 5 * 1024 * 1024;
     
     if (!in_array($file['type'], $allowedTypes)) {
         return ['success' => false, 'message' => 'Format file tidak didukung. Gunakan JPG, PNG, atau GIF.'];
@@ -69,7 +68,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
         $location = esc($conn, $_POST['location']);
         $salary_range = esc($conn, $_POST['salary_range']);
         $status = esc($conn, $_POST['status']);
-        $q = "INSERT INTO lowongan (title, description, requirements, location, salary_range, status, posted_by) VALUES ('$title', '$description', '$requirements', '$location', '$salary_range', '$status', $user_id)";
+        
+        // Handle pendidikan requirements
+        $req_jenjang = isset($_POST['req_jenjang']) ? (int)$_POST['req_jenjang'] : NULL;
+        $req_jurusan = isset($_POST['req_jurusan']) ? (int)$_POST['req_jurusan'] : NULL;
+        
+        $q = "INSERT INTO lowongan (title, description, requirements, location, salary_range, status, posted_by, req_jenjang_pendidikan, req_jurusan_pendidikan) 
+              VALUES ('$title', '$description', '$requirements', '$location', '$salary_range', '$status', $user_id, " . 
+              ($req_jenjang ? $req_jenjang : 'NULL') . ", " . 
+              ($req_jurusan ? $req_jurusan : 'NULL') . ")";
+        
         if (mysqli_query($conn, $q)) {
             $success = 'Lowongan berhasil ditambahkan';
             $new_id = mysqli_insert_id($conn);
@@ -85,7 +93,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
         $location = esc($conn, $_POST['location']);
         $salary_range = esc($conn, $_POST['salary_range']);
         $status = esc($conn, $_POST['status']);
-        $q = "UPDATE lowongan SET title='$title', description='$description', requirements='$requirements', location='$location', salary_range='$salary_range', status='$status', updated_at=NOW() WHERE job_id=$job_id";
+        
+        // Handle pendidikan requirements
+        $req_jenjang = isset($_POST['req_jenjang']) ? (int)$_POST['req_jenjang'] : NULL;
+        $req_jurusan = isset($_POST['req_jurusan']) ? (int)$_POST['req_jurusan'] : NULL;
+        
+        $q = "UPDATE lowongan SET 
+              title='$title', 
+              description='$description', 
+              requirements='$requirements', 
+              location='$location', 
+              salary_range='$salary_range', 
+              status='$status', 
+              req_jenjang_pendidikan=" . ($req_jenjang ? $req_jenjang : 'NULL') . ", 
+              req_jurusan_pendidikan=" . ($req_jurusan ? $req_jurusan : 'NULL') . ", 
+              updated_at=NOW() 
+              WHERE job_id=$job_id";
+        
         if (mysqli_query($conn, $q)) {
             $success = 'Lowongan berhasil diubah';
             logActivity($conn, $user_id, "HRD: edit lowongan #$job_id - $title");
@@ -127,7 +151,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                     logActivity($conn, $user_id, "HRD: tambah popup gambar #$new_popup_id - $popup_title");
                 } else {
                     $error = 'Gagal menyimpan data popup ke database';
-                    // Delete uploaded file if database insert fails
                     unlink('../uploads/popups/' . $filename);
                 }
             } else {
@@ -141,18 +164,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
         $popup_title = esc($conn, $_POST['popup_title']);
         $orientation = esc($conn, $_POST['orientation']);
         
-        // Get current data
         $currentData = mysqli_query($conn, "SELECT * FROM popup_images WHERE popup_id = $popup_id");
         $current = mysqli_fetch_assoc($currentData);
         
         $filename = $current['image_filename'];
         
-        // If new image is uploaded
         if (isset($_FILES['popup_image']) && $_FILES['popup_image']['error'] === 0) {
             $uploadResult = uploadPopupImage($_FILES['popup_image'], $orientation);
             
             if ($uploadResult['success']) {
-                // Delete old image
                 if (file_exists('../uploads/popups/' . $current['image_filename'])) {
                     unlink('../uploads/popups/' . $current['image_filename']);
                 }
@@ -175,7 +195,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
         $popup_id = (int)$_POST['popup_id'];
         $is_active = (int)$_POST['is_active'];
         
-        // Allow multiple active popups: toggle only the requested one
         $q = "UPDATE popup_images SET is_active=" . ($is_active ? '1' : '0') . ", updated_at=NOW() WHERE popup_id=$popup_id";
         
         if (mysqli_query($conn, $q)) {
@@ -187,17 +206,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
     } elseif ($action === 'delete_popup') {
         $popup_id = (int)$_POST['popup_id'];
         
-        // Get image filename to delete
         $result = mysqli_query($conn, "SELECT image_filename FROM popup_images WHERE popup_id = $popup_id");
         $popup = mysqli_fetch_assoc($result);
         
         if ($popup) {
-            // Delete image file
             if (file_exists('../uploads/popups/' . $popup['image_filename'])) {
                 unlink('../uploads/popups/' . $popup['image_filename']);
             }
             
-            // Delete from database
             $q = "DELETE FROM popup_images WHERE popup_id=$popup_id";
             if (mysqli_query($conn, $q)) {
                 $success = 'Popup gambar dihapus';
@@ -211,10 +227,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
     }
 }
 
-// Fetch jobs
-$list = mysqli_query($conn, "SELECT l.*, u.full_name AS poster 
+// Fetch jobs with education requirements
+$list = mysqli_query($conn, "SELECT l.*, u.full_name AS poster,
+    jenjang.nama_jenjang, jurusan.nama_jurusan
     FROM lowongan l 
     LEFT JOIN users u ON l.posted_by = u.user_id 
+    LEFT JOIN jenjang_pendidikan jenjang ON l.req_jenjang_pendidikan = jenjang.id_jenjang
+    LEFT JOIN jurusan_pendidikan jurusan ON l.req_jurusan_pendidikan = jurusan.id_jurusan
     WHERE l.hapus = 0 AND l.posted_by = $user_id 
     ORDER BY l.posted_at DESC");
 
@@ -223,10 +242,12 @@ $popups = mysqli_query($conn, "SELECT p.*, u.full_name AS creator
     FROM popup_images p 
     LEFT JOIN users u ON p.created_by = u.user_id 
     ORDER BY p.is_active DESC, p.created_at DESC");
+
+// Fetch jenjang pendidikan for dropdowns
+$jenjang_list = mysqli_query($conn, "SELECT * FROM jenjang_pendidikan WHERE status=1 ORDER BY nama_jenjang");
 ?>
 <!DOCTYPE html>
 <html lang="id">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -237,7 +258,6 @@ $popups = mysqli_query($conn, "SELECT p.*, u.full_name AS creator
     <link rel="stylesheet" href="css/lowongan.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
-
 <body>
     <button class="mobile-toggle" onclick="toggleSidebar()">
         <i class="fas fa-bars"></i>
@@ -378,12 +398,12 @@ $popups = mysqli_query($conn, "SELECT p.*, u.full_name AS creator
                 </div>
             </div>
 
-            <!-- Existing Job Management Section -->
+            <!-- Job Management Section -->
             <div class="card">
                 <div class="card-header">
                     <h3><i class="fas fa-plus"></i> Tambah Lowongan</h3>
                 </div>
-                <form method="POST" class="card-body">
+                <form method="POST" class="card-body" id="addJobForm">
                     <input type="hidden" name="action" value="add">
                     <div class="form-grid">
                         <div class="form-group">
@@ -405,6 +425,31 @@ $popups = mysqli_query($conn, "SELECT p.*, u.full_name AS creator
                                 <option value="closed">Closed</option>
                             </select>
                         </div>
+                        
+                        <!-- Education Requirements -->
+                        <div class="form-group">
+                            <label><i class="fas fa-graduation-cap"></i> Syarat Pendidikan (Jenjang)</label>
+                            <select name="req_jenjang" id="add_req_jenjang" onchange="loadJurusanOptions('add')">
+                                <option value="">-- Tidak Ada Syarat --</option>
+                                <?php 
+                                mysqli_data_seek($jenjang_list, 0);
+                                while($jenjang = mysqli_fetch_assoc($jenjang_list)): 
+                                ?>
+                                    <option value="<?php echo $jenjang['id_jenjang']; ?>" 
+                                            data-punya-jurusan="<?php echo $jenjang['punya_jurusan']; ?>">
+                                        <?php echo htmlspecialchars($jenjang['nama_jenjang']); ?>
+                                    </option>
+                                <?php endwhile; ?>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group" id="add_jurusan_group" style="display: none;">
+                            <label><i class="fas fa-book"></i> Syarat Jurusan</label>
+                            <select name="req_jurusan" id="add_req_jurusan">
+                                <option value="">-- Pilih Jurusan --</option>
+                            </select>
+                        </div>
+                        
                         <div class="form-group full">
                             <label>Deskripsi</label>
                             <textarea name="description" rows="3" required></textarea>
@@ -429,6 +474,7 @@ $popups = mysqli_query($conn, "SELECT p.*, u.full_name AS creator
                                 <th>Judul</th>
                                 <th>Lokasi</th>
                                 <th>Gaji</th>
+                                <th>Syarat Pendidikan</th>
                                 <th>Status</th>
                                 <th>Diposting</th>
                                 <th>Oleh</th>
@@ -442,6 +488,19 @@ $popups = mysqli_query($conn, "SELECT p.*, u.full_name AS creator
                                         <td><?php echo htmlspecialchars($row['title']); ?></td>
                                         <td><?php echo htmlspecialchars($row['location']); ?></td>
                                         <td><?php echo htmlspecialchars($row['salary_range']); ?></td>
+                                        <td>
+                                            <?php 
+                                            if ($row['nama_jenjang']) {
+                                                echo '<span class="badge badge-info">' . htmlspecialchars($row['nama_jenjang']);
+                                                if ($row['nama_jurusan']) {
+                                                    echo ' - ' . htmlspecialchars($row['nama_jurusan']);
+                                                }
+                                                echo '</span>';
+                                            } else {
+                                                echo '<span class="text-muted">Tidak ada syarat</span>';
+                                            }
+                                            ?>
+                                        </td>
                                         <td>
                                             <span class="badge badge-<?php echo $row['status'] === 'open' ? 'success' : 'secondary'; ?>"><?php echo htmlspecialchars($row['status']); ?></span>
                                         </td>
@@ -467,7 +526,7 @@ $popups = mysqli_query($conn, "SELECT p.*, u.full_name AS creator
                                 <?php endwhile; ?>
                             <?php else: ?>
                                 <tr>
-                                    <td colspan="7" class="text-center">Anda Belum Membuat Lowongan</td>
+                                    <td colspan="8" class="text-center">Anda Belum Membuat Lowongan</td>
                                 </tr>
                             <?php endif; ?>
                         </tbody>
@@ -482,7 +541,7 @@ $popups = mysqli_query($conn, "SELECT p.*, u.full_name AS creator
         <div class="modal-content">
             <span class="close" onclick="closeModal()">&times;</span>
             <h3>Edit Lowongan</h3>
-            <form method="POST">
+            <form method="POST" id="editJobForm">
                 <input type="hidden" name="action" value="edit">
                 <input type="hidden" name="job_id" id="edit_job_id">
                 <div class="form-grid">
@@ -505,6 +564,31 @@ $popups = mysqli_query($conn, "SELECT p.*, u.full_name AS creator
                             <option value="closed">Closed</option>
                         </select>
                     </div>
+                    
+                    <!-- Education Requirements -->
+                    <div class="form-group">
+                        <label><i class="fas fa-graduation-cap"></i> Syarat Pendidikan (Jenjang)</label>
+                        <select name="req_jenjang" id="edit_req_jenjang" onchange="loadJurusanOptions('edit')">
+                            <option value="">-- Tidak Ada Syarat --</option>
+                            <?php 
+                            mysqli_data_seek($jenjang_list, 0);
+                            while($jenjang = mysqli_fetch_assoc($jenjang_list)): 
+                            ?>
+                                <option value="<?php echo $jenjang['id_jenjang']; ?>" 
+                                        data-punya-jurusan="<?php echo $jenjang['punya_jurusan']; ?>">
+                                    <?php echo htmlspecialchars($jenjang['nama_jenjang']); ?>
+                                </option>
+                            <?php endwhile; ?>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group" id="edit_jurusan_group" style="display: none;">
+                        <label><i class="fas fa-book"></i> Syarat Jurusan</label>
+                        <select name="req_jurusan" id="edit_req_jurusan">
+                            <option value="">-- Pilih Jurusan --</option>
+                        </select>
+                    </div>
+                    
                     <div class="form-group full">
                         <label>Deskripsi</label>
                         <textarea name="description" id="edit_description" rows="3" required></textarea>
@@ -591,6 +675,38 @@ $popups = mysqli_query($conn, "SELECT p.*, u.full_name AS creator
             }
         });
 
+        // Load jurusan options via AJAX
+        function loadJurusanOptions(formType) {
+            const jenjangSelect = document.getElementById(formType + '_req_jenjang');
+            const jurusanGroup = document.getElementById(formType + '_jurusan_group');
+            const jurusanSelect = document.getElementById(formType + '_req_jurusan');
+            
+            const selectedOption = jenjangSelect.options[jenjangSelect.selectedIndex];
+            const jenjangId = jenjangSelect.value;
+            const punyaJurusan = selectedOption.getAttribute('data-punya-jurusan');
+            
+            if (jenjangId && punyaJurusan == '1') {
+                jurusanGroup.style.display = 'block';
+                
+                // Fetch jurusan via AJAX
+                fetch('get_jurusan.php?jenjang_id=' + jenjangId)
+                    .then(response => response.json())
+                    .then(data => {
+                        jurusanSelect.innerHTML = '<option value="">-- Pilih Jurusan --</option>';
+                        data.forEach(jurusan => {
+                            const option = document.createElement('option');
+                            option.value = jurusan.id_jurusan;
+                            option.textContent = jurusan.nama_jurusan;
+                            jurusanSelect.appendChild(option);
+                        });
+                    })
+                    .catch(error => console.error('Error:', error));
+            } else {
+                jurusanGroup.style.display = 'none';
+                jurusanSelect.innerHTML = '<option value="">-- Pilih Jurusan --</option>';
+            }
+        }
+
         function openEdit(jobId, data) {
             document.getElementById('edit_job_id').value = jobId;
             document.getElementById('edit_title').value = data.title || '';
@@ -599,6 +715,18 @@ $popups = mysqli_query($conn, "SELECT p.*, u.full_name AS creator
             document.getElementById('edit_status').value = data.status || 'open';
             document.getElementById('edit_description').value = data.description || '';
             document.getElementById('edit_requirements').value = data.requirements || '';
+            
+            // Set education requirements
+            const editJenjangSelect = document.getElementById('edit_req_jenjang');
+            editJenjangSelect.value = data.req_jenjang_pendidikan || '';
+            
+            if (data.req_jenjang_pendidikan) {
+                loadJurusanOptions('edit');
+                setTimeout(() => {
+                    document.getElementById('edit_req_jurusan').value = data.req_jurusan_pendidikan || '';
+                }, 500);
+            }
+            
             document.getElementById('editModal').style.display = 'block';
         }
 
@@ -641,5 +769,4 @@ $popups = mysqli_query($conn, "SELECT p.*, u.full_name AS creator
         });
     </script>
 </body>
-
 </html>

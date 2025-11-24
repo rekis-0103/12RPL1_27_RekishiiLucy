@@ -27,9 +27,31 @@ function logActivity($conn, $actor_user_id, $action)
     mysqli_query($conn, "INSERT INTO log_aktivitas (user_id, action) VALUES ($actor_user_id, '$action')");
 }
 
+// Get user profile data including education
+$user_query = mysqli_query($conn, "SELECT u.*, 
+    jenjang.nama_jenjang, 
+    jurusan.nama_jurusan 
+    FROM users u
+    LEFT JOIN jenjang_pendidikan jenjang ON u.id_jenjang_pendidikan = jenjang.id_jenjang
+    LEFT JOIN jurusan_pendidikan jurusan ON u.id_jurusan_pendidikan = jurusan.id_jurusan
+    WHERE u.user_id = $user_id");
+$user_profile = mysqli_fetch_assoc($user_query);
+
+// Check if user has any ACTIVE application
+$activeApplicationQuery = mysqli_query($conn, "
+    SELECT a.*, l.title 
+    FROM applications a 
+    JOIN lowongan l ON a.job_id = l.job_id 
+    WHERE a.user_id = $user_id 
+    AND a.status IN ('pending', 'seleksi administrasi', 'lolos administrasi', 'tes & wawancara')
+    ORDER BY a.applied_at DESC 
+    LIMIT 1
+");
+$hasActiveApplication = mysqli_num_rows($activeApplicationQuery) > 0;
+$activeApplication = $hasActiveApplication ? mysqli_fetch_assoc($activeApplicationQuery) : null;
+
 // Get job ID from URL
 $job_id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
-$show_apply_form = isset($_GET['apply']) && $_GET['apply'] == 1;
 
 if (!$job_id) {
     header('Location: lowongan.php');
@@ -37,7 +59,13 @@ if (!$job_id) {
 }
 
 // Get job details
-$query = "SELECT * FROM lowongan WHERE job_id = $job_id AND hapus = 0";
+$query = "SELECT l.*, 
+    jenjang.nama_jenjang as req_jenjang_nama, 
+    jurusan.nama_jurusan as req_jurusan_nama
+    FROM lowongan l
+    LEFT JOIN jenjang_pendidikan jenjang ON l.req_jenjang_pendidikan = jenjang.id_jenjang
+    LEFT JOIN jurusan_pendidikan jurusan ON l.req_jurusan_pendidikan = jurusan.id_jurusan
+    WHERE l.job_id = $job_id AND l.hapus = 0";
 $result = mysqli_query($conn, $query);
 $job = mysqli_fetch_assoc($result);
 
@@ -46,9 +74,26 @@ if (!$job) {
     exit();
 }
 
-// Check if user has already applied for this job
+// Check if user has already applied for THIS specific job
 $checkApplication = mysqli_query($conn, "SELECT * FROM applications WHERE job_id = $job_id AND user_id = $user_id");
 $hasApplied = mysqli_num_rows($checkApplication) > 0;
+
+// Check if user profile is complete
+$profileComplete = !empty($user_profile['no_telepon']) && 
+                   !empty($user_profile['id_jenjang_pendidikan']) && 
+                   !empty($user_profile['cv_filename']);
+
+// Check if user meets job requirements
+$meetsRequirements = true;
+if ($job['req_jenjang_pendidikan']) {
+    if ($user_profile['id_jenjang_pendidikan'] != $job['req_jenjang_pendidikan']) {
+        $meetsRequirements = false;
+    } elseif ($job['req_jurusan_pendidikan']) {
+        if ($user_profile['id_jurusan_pendidikan'] != $job['req_jurusan_pendidikan']) {
+            $meetsRequirements = false;
+        }
+    }
+}
 
 // Handle apply action
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'apply') {
@@ -59,88 +104,65 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
     } elseif ($hasApplied) {
         $error = 'Anda sudah mengirim lamaran untuk lowongan ini sebelumnya.';
         logActivity($conn, $user_id, 'Gagal kirim lamaran (sudah apply)');
+    } elseif ($hasActiveApplication) {
+        $error = 'Anda sudah memiliki lamaran yang sedang diproses. Harap tunggu hingga lamaran tersebut selesai (ditolak atau diterima) sebelum melamar pekerjaan lain.';
+        logActivity($conn, $user_id, 'Gagal kirim lamaran (sudah ada lamaran aktif)');
+    } elseif (!$profileComplete) {
+        $error = 'Profil Anda belum lengkap. Silakan lengkapi data di halaman profil terlebih dahulu.';
+        logActivity($conn, $user_id, 'Gagal kirim lamaran (profil tidak lengkap)');
+    } elseif (!$meetsRequirements) {
+        $error = 'Anda tidak memenuhi persyaratan pendidikan untuk lowongan ini.';
+        logActivity($conn, $user_id, 'Gagal kirim lamaran (tidak memenuhi syarat pendidikan)');
     } else {
-        $noTelepon = isset($_POST['no_telepon']) ? trim($_POST['no_telepon']) : '';
-        $pendidikanJenjang = isset($_POST['pendidikan_jenjang']) ? trim($_POST['pendidikan_jenjang']) : '';
-        $pendidikanJurusan = isset($_POST['pendidikan_jurusan']) ? trim($_POST['pendidikan_jurusan']) : '';
-        $pendidikanSarjana = isset($_POST['pendidikan_sarjana']) ? trim($_POST['pendidikan_sarjana']) : '';
+        // Get data from user profile
+        $noTelepon = $user_profile['no_telepon'];
+        $jenjangId = $user_profile['id_jenjang_pendidikan'];
+        $jurusanId = $user_profile['id_jurusan_pendidikan'];
+        $cvFilename = $user_profile['cv_filename'];
         
-        // Validation
-        if (empty($noTelepon)) {
-            $error = 'Nomor telepon harus diisi!';
-        } elseif (!is_numeric($noTelepon)) {
-            $error = 'Nomor telepon harus berupa angka!';
-        } elseif (empty($pendidikanJenjang)) {
-            $error = 'Pendidikan terakhir harus dipilih!';
-        } else {
-            // Build pendidikan string based on jenjang
-            $pendidikanFinal = '';
-            if ($pendidikanJenjang === 'SMA') {
-                $pendidikanFinal = 'SMA';
-            } elseif ($pendidikanJenjang === 'SMK') {
-                if (empty($pendidikanJurusan)) {
-                    $error = 'Jurusan SMK harus diisi!';
-                } else {
-                    $pendidikanFinal = 'SMK - ' . $pendidikanJurusan;
-                }
-            } elseif ($pendidikanJenjang === 'Kuliah') {
-                if (empty($pendidikanSarjana) || empty($pendidikanJurusan)) {
-                    $error = 'Jenjang sarjana dan jurusan harus diisi!';
-                } else {
-                    $pendidikanFinal = 'Kuliah ' . $pendidikanSarjana . ' - ' . $pendidikanJurusan;
-                }
-            }
+        // Escape inputs
+        $noTeleponEsc = mysqli_real_escape_string($conn, $noTelepon);
+        $cvEsc = mysqli_real_escape_string($conn, $cvFilename);
+        
+        $q = "INSERT INTO applications (
+                job_id, 
+                user_id, 
+                no_telepon, 
+                id_jenjang_pendidikan, 
+                id_jurusan_pendidikan, 
+                cv, 
+                status, 
+                applied_at
+            ) VALUES (
+                $job_id, 
+                $user_id, 
+                '$noTeleponEsc', 
+                " . ($jenjangId ? $jenjangId : 'NULL') . ", 
+                " . ($jurusanId ? $jurusanId : 'NULL') . ", 
+                '$cvEsc', 
+                'pending', 
+                NOW()
+            )";
+        
+        if (mysqli_query($conn, $q)) {
+            $success = 'Lamaran berhasil dikirim! Anda tidak dapat melamar pekerjaan lain hingga lamaran ini diproses.';
+            logActivity($conn, $user_id, "Kirim lamaran (job #$job_id)");
+            $hasApplied = true;
+            $hasActiveApplication = true;
             
-            // If no validation errors, proceed with file upload
-            if (empty($error)) {
-                // Ensure cv upload dir
-                $uploadDir = __DIR__ . '/../uploads/cv/';
-                if (!is_dir($uploadDir)) {
-                    @mkdir($uploadDir, 0775, true);
-                }
-
-                if (!isset($_FILES['cv']) || $_FILES['cv']['error'] !== UPLOAD_ERR_OK) {
-                    $error = 'Unggah CV gagal. Pastikan file dipilih.';
-                    logActivity($conn, $user_id, 'Gagal kirim lamaran (CV tidak valid)');
-                } else {
-                    $ext = pathinfo($_FILES['cv']['name'], PATHINFO_EXTENSION);
-                    $safeName = 'cv_' . $user_id . '_' . $job_id . '_' . time() . '.' . strtolower($ext);
-                    $targetPath = $uploadDir . $safeName;
-                    $relPath = 'uploads/cv/' . $safeName;
-                    $allowed = ['pdf', 'doc', 'docx'];
-                    
-                    if (!in_array(strtolower($ext), $allowed)) {
-                        $error = 'Format CV harus PDF/DOC/DOCX';
-                        logActivity($conn, $user_id, 'Gagal kirim lamaran (format CV salah)');
-                    } elseif (move_uploaded_file($_FILES['cv']['tmp_name'], $targetPath)) {
-                        // Escape inputs
-                        $noTeleponEsc = mysqli_real_escape_string($conn, $noTelepon);
-                        $pendidikanEsc = mysqli_real_escape_string($conn, $pendidikanFinal);
-                        $cvEsc = mysqli_real_escape_string($conn, $relPath);
-                        
-                        $q = "INSERT INTO applications (job_id, user_id, no_telepon, pendidikan, cv, status, applied_at) 
-                             VALUES ($job_id, $user_id, '$noTeleponEsc', '$pendidikanEsc', '$cvEsc', 'pending', NOW())";
-                        
-                        if (mysqli_query($conn, $q)) {
-                            $success = 'Lamaran berhasil dikirim';
-                            logActivity($conn, $user_id, "Kirim lamaran (job #$job_id)");
-                            $hasApplied = true;
-                            // Refresh job data
-                            $result = mysqli_query($conn, $query);
-                            $job = mysqli_fetch_assoc($result);
-                        } else {
-                            $error = 'Gagal mengirim lamaran';
-                            logActivity($conn, $user_id, 'Gagal kirim lamaran (database error)');
-                            unlink($targetPath); // Delete uploaded file
-                        }
-                    } else {
-                        $error = 'Gagal menyimpan file CV';
-                        logActivity($conn, $user_id, 'Gagal kirim lamaran (simpan CV gagal)');
-                    }
-                }
-            }
+            // Refresh to show the updated state
+            header("Location: detail-lowongan.php?id=$job_id&success=1");
+            exit();
+        } else {
+            $error = 'Gagal mengirim lamaran: ' . mysqli_error($conn);
+            logActivity($conn, $user_id, 'Gagal kirim lamaran (database error)');
         }
     }
+}
+
+// Check if redirected with success parameter
+if (isset($_GET['success']) && $_GET['success'] == 1) {
+    $success = 'Lamaran berhasil dikirim! Anda tidak dapat melamar pekerjaan lain hingga lamaran ini diproses.';
 }
 ?>
 <!DOCTYPE html>
@@ -156,6 +178,133 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="css/dashboard.css">
     <link rel="stylesheet" href="css/lowongan.css">
+    <style>
+        /* Profile Summary Section */
+        .profile-summary {
+            background: linear-gradient(135deg, #f8fafc 0%, #e3f2fd 100%);
+            border: 2px solid #3b82f6;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 25px;
+        }
+
+        .profile-summary h4 {
+            color: #1e40af;
+            font-size: 18px;
+            margin: 0 0 20px 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 600;
+        }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .summary-item {
+            background: white;
+            padding: 12px 15px;
+            border-radius: 8px;
+            border-left: 4px solid #3b82f6;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .summary-label {
+            font-size: 12px;
+            color: #64748b;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .summary-value {
+            font-size: 14px;
+            color: #1e293b;
+            font-weight: 500;
+        }
+
+        .summary-value .btn-link {
+            color: #3b82f6;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-weight: 600;
+            transition: color 0.2s;
+        }
+
+        .summary-value .btn-link:hover {
+            color: #2563eb;
+            text-decoration: underline;
+        }
+
+        .profile-note {
+            background: white;
+            padding: 12px 15px;
+            border-radius: 8px;
+            border: 1px solid #cbd5e1;
+            font-size: 13px;
+            color: #475569;
+            margin: 0;
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+        }
+
+        .profile-note i {
+            color: #3b82f6;
+            font-size: 16px;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .profile-note a {
+            color: #3b82f6;
+            font-weight: 600;
+            text-decoration: underline;
+        }
+
+        .profile-note a:hover {
+            color: #2563eb;
+        }
+
+        .active-warning {
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+            border: 2px solid #fbbf24;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .active-warning h4 {
+            color: #92400e;
+            margin: 0 0 10px 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 18px;
+        }
+
+        .active-warning p {
+            color: #78350f;
+            margin: 5px 0;
+            line-height: 1.6;
+        }
+
+        @media (max-width: 768px) {
+            .summary-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
 </head>
 
 <body>
@@ -236,18 +385,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
                             </div>
                             <div class="info-item">
                                 <div class="info-label">
-                                    <i class="fas fa-calendar-alt"></i> Tanggal Posting
+                                    <i class="fas fa-graduation-cap"></i> Syarat Pendidikan
                                 </div>
                                 <div class="info-value">
-                                    <?php echo date('d F Y', strtotime($job['posted_at'])); ?>
+                                    <?php 
+                                    if ($job['req_jenjang_nama']) {
+                                        echo htmlspecialchars($job['req_jenjang_nama']);
+                                        if ($job['req_jurusan_nama']) {
+                                            echo ' - ' . htmlspecialchars($job['req_jurusan_nama']);
+                                        }
+                                    } else {
+                                        echo 'Tidak ada syarat khusus';
+                                    }
+                                    ?>
                                 </div>
                             </div>
                             <div class="info-item">
                                 <div class="info-label">
-                                    <i class="fas fa-clock"></i> Terakhir Update
+                                    <i class="fas fa-calendar-alt"></i> Tanggal Posting
                                 </div>
                                 <div class="info-value">
-                                    <?php echo date('d F Y H:i', strtotime($job['updated_at'])); ?>
+                                    <?php echo date('d F Y', strtotime($job['posted_at'])); ?>
                                 </div>
                             </div>
                         </div>
@@ -287,109 +445,130 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
                                 </div>
                             </div>
                         <?php elseif ($job['status'] === 'open'): ?>
-                            <div class="apply-section <?php echo $show_apply_form ? 'show-form' : ''; ?>">
-                                <div class="apply-header">
-                                    <h3><i class="fas fa-paper-plane"></i> Kirim Lamaran</h3>
-                                    <?php if (!$show_apply_form): ?>
-                                        <button type="button" class="btn btn-primary" onclick="showApplyForm()">
-                                            <i class="fas fa-plus"></i> Lamar Sekarang
-                                        </button>
-                                    <?php endif; ?>
+                            <?php if ($hasActiveApplication && $activeApplication['job_id'] != $job_id): ?>
+                                <div class="active-warning">
+                                    <h4>
+                                        <i class="fas fa-exclamation-triangle"></i>
+                                        Anda Sudah Memiliki Lamaran Aktif
+                                    </h4>
+                                    <p>
+                                        Anda tidak dapat melamar pekerjaan ini karena masih memiliki lamaran yang sedang diproses untuk posisi:
+                                    </p>
+                                    <p>
+                                        <strong><?php echo htmlspecialchars($activeApplication['title']); ?></strong>
+                                    </p>
+                                    <p>
+                                        <strong>Status:</strong> <?php echo htmlspecialchars($activeApplication['status']); ?>
+                                    </p>
+                                    <p style="margin-top: 15px;">
+                                        Silakan tunggu hingga lamaran Anda <strong>ditolak</strong> atau <strong>diterima bekerja</strong> sebelum melamar pekerjaan lain.
+                                    </p>
+                                    <div style="margin-top: 15px;">
+                                        <a href="applications.php" class="btn btn-primary">
+                                            <i class="fas fa-eye"></i> Lihat Lamaran Saya
+                                        </a>
+                                    </div>
                                 </div>
-                                
-                                <div class="apply-form-container" id="applyFormContainer" <?php echo !$show_apply_form ? 'style="display:none;"' : ''; ?>>
-                                    <form method="POST" enctype="multipart/form-data" class="apply-form-detail" id="applicationForm">
-                                        <input type="hidden" name="action" value="apply">
-                                        
-                                        <!-- Phone Number -->
-                                        <div class="form-group">
-                                            <label for="no_telepon">
-                                                <i class="fas fa-phone"></i> Nomor Telepon <span style="color: red;">*</span>
-                                            </label>
-                                            <input type="number" 
-                                                   id="no_telepon" 
-                                                   name="no_telepon" 
-                                                   class="form-control" 
-                                                   placeholder="Contoh: 081234567890"
-                                                   required>
-                                            <small class="form-text">Masukkan nomor telepon yang dapat dihubungi.</small>
+                            <?php elseif (!$profileComplete): ?>
+                                <div class="job-closed-section">
+                                    <div class="closed-notice" style="background: #fff3cd; color: #856404; border-color: #ffeaa7;">
+                                        <i class="fas fa-exclamation-triangle"></i>
+                                        <div class="closed-text">
+                                            <h4>Profil Belum Lengkap</h4>
+                                            <p>Silakan lengkapi data profil Anda (No. Telepon, Pendidikan, dan CV) terlebih dahulu sebelum melamar.</p>
                                         </div>
-
-                                        <!-- Education Level -->
-                                        <div class="form-group">
-                                            <label for="pendidikan_jenjang">
-                                                <i class="fas fa-graduation-cap"></i> Pendidikan Terakhir <span style="color: red;">*</span>
-                                            </label>
-                                            <select id="pendidikan_jenjang" 
-                                                    name="pendidikan_jenjang" 
-                                                    class="form-control" 
-                                                    required
-                                                    onchange="handleEducationChange()">
-                                                <option value="">-- Pilih Jenjang Pendidikan --</option>
-                                                <option value="SMA">SMA</option>
-                                                <option value="SMK">SMK</option>
-                                                <option value="Kuliah">Kuliah</option>
-                                            </select>
-                                        </div>
-
-                                        <!-- SMK Major (Hidden by default) -->
-                                        <div class="form-group" id="smk_jurusan_group" style="display: none;">
-                                            <label for="smk_jurusan">
-                                                <i class="fas fa-book"></i> Jurusan SMK <span style="color: red;">*</span>
-                                            </label>
-                                            <input type="text" 
-                                                   id="smk_jurusan" 
-                                                   name="pendidikan_jurusan" 
-                                                   class="form-control" 
-                                                   placeholder="Contoh: Teknik Komputer Jaringan">
-                                        </div>
-
-                                        <!-- University Degree Level (Hidden by default) -->
-                                        <div class="form-group" id="sarjana_group" style="display: none;">
-                                            <label for="pendidikan_sarjana">
-                                                <i class="fas fa-user-graduate"></i> Jenjang Sarjana <span style="color: red;">*</span>
-                                            </label>
-                                            <select id="pendidikan_sarjana" 
-                                                    name="pendidikan_sarjana" 
-                                                    class="form-control">
-                                                <option value="">-- Pilih Jenjang Sarjana --</option>
-                                                <option value="D3">D3 (Diploma 3)</option>
-                                                <option value="D4">D4 (Diploma 4)</option>
-                                                <option value="S1">S1 (Sarjana)</option>
-                                                <option value="S2">S2 (Magister)</option>
-                                                <option value="S3">S3 (Doktor)</option>
-                                            </select>
-                                        </div>
-
-                                        <!-- University Major (Hidden by default) -->
-                                        <div class="form-group" id="kuliah_jurusan_group" style="display: none;">
-                                            <label for="kuliah_jurusan">
-                                                <i class="fas fa-book-open"></i> Jurusan / Program Studi <span style="color: red;">*</span>
-                                            </label>
-                                            <input type="text" 
-                                                   id="kuliah_jurusan" 
-                                                   class="form-control" 
-                                                   placeholder="Contoh: Teknik Informatika">
-                                        </div>
-                                        
-                                        <!-- CV Upload -->
-                                        <div class="form-group">
-                                            <label for="cv"><i class="fas fa-file-pdf"></i> Upload CV (PDF/DOC/DOCX) <span style="color: red;">*</span></label>
-                                            <input type="file" id="cv" name="cv" accept=".pdf,.doc,.docx" required>
-                                            <small class="form-text">Maksimal ukuran file 5MB. Format yang diterima: PDF, DOC, DOCX</small>
-                                        </div>
-                                        
-                                        <div class="form-actions">
-                                            <button type="submit" class="btn btn-primary btn-lg">
-                                                <i class="fas fa-paper-plane"></i> Kirim Lamaran
-                                            </button>
-                                            <button type="button" class="btn btn-secondary" onclick="hideApplyForm()">
-                                                <i class="fas fa-times"></i> Batal
-                                            </button>
-                                        </div>
-                                    </form>
+                                    </div>
+                                    <div class="applied-actions" style="text-align: center; margin-top: 15px;">
+                                        <a href="profile.php" class="btn btn-primary">
+                                            <i class="fas fa-user-edit"></i> Lengkapi Profil
+                                        </a>
+                                    </div>
                                 </div>
-                            </div>
+                            <?php elseif (!$meetsRequirements): ?>
+                                <div class="job-closed-section">
+                                    <div class="closed-notice">
+                                        <i class="fas fa-times-circle"></i>
+                                        <div class="closed-text">
+                                            <h4>Tidak Memenuhi Syarat</h4>
+                                            <p>Maaf, pendidikan Anda tidak sesuai dengan persyaratan lowongan ini.</p>
+                                            <p><strong>Syarat:</strong> <?php echo htmlspecialchars($job['req_jenjang_nama']); ?>
+                                            <?php if ($job['req_jurusan_nama']): ?>
+                                                - <?php echo htmlspecialchars($job['req_jurusan_nama']); ?>
+                                            <?php endif; ?>
+                                            </p>
+                                            <p><strong>Pendidikan Anda:</strong> <?php echo htmlspecialchars($user_profile['nama_jenjang']); ?>
+                                            <?php if ($user_profile['nama_jurusan']): ?>
+                                                - <?php echo htmlspecialchars($user_profile['nama_jurusan']); ?>
+                                            <?php endif; ?>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            <?php else: ?>
+                                <div class="apply-section">
+                                    <div class="apply-header">
+                                        <h3><i class="fas fa-paper-plane"></i> Kirim Lamaran</h3>
+                                    </div>
+                                    
+                                    <div class="apply-form-container" id="applyFormContainer">
+                                        <div class="profile-summary">
+                                            <h4><i class="fas fa-user-check"></i> Data Lamaran Anda</h4>
+                                            <div class="summary-grid">
+                                                <div class="summary-item">
+                                                    <span class="summary-label">Nama:</span>
+                                                    <span class="summary-value"><?php echo htmlspecialchars($user_profile['full_name']); ?></span>
+                                                </div>
+                                                <div class="summary-item">
+                                                    <span class="summary-label">No. Telepon:</span>
+                                                    <span class="summary-value"><?php echo htmlspecialchars($user_profile['no_telepon']); ?></span>
+                                                </div>
+                                                <div class="summary-item">
+                                                    <span class="summary-label">Pendidikan:</span>
+                                                    <span class="summary-value">
+                                                        <?php 
+                                                        echo htmlspecialchars($user_profile['nama_jenjang']);
+                                                        if ($user_profile['nama_jurusan']) {
+                                                            echo ' - ' . htmlspecialchars($user_profile['nama_jurusan']);
+                                                        }
+                                                        ?>
+                                                    </span>
+                                                </div>
+                                                <div class="summary-item">
+                                                    <span class="summary-label">CV:</span>
+                                                    <span class="summary-value">
+                                                        <a href="../uploads/cv/<?php echo htmlspecialchars($user_profile['cv_filename']); ?>" target="_blank" class="btn-link">
+                                                            <i class="fas fa-file-pdf"></i> Lihat CV
+                                                        </a>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            <p class="profile-note">
+                                                <i class="fas fa-info-circle"></i>
+                                                Data di atas akan digunakan untuk lamaran Anda. 
+                                                Jika ingin mengubah, silakan <a href="profile.php">update profil</a> terlebih dahulu.
+                                            </p>
+                                            <p class="profile-note" style="background: #fef3c7; border-color: #fbbf24; color: #92400e; margin-top: 10px;">
+                                                <i class="fas fa-exclamation-triangle" style="color: #f59e0b;"></i>
+                                                <strong>Perhatian:</strong> Setelah mengirim lamaran ini, Anda tidak dapat melamar pekerjaan lain hingga lamaran ini ditolak atau diterima bekerja.
+                                            </p>
+                                        </div>
+                                        
+                                        <form method="POST" class="apply-form-detail" id="applicationForm" 
+                                              onsubmit="return confirm('Setelah mengirim lamaran, Anda tidak dapat melamar pekerjaan lain hingga lamaran ini selesai diproses (ditolak atau diterima). Yakin ingin melanjutkan?')">
+                                            <input type="hidden" name="action" value="apply">
+                                            
+                                            <div class="form-actions">
+                                                <button type="submit" class="btn btn-primary btn-lg">
+                                                    <i class="fas fa-paper-plane"></i> Kirim Lamaran
+                                                </button>
+                                                <a href="lowongan.php" class="btn btn-secondary">
+                                                    <i class="fas fa-times"></i> Batal
+                                                </a>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            <?php endif; ?>
                         <?php else: ?>
                             <div class="job-closed-section">
                                 <div class="closed-notice">
@@ -412,112 +591,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
         function toggleSidebar() {
             document.getElementById('sidebar').classList.toggle('active');
         }
-        
-        function showApplyForm() {
-            document.getElementById('applyFormContainer').style.display = 'block';
-            document.querySelector('.apply-section').classList.add('show-form');
-        }
-        
-        function hideApplyForm() {
-            document.getElementById('applyFormContainer').style.display = 'none';
-            document.querySelector('.apply-section').classList.remove('show-form');
-        }
-        
-        // Handle Education Level Change
-        function handleEducationChange() {
-            const jenjang = document.getElementById('pendidikan_jenjang').value;
-            const smkJurusanGroup = document.getElementById('smk_jurusan_group');
-            const sarjanaGroup = document.getElementById('sarjana_group');
-            const kuliahJurusanGroup = document.getElementById('kuliah_jurusan_group');
-            
-            const smkJurusan = document.getElementById('smk_jurusan');
-            const sarjanaSelect = document.getElementById('pendidikan_sarjana');
-            const kuliahJurusan = document.getElementById('kuliah_jurusan');
-            
-            // Hide all conditional fields first
-            smkJurusanGroup.style.display = 'none';
-            sarjanaGroup.style.display = 'none';
-            kuliahJurusanGroup.style.display = 'none';
-            
-            // Remove required attributes
-            smkJurusan.removeAttribute('required');
-            sarjanaSelect.removeAttribute('required');
-            kuliahJurusan.removeAttribute('required');
-            
-            // Clear values
-            smkJurusan.value = '';
-            sarjanaSelect.value = '';
-            kuliahJurusan.value = '';
-            
-            // Show relevant fields based on selection
-            if (jenjang === 'SMK') {
-                smkJurusanGroup.style.display = 'block';
-                smkJurusan.setAttribute('required', 'required');
-            } else if (jenjang === 'Kuliah') {
-                sarjanaGroup.style.display = 'block';
-                kuliahJurusanGroup.style.display = 'block';
-                sarjanaSelect.setAttribute('required', 'required');
-                kuliahJurusan.setAttribute('required', 'required');
-                
-                // For college, we need to use a hidden input to pass the jurusan
-                if (!document.getElementById('hidden_kuliah_jurusan')) {
-                    const hiddenInput = document.createElement('input');
-                    hiddenInput.type = 'hidden';
-                    hiddenInput.id = 'hidden_kuliah_jurusan';
-                    hiddenInput.name = 'pendidikan_jurusan';
-                    document.getElementById('applicationForm').appendChild(hiddenInput);
-                }
-            }
-        }
-        
-        // Update hidden input when kuliah jurusan changes
-        document.addEventListener('DOMContentLoaded', function() {
-            const kuliahJurusan = document.getElementById('kuliah_jurusan');
-            if (kuliahJurusan) {
-                kuliahJurusan.addEventListener('input', function() {
-                    const hiddenInput = document.getElementById('hidden_kuliah_jurusan');
-                    if (hiddenInput) {
-                        hiddenInput.value = this.value;
-                    }
-                });
-            }
-        });
-        
-        // Form validation before submit
-        document.getElementById('applicationForm').addEventListener('submit', function(e) {
-            const jenjang = document.getElementById('pendidikan_jenjang').value;
-            
-            if (jenjang === 'SMK') {
-                const jurusan = document.getElementById('smk_jurusan').value.trim();
-                if (!jurusan) {
-                    e.preventDefault();
-                    alert('Jurusan SMK harus diisi!');
-                    return false;
-                }
-            } else if (jenjang === 'Kuliah') {
-                const sarjana = document.getElementById('pendidikan_sarjana').value;
-                const jurusan = document.getElementById('kuliah_jurusan').value.trim();
-                
-                if (!sarjana) {
-                    e.preventDefault();
-                    alert('Jenjang Sarjana harus dipilih!');
-                    return false;
-                }
-                if (!jurusan) {
-                    e.preventDefault();
-                    alert('Jurusan harus diisi!');
-                    return false;
-                }
-                
-                // Update hidden input
-                const hiddenInput = document.getElementById('hidden_kuliah_jurusan');
-                if (hiddenInput) {
-                    hiddenInput.value = jurusan;
-                }
-            }
-            
-            return true;
-        });
         
         document.addEventListener('click', function(event) {
             const sidebar = document.getElementById('sidebar');

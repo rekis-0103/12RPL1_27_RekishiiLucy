@@ -26,28 +26,70 @@ function logActivity($conn, $actor_user_id, $action)
     mysqli_query($conn, "INSERT INTO log_aktivitas (user_id, action) VALUES ($actor_user_id, '$action')");
 }
 
+// Get user education info
+$user_query = mysqli_query($conn, "SELECT id_jenjang_pendidikan, id_jurusan_pendidikan FROM users WHERE user_id = $user_id");
+$user_info = mysqli_fetch_assoc($user_query);
+$user_jenjang = $user_info['id_jenjang_pendidikan'];
+$user_jurusan = $user_info['id_jurusan_pendidikan'];
+
+// Check if user has any ACTIVE application (pending, seleksi administrasi, lolos administrasi, tes & wawancara)
+$activeApplicationQuery = mysqli_query($conn, "
+    SELECT a.*, l.title 
+    FROM applications a 
+    JOIN lowongan l ON a.job_id = l.job_id 
+    WHERE a.user_id = $user_id 
+    AND a.status IN ('pending', 'seleksi administrasi', 'lolos administrasi', 'tes & wawancara')
+    ORDER BY a.applied_at DESC 
+    LIMIT 1
+");
+$hasActiveApplication = mysqli_num_rows($activeApplicationQuery) > 0;
+$activeApplication = $hasActiveApplication ? mysqli_fetch_assoc($activeApplicationQuery) : null;
+
 // Get filter parameters
 $status_filter = isset($_GET['status']) ? $_GET['status'] : 'all';
 $search_query = isset($_GET['search']) ? trim($_GET['search']) : '';
 
-// Build query based on filters
-$whereClause = "WHERE hapus=0";
+// Build query based on filters and user education
+$whereClause = "WHERE l.hapus=0";
+
+// Filter by education requirements
+if ($user_jenjang) {
+    $whereClause .= " AND (
+        l.req_jenjang_pendidikan IS NULL 
+        OR (
+            l.req_jenjang_pendidikan = $user_jenjang
+            AND (
+                l.req_jurusan_pendidikan IS NULL 
+                OR l.req_jurusan_pendidikan = " . ($user_jurusan ? $user_jurusan : "0") . "
+            )
+        )
+    )";
+} else {
+    $whereClause .= " AND l.req_jenjang_pendidikan IS NULL";
+}
 
 // Add status filter
 if ($status_filter === 'open') {
-    $whereClause .= " AND status='open'";
+    $whereClause .= " AND l.status='open'";
 } elseif ($status_filter === 'closed') {
-    $whereClause .= " AND status='closed'";
+    $whereClause .= " AND l.status='closed'";
 }
 
 // Add search filter
 if (!empty($search_query)) {
     $search_escaped = mysqli_real_escape_string($conn, $search_query);
-    $whereClause .= " AND title LIKE '%$search_escaped%'";
+    $whereClause .= " AND l.title LIKE '%$search_escaped%'";
 }
 
 // List jobs based on filters
-$list = mysqli_query($conn, "SELECT * FROM lowongan $whereClause ORDER BY status ASC, posted_at DESC");
+$list = mysqli_query($conn, "SELECT l.*, 
+    jenjang.nama_jenjang, 
+    jurusan.nama_jurusan
+    FROM lowongan l
+    LEFT JOIN jenjang_pendidikan jenjang ON l.req_jenjang_pendidikan = jenjang.id_jenjang
+    LEFT JOIN jurusan_pendidikan jurusan ON l.req_jurusan_pendidikan = jurusan.id_jurusan
+    $whereClause 
+    ORDER BY l.status ASC, l.posted_at DESC");
 ?>
 <!DOCTYPE html>
 <html lang="id">
@@ -62,6 +104,88 @@ $list = mysqli_query($conn, "SELECT * FROM lowongan $whereClause ORDER BY status
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="css/dashboard.css">
     <link rel="stylesheet" href="css/lowongan.css">
+    <style>
+        .active-application-notice {
+            background: linear-gradient(135deg, #fff3cd 0%, #ffe69c 100%);
+            border: 2px solid #ffc107;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .active-application-notice h4 {
+            color: #856404;
+            margin: 0 0 10px 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 18px;
+        }
+        .active-application-notice h4 i {
+            font-size: 24px;
+        }
+        .active-application-notice p {
+            color: #664d03;
+            margin: 5px 0;
+            line-height: 1.6;
+        }
+        .active-application-notice strong {
+            color: #523d01;
+        }
+        .application-status-badge {
+            display: inline-block;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-top: 10px;
+        }
+        .status-pending {
+            background: #fef3c7;
+            color: #92400e;
+            border: 1px solid #fde68a;
+        }
+        .status-seleksi-administrasi {
+            background: #dbeafe;
+            color: #1e40af;
+            border: 1px solid #bfdbfe;
+        }
+        .status-lolos-administrasi {
+            background: #d1fae5;
+            color: #065f46;
+            border: 1px solid #a7f3d0;
+        }
+        .status-tes-wawancara {
+            background: #e0e7ff;
+            color: #3730a3;
+            border: 1px solid #c7d2fe;
+        }
+        .view-application-btn {
+            margin-top: 15px;
+        }
+        .job-item.disabled {
+            opacity: 0.6;
+            pointer-events: none;
+            position: relative;
+        }
+        .job-item.disabled::after {
+            content: "Anda sudah memiliki lamaran aktif";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 14px;
+            white-space: nowrap;
+            z-index: 10;
+        }
+    </style>
 </head>
 
 <body>
@@ -88,8 +212,47 @@ $list = mysqli_query($conn, "SELECT * FROM lowongan $whereClause ORDER BY status
         <div class="main-content">
             <div class="dashboard-header">
                 <h1>Lowongan</h1>
-                <p>Daftar lowongan yang tersedia</p>
+                <p>Daftar lowongan yang sesuai dengan pendidikan Anda</p>
             </div>
+
+            <?php if (!$user_jenjang): ?>
+                <div class="alert alert-danger">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <strong>Perhatian!</strong> Anda belum melengkapi data pendidikan. 
+                    Silakan <a href="profile.php" style="text-decoration: underline; font-weight: bold;">lengkapi profil Anda</a> 
+                    untuk melihat lowongan yang sesuai dengan kualifikasi Anda.
+                </div>
+            <?php endif; ?>
+
+            <?php if ($hasActiveApplication): ?>
+                <div class="active-application-notice">
+                    <h4>
+                        <i class="fas fa-info-circle"></i>
+                        Anda Memiliki Lamaran yang Sedang Diproses
+                    </h4>
+                    <p>
+                        <strong>Posisi:</strong> <?php echo htmlspecialchars($activeApplication['title']); ?>
+                    </p>
+                    <p>
+                        <strong>Status Saat Ini:</strong> 
+                        <span class="application-status-badge status-<?php echo str_replace(' ', '-', $activeApplication['status']); ?>">
+                            <?php echo htmlspecialchars($activeApplication['status']); ?>
+                        </span>
+                    </p>
+                    <p>
+                        <strong>Tanggal Melamar:</strong> <?php echo date('d F Y H:i', strtotime($activeApplication['applied_at'])); ?>
+                    </p>
+                    <p style="margin-top: 15px; padding-top: 15px; border-top: 1px solid #ffc107;">
+                        <i class="fas fa-lock"></i> 
+                        <strong>Perhatian:</strong> Anda tidak dapat melamar pekerjaan lain sampai lamaran ini <strong>ditolak</strong> atau <strong>diterima bekerja</strong>.
+                    </p>
+                    <div class="view-application-btn">
+                        <a href="applications.php" class="btn btn-primary">
+                            <i class="fas fa-eye"></i> Lihat Detail Lamaran
+                        </a>
+                    </div>
+                </div>
+            <?php endif; ?>
 
             <div class="card">
                 <div class="card-header">
@@ -110,7 +273,8 @@ $list = mysqli_query($conn, "SELECT * FROM lowongan $whereClause ORDER BY status
                                            name="search" 
                                            placeholder="Masukkan nama pekerjaan..." 
                                            value="<?php echo htmlspecialchars($search_query); ?>"
-                                           class="search-input">
+                                           class="search-input"
+                                           <?php echo $hasActiveApplication ? 'disabled' : ''; ?>>
                                     <?php if (!empty($search_query)): ?>
                                         <button type="button" class="clear-search" onclick="clearSearch()" title="Hapus pencarian">
                                             <i class="fas fa-times"></i>
@@ -124,14 +288,14 @@ $list = mysqli_query($conn, "SELECT * FROM lowongan $whereClause ORDER BY status
                                 <label for="status-filter">
                                     <i class="fas fa-filter"></i> Filter Status:
                                 </label>
-                                <select id="status-filter" name="status" onchange="document.getElementById('filterForm').submit()">
+                                <select id="status-filter" name="status" onchange="document.getElementById('filterForm').submit()" <?php echo $hasActiveApplication ? 'disabled' : ''; ?>>
                                     <option value="all" <?php echo $status_filter === 'all' ? 'selected' : ''; ?>>Semua Status</option>
                                     <option value="open" <?php echo $status_filter === 'open' ? 'selected' : ''; ?>>Aktif</option>
                                     <option value="closed" <?php echo $status_filter === 'closed' ? 'selected' : ''; ?>>Ditutup</option>
                                 </select>
                             </div>
 
-                            <button type="submit" class="btn btn-primary btn-search">
+                            <button type="submit" class="btn btn-primary btn-search" <?php echo $hasActiveApplication ? 'disabled' : ''; ?>>
                                 <i class="fas fa-search"></i> Cari
                             </button>
                         </form>
@@ -150,7 +314,7 @@ $list = mysqli_query($conn, "SELECT * FROM lowongan $whereClause ORDER BY status
 
                     <?php if ($list && mysqli_num_rows($list) > 0): ?>
                         <?php while ($row = mysqli_fetch_assoc($list)): ?>
-                            <div class="job-item <?php echo $row['status'] === 'closed' ? 'job-closed' : ''; ?>">
+                            <div class="job-item <?php echo $row['status'] === 'closed' ? 'job-closed' : ''; ?> <?php echo $hasActiveApplication ? 'disabled' : ''; ?>">
                                 <div class="job-header">
                                     <div class="job-title"><?php echo htmlspecialchars($row['title']); ?></div>
                                     <div class="job-status">
@@ -169,6 +333,17 @@ $list = mysqli_query($conn, "SELECT * FROM lowongan $whereClause ORDER BY status
                                     Lokasi: <?php echo htmlspecialchars($row['location'] ?: '-'); ?> | 
                                     Gaji: <?php echo htmlspecialchars($row['salary_range'] ?: '-'); ?> |
                                     Diposting: <?php echo date('d M Y', strtotime($row['posted_at'])); ?>
+                                    <?php if ($row['nama_jenjang']): ?>
+                                        | Syarat: 
+                                        <span class="badge badge-info">
+                                            <?php 
+                                            echo htmlspecialchars($row['nama_jenjang']);
+                                            if ($row['nama_jurusan']) {
+                                                echo ' - ' . htmlspecialchars($row['nama_jurusan']);
+                                            }
+                                            ?>
+                                        </span>
+                                    <?php endif; ?>
                                 </div>
                                 <div class="job-desc-preview">
                                     <?php 
@@ -188,14 +363,16 @@ $list = mysqli_query($conn, "SELECT * FROM lowongan $whereClause ORDER BY status
                         <div class="no-jobs">
                             <i class="fas fa-briefcase"></i>
                             <p>
-                                <?php if (!empty($search_query)): ?>
+                                <?php if (!$user_jenjang): ?>
+                                    Silakan lengkapi data pendidikan Anda terlebih dahulu untuk melihat lowongan yang tersedia.
+                                <?php elseif (!empty($search_query)): ?>
                                     Tidak ada lowongan yang cocok dengan pencarian "<?php echo htmlspecialchars($search_query); ?>".
                                 <?php elseif ($status_filter === 'open'): ?>
-                                    Belum ada lowongan aktif tersedia.
+                                    Belum ada lowongan aktif yang sesuai dengan pendidikan Anda saat ini.
                                 <?php elseif ($status_filter === 'closed'): ?>
                                     Belum ada lowongan yang ditutup.
                                 <?php else: ?>
-                                    Belum ada lowongan tersedia.
+                                    Belum ada lowongan yang sesuai dengan pendidikan Anda saat ini.
                                 <?php endif; ?>
                             </p>
                             <?php if (!empty($search_query) || $status_filter !== 'all'): ?>

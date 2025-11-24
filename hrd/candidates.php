@@ -85,11 +85,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && isset($_
     }
 }
 
-// Fetch candidates - Updated query to show all candidates regardless of who posted the job
-$list = mysqli_query($conn, "SELECT a.*, u.full_name, u.email, l.title 
+// Fetch candidates with education data from relational tables
+$list = mysqli_query($conn, "SELECT a.*, u.full_name, u.email, l.title,
+    jenjang.nama_jenjang,
+    jurusan.nama_jurusan
     FROM applications a 
     JOIN users u ON a.user_id=u.user_id 
     JOIN lowongan l ON a.job_id=l.job_id 
+    LEFT JOIN jenjang_pendidikan jenjang ON a.id_jenjang_pendidikan = jenjang.id_jenjang
+    LEFT JOIN jurusan_pendidikan jurusan ON a.id_jurusan_pendidikan = jurusan.id_jurusan
     WHERE a.status IN ('lolos administrasi','tes & wawancara')
     ORDER BY COALESCE(a.interview_date,a.updated_at) ASC");
 ?>
@@ -181,10 +185,15 @@ $list = mysqli_query($conn, "SELECT a.*, u.full_name, u.email, l.title
                                                             <?php echo htmlspecialchars($row['no_telepon']); ?>
                                                         </span>
                                                     <?php endif; ?>
-                                                    <?php if (!empty($row['pendidikan'])): ?>
+                                                    <?php if (!empty($row['nama_jenjang'])): ?>
                                                         <span class="meta-item">
                                                             <i class="fas fa-graduation-cap"></i>
-                                                            <?php echo htmlspecialchars($row['pendidikan']); ?>
+                                                            <?php 
+                                                            echo htmlspecialchars($row['nama_jenjang']);
+                                                            if (!empty($row['nama_jurusan'])) {
+                                                                echo ' - ' . htmlspecialchars($row['nama_jurusan']);
+                                                            }
+                                                            ?>
                                                         </span>
                                                     <?php endif; ?>
                                                 </div>
@@ -275,7 +284,6 @@ $list = mysqli_query($conn, "SELECT a.*, u.full_name, u.email, l.title
 
             sidebar.classList.toggle('active');
 
-            // Sembunyikan tombol ketika sidebar muncul
             if (sidebar.classList.contains('active')) {
                 toggleBtn.style.display = "none";
             } else {
@@ -283,7 +291,6 @@ $list = mysqli_query($conn, "SELECT a.*, u.full_name, u.email, l.title
             }
         }
 
-        // Tutup sidebar kalau klik di luar
         document.addEventListener('click', function(event) {
             const sidebar = document.getElementById('sidebar');
             const mobileToggle = document.querySelector('.mobile-toggle');
@@ -291,7 +298,7 @@ $list = mysqli_query($conn, "SELECT a.*, u.full_name, u.email, l.title
             if (window.innerWidth <= 768) {
                 if (!sidebar.contains(event.target) && !mobileToggle.contains(event.target)) {
                     sidebar.classList.remove('active');
-                    mobileToggle.style.display = "block"; // tampilkan kembali tombol
+                    mobileToggle.style.display = "block";
                 }
             }
         });

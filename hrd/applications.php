@@ -89,10 +89,14 @@ if (isset($_GET['id'])) {
 
     
     $detail = mysqli_query($conn, "
-        SELECT a.*, u.full_name, u.email, l.title 
+        SELECT a.*, u.full_name, u.email, l.title,
+        jenjang.nama_jenjang,
+        jurusan.nama_jurusan
         FROM applications a 
         JOIN users u ON a.user_id = u.user_id 
         JOIN lowongan l ON a.job_id = l.job_id 
+        LEFT JOIN jenjang_pendidikan jenjang ON a.id_jenjang_pendidikan = jenjang.id_jenjang
+        LEFT JOIN jurusan_pendidikan jurusan ON a.id_jurusan_pendidikan = jurusan.id_jurusan
         WHERE a.application_id = $id AND l.posted_by = $user_id
     ");
 
@@ -105,10 +109,14 @@ if (isset($_GET['id'])) {
 
 // List of new applications
 $list = mysqli_query($conn, "
-    SELECT a.*, u.full_name, u.email, l.title 
+    SELECT a.*, u.full_name, u.email, l.title,
+    jenjang.nama_jenjang,
+    jurusan.nama_jurusan
     FROM applications a 
     JOIN users u ON a.user_id=u.user_id 
     JOIN lowongan l ON a.job_id=l.job_id 
+    LEFT JOIN jenjang_pendidikan jenjang ON a.id_jenjang_pendidikan = jenjang.id_jenjang
+    LEFT JOIN jurusan_pendidikan jurusan ON a.id_jurusan_pendidikan = jurusan.id_jurusan
     WHERE a.status IN ('pending', 'seleksi administrasi') 
       AND l.posted_by=$user_id
     ORDER BY a.applied_at DESC
@@ -190,7 +198,16 @@ $list = mysqli_query($conn, "
                                 <div class="detail-item">
                                     <div class="detail-label"><i class="fas fa-graduation-cap"></i> Pendidikan Terakhir</div>
                                     <div class="detail-value">
-                                        <?php echo !empty($detail['pendidikan']) ? htmlspecialchars($detail['pendidikan']) : '-'; ?>
+                                        <?php 
+                                        if (!empty($detail['nama_jenjang'])) {
+                                            echo htmlspecialchars($detail['nama_jenjang']);
+                                            if (!empty($detail['nama_jurusan'])) {
+                                                echo ' - ' . htmlspecialchars($detail['nama_jurusan']);
+                                            }
+                                        } else {
+                                            echo '-';
+                                        }
+                                        ?>
                                     </div>
                                 </div>
                             </div>
@@ -219,7 +236,7 @@ $list = mysqli_query($conn, "
                                     <div class="detail-label"><i class="fas fa-file-pdf"></i> CV</div>
                                     <div class="detail-value">
                                         <?php if (!empty($detail['cv'])): ?>
-                                            <a href="../<?php echo htmlspecialchars($detail['cv']); ?>" target="_blank" class="btn-link">
+                                            <a href="../pelamar/cv/<?php echo htmlspecialchars($detail['cv']); ?>" target="_blank" class="btn-link">
                                                 <i class="fas fa-download"></i> Lihat/Download CV
                                             </a>
                                         <?php else: ?>
@@ -308,7 +325,18 @@ $list = mysqli_query($conn, "
                                             <td><?php echo htmlspecialchars($row['full_name']); ?></td>
                                             <td><?php echo htmlspecialchars($row['title']); ?></td>
                                             <td><?php echo !empty($row['no_telepon']) ? htmlspecialchars($row['no_telepon']) : '-'; ?></td>
-                                            <td><?php echo !empty($row['pendidikan']) ? htmlspecialchars($row['pendidikan']) : '-'; ?></td>
+                                            <td>
+                                                <?php 
+                                                if (!empty($row['nama_jenjang'])) {
+                                                    echo htmlspecialchars($row['nama_jenjang']);
+                                                    if (!empty($row['nama_jurusan'])) {
+                                                        echo ' - ' . htmlspecialchars($row['nama_jurusan']);
+                                                    }
+                                                } else {
+                                                    echo '-';
+                                                }
+                                                ?>
+                                            </td>
                                             <td><?php echo date('d/m/Y H:i', strtotime($row['applied_at'])); ?></td>
                                             <td>
                                                 <a class="btn btn-primary btn-sm" href="applications.php?id=<?php echo (int)$row['application_id']; ?>">
@@ -376,12 +404,15 @@ $list = mysqli_query($conn, "
                                            l.title AS nama_pekerjaan, 
                                            l.location AS tempat, 
                                            a.no_telepon,
-                                           a.pendidikan,
+                                           jenjang.nama_jenjang,
+                                           jurusan.nama_jurusan,
                                            a.status, 
                                            a.applied_at AS tanggal_lamar
                                     FROM applications a
                                     JOIN users u ON u.user_id = a.user_id
                                     JOIN lowongan l ON l.job_id = a.job_id
+                                    LEFT JOIN jenjang_pendidikan jenjang ON a.id_jenjang_pendidikan = jenjang.id_jenjang
+                                    LEFT JOIN jurusan_pendidikan jurusan ON a.id_jurusan_pendidikan = jurusan.id_jurusan
                                     WHERE l.posted_by=$user_id $filter
                                     ORDER BY a.applied_at DESC";
 
@@ -391,7 +422,14 @@ $list = mysqli_query($conn, "
                                 $no = 1;
                                 while ($row = mysqli_fetch_assoc($result)) {
                                     $telepon = !empty($row['no_telepon']) ? htmlspecialchars($row['no_telepon']) : '-';
-                                    $pendidikan = !empty($row['pendidikan']) ? htmlspecialchars($row['pendidikan']) : '-';
+                                    
+                                    $pendidikan = '-';
+                                    if (!empty($row['nama_jenjang'])) {
+                                        $pendidikan = htmlspecialchars($row['nama_jenjang']);
+                                        if (!empty($row['nama_jurusan'])) {
+                                            $pendidikan .= ' - ' . htmlspecialchars($row['nama_jurusan']);
+                                        }
+                                    }
                                     
                                     echo "<tr>
                                             <td>{$no}</td>
@@ -427,7 +465,6 @@ $list = mysqli_query($conn, "
 
             sidebar.classList.toggle('active');
 
-            // Sembunyikan tombol ketika sidebar muncul
             if (sidebar.classList.contains('active')) {
                 toggleBtn.style.display = "none";
             } else {
@@ -435,7 +472,6 @@ $list = mysqli_query($conn, "
             }
         }
 
-        // Tutup sidebar kalau klik di luar
         document.addEventListener('click', function(event) {
             const sidebar = document.getElementById('sidebar');
             const mobileToggle = document.querySelector('.mobile-toggle');
@@ -443,7 +479,7 @@ $list = mysqli_query($conn, "
             if (window.innerWidth <= 768) {
                 if (!sidebar.contains(event.target) && !mobileToggle.contains(event.target)) {
                     sidebar.classList.remove('active');
-                    mobileToggle.style.display = "block"; // tampilkan kembali tombol
+                    mobileToggle.style.display = "block";
                 }
             }
         });
