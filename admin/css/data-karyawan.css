@@ -1,0 +1,174 @@
+.karyawan-container {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.karyawan-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 15px;
+  border-bottom: 2px solid #e5e7eb;
+}
+
+.header-info h2 {
+  color: #1e293b;
+  font-size: 1.3rem;
+  margin: 0;
+}
+
+.header-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.btn-export {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  background: #dc2626;
+  color: white;
+  text-decoration: none;
+  border-radius: 6px;
+  font-weight: 500;
+  transition: background 0.3s ease;
+}
+
+.btn-export:hover {
+  background: #b91c1c;
+}
+
+.btn-export i {
+  font-size: 1.1rem;
+}
+
+.table-container {
+  overflow-x: auto;
+}
+
+.karyawan-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.karyawan-table thead {
+  background: #2563eb;
+  color: white;
+}
+
+.karyawan-table thead th {
+  padding: 12px;
+  text-align: left;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.karyawan-table tbody tr {
+  border-bottom: 1px solid #e5e7eb;
+  transition: background 0.2s ease;
+}
+
+.karyawan-table tbody tr:hover {
+  background: #f8fafc;
+}
+
+.karyawan-table tbody td {
+  padding: 12px;
+  color: #334155;
+}
+
+.karyawan-table tbody td:first-child {
+  text-align: center;
+  font-weight: 600;
+  color: #64748b;
+}
+
+.text-center {
+  text-align: center;
+  color: #64748b;
+  padding: 40px 20px !important;
+  font-style: italic;
+}
+
+.btn-detail {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background: #2563eb;
+  color: white;
+  border-radius: 5px;
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+.btn-detail:hover {
+  background: #1d4ed8;
+  transform: scale(1.1);
+}
+
+.btn-detail i {
+  font-size: 0.9rem;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .karyawan-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
+  }
+
+  .header-actions {
+    width: 100%;
+  }
+
+  .btn-export {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .table-container {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .karyawan-table {
+    font-size: 0.8rem;
+  }
+
+  .karyawan-table thead th,
+  .karyawan-table tbody td {
+    padding: 8px;
+  }
+}
+
+@media (max-width: 480px) {
+  .karyawan-container {
+    padding: 15px;
+  }
+
+  .header-info h2 {
+    font-size: 1.1rem;
+  }
+
+  .karyawan-table {
+    font-size: 0.75rem;
+  }
+
+  .karyawan-table thead th,
+  .karyawan-table tbody td {
+    padding: 6px;
+  }
+
+  .btn-detail {
+    width: 28px;
+    height: 28px;
+  }
+}

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Nov 24, 2025 at 12:28 PM
+-- Generation Time: Nov 24, 2025 at 01:30 PM
 -- Server version: 8.0.30
 -- PHP Version: 8.2.29
 
@@ -48,7 +48,7 @@ CREATE TABLE `applications` (
 --
 
 INSERT INTO `applications` (`application_id`, `job_id`, `user_id`, `no_telepon`, `id_jenjang_pendidikan`, `id_jurusan_pendidikan`, `cv`, `status`, `reason`, `interview_date`, `start_date`, `applied_at`, `updated_at`) VALUES
-(5, 3, 2, '0812345678910', 3, 3, 'cv_2_1763881705.pdf', 'pending', NULL, NULL, NULL, '2025-11-24 12:09:31', NULL);
+(5, 3, 2, '0812345678910', 3, 3, 'cv_2_1763881705.pdf', 'diterima bekerja', 'test123', '2025-11-25 20:24:00', '2025-11-25', '2025-11-24 12:09:31', '2025-11-24 13:25:17');
 
 -- --------------------------------------------------------
 
@@ -666,7 +666,14 @@ INSERT INTO `log_aktivitas` (`log_id`, `user_id`, `action`, `log_time`) VALUES
 (419, 2, 'Login', '2025-11-24 12:09:10'),
 (420, 2, 'Kirim lamaran (job #3)', '2025-11-24 12:09:31'),
 (421, 2, 'Logout', '2025-11-24 12:21:55'),
-(422, 3, 'Login', '2025-11-24 12:22:01');
+(422, 3, 'Login', '2025-11-24 12:22:01'),
+(423, 3, 'Logout', '2025-11-24 13:16:59'),
+(424, 1, 'Login', '2025-11-24 13:17:05'),
+(425, 1, 'Logout', '2025-11-24 13:23:30'),
+(426, 3, 'Login', '2025-11-24 13:23:36'),
+(427, 3, 'HRD: terima administrasi application #5 (Divisi IT)', '2025-11-24 13:24:19'),
+(428, 3, 'HRD: set interview application #5', '2025-11-24 13:24:46'),
+(429, 3, 'HRD: terima bekerja application #5 (Divisi IT)', '2025-11-24 13:25:18');
 
 -- --------------------------------------------------------
 
@@ -1077,7 +1084,7 @@ ALTER TABLE `live_streaming`
 -- AUTO_INCREMENT for table `log_aktivitas`
 --
 ALTER TABLE `log_aktivitas`
-  MODIFY `log_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=423;
+  MODIFY `log_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=430;
 
 --
 -- AUTO_INCREMENT for table `lowongan`
