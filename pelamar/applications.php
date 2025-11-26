@@ -71,7 +71,7 @@ $list = mysqli_query($conn, "SELECT a.*, l.title FROM applications a JOIN lowong
                                 <th>Tgl Lamar</th>
                                 <th>Alasan HRD</th>
                                 <th>Jadwal Interview</th>
-                                <th>Tgl Mulai</th>
+                                <th>Tgl Mulai Bekerja</th>
                                 <th>CV</th>
                             </tr>
                         </thead>

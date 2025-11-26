@@ -7,7 +7,16 @@ include '../connect/koneksi.php';
 $status = $_GET['status'] ?? '';
 $filter = "";
 if (!empty($status) && $status !== 'semua') {
-    $filter = "WHERE a.status = '" . mysqli_real_escape_string($conn, $status) . "'";
+
+    $value = mysqli_real_escape_string($conn, $status);
+
+    if ($value === 'ditolak') {
+        $filter = "WHERE a.status LIKE '%ditolak%'";
+    } 
+    else {
+        // Normal
+        $filter = "WHERE a.status = '$value'";
+    }
 }
 
 $sql = "SELECT u.full_name AS nama, l.title AS nama_pekerjaan, l.location AS tempat, 

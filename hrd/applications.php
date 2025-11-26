@@ -32,10 +32,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && isset($_
     $application_id = (int)$_POST['application_id'];
     if ($_POST['action'] === 'accept_admin') {
         $reason = esc($conn, $_POST['reason']);
-        $interview_date = !empty($_POST['interview_date']) ? esc($conn, $_POST['interview_date']) : NULL;
-        $q = "UPDATE applications SET status='lolos administrasi', updated_at=NOW(), reason='$reason'" .
-            ($interview_date ? ", interview_date='$interview_date'" : "") .
-            " WHERE application_id=$application_id";
+        // Hapus bagian interview_date dari sini
+        $q = "UPDATE applications SET status='lolos administrasi', updated_at=NOW(), reason='$reason' WHERE application_id=$application_id";
         if (mysqli_query($conn, $q)) {
             $info = mysqli_query($conn, "SELECT a.*, u.email, u.full_name, l.title FROM applications a JOIN users u ON a.user_id=u.user_id JOIN lowongan l ON a.job_id=l.job_id WHERE a.application_id=$application_id");
             if ($info) {
@@ -44,19 +42,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && isset($_
                 $subject = 'Hasil Seleksi Administrasi - ' . $row['title'];
                 $msg = "Halo " . $row['full_name'] . ",\n\n" .
                     "Selamat, Anda LOLOS seleksi administrasi untuk posisi " . $row['title'] . ".\n" .
-                    "Alasan: " . $reason . "\n" .
-                    ($interview_date ? "Jadwal Wawancara: " . $interview_date . "\n" : "") .
-                    "\nTerima kasih.\nHRD";
+                    "Alasan: " . $reason . "\n\n" .
+                    "Kami akan menghubungi Anda untuk jadwal wawancara selanjutnya.\n\n" .
+                    "Terima kasih.\nHRD";
                 sendEmail($to, $subject, $msg);
                 logActivity($conn, $user_id, "HRD: terima administrasi application #$application_id (" . $row['title'] . ")");
             }
-            $success = 'Lamaran diterima pada seleksi administrasi';
+            $success = 'Lamaran diterima pada seleksi administrasi. Silakan jadwalkan wawancara di menu Kandidat.';
         } else {
             $error = 'Gagal memperbarui status';
         }
     } elseif ($_POST['action'] === 'reject_admin') {
         $reason = esc($conn, $_POST['reason']);
-        $q = "UPDATE applications SET status='ditolak', updated_at=NOW(), reason='$reason' WHERE application_id=$application_id";
+        $q = "UPDATE applications SET status='ditolak administrasi', updated_at=NOW(), reason='$reason' WHERE application_id=$application_id";
         if (mysqli_query($conn, $q)) {
             $info = mysqli_query($conn, "SELECT a.*, u.email, u.full_name, l.title FROM applications a JOIN users u ON a.user_id=u.user_id JOIN lowongan l ON a.job_id=l.job_id WHERE a.application_id=$application_id");
             if ($info) {
@@ -87,7 +85,7 @@ if (isset($_GET['id'])) {
         WHERE application_id=$id AND status='pending'
     ");
 
-    
+
     $detail = mysqli_query($conn, "
         SELECT a.*, u.full_name, u.email, l.title,
         jenjang.nama_jenjang,
@@ -198,7 +196,7 @@ $list = mysqli_query($conn, "
                                 <div class="detail-item">
                                     <div class="detail-label"><i class="fas fa-graduation-cap"></i> Pendidikan Terakhir</div>
                                     <div class="detail-value">
-                                        <?php 
+                                        <?php
                                         if (!empty($detail['nama_jenjang'])) {
                                             echo htmlspecialchars($detail['nama_jenjang']);
                                             if (!empty($detail['nama_jurusan'])) {
@@ -247,24 +245,16 @@ $list = mysqli_query($conn, "
                             </div>
                         </div>
 
-                        <?php if (!empty($detail['reason']) || !empty($detail['interview_date'])): ?>
-                        <div class="detail-section">
-                            <h4><i class="fas fa-comment-alt"></i> Informasi Tambahan</h4>
-                            <div class="detail-grid">
-                                <?php if (!empty($detail['reason'])): ?>
-                                <div class="detail-item full-width">
-                                    <div class="detail-label"><i class="fas fa-sticky-note"></i> Alasan/Catatan</div>
-                                    <div class="detail-value"><?php echo htmlspecialchars($detail['reason']); ?></div>
+                        <?php if (!empty($detail['reason'])): ?>
+                            <div class="detail-section">
+                                <h4><i class="fas fa-comment-alt"></i> Informasi Tambahan</h4>
+                                <div class="detail-grid">
+                                    <div class="detail-item full-width">
+                                        <div class="detail-label"><i class="fas fa-sticky-note"></i> Alasan/Catatan</div>
+                                        <div class="detail-value"><?php echo htmlspecialchars($detail['reason']); ?></div>
+                                    </div>
                                 </div>
-                                <?php endif; ?>
-                                <?php if (!empty($detail['interview_date'])): ?>
-                                <div class="detail-item">
-                                    <div class="detail-label"><i class="fas fa-calendar-check"></i> Jadwal Wawancara</div>
-                                    <div class="detail-value"><?php echo date('d F Y H:i', strtotime($detail['interview_date'])); ?></div>
-                                </div>
-                                <?php endif; ?>
                             </div>
-                        </div>
                         <?php endif; ?>
 
                         <div class="actions">
@@ -276,16 +266,11 @@ $list = mysqli_query($conn, "
                                     <label><i class="fas fa-comment"></i> Alasan Diterima <span class="required">*</span></label>
                                     <textarea name="reason" rows="3" placeholder="Contoh: Memenuhi persyaratan administrasi" required></textarea>
                                 </div>
-                                <div class="form-group">
-                                    <label><i class="fas fa-calendar-alt"></i> Jadwal Wawancara (opsional)</label>
-                                    <input type="datetime-local" name="interview_date">
-                                    <small class="form-hint">Tentukan jadwal wawancara jika diperlukan</small>
-                                </div>
                                 <button type="submit" class="btn btn-primary btn-block">
                                     <i class="fas fa-check"></i> Terima (Lolos Administrasi)
                                 </button>
                             </form>
-                            
+
                             <form method="POST" class="action-form reject-form" onsubmit="return confirm('Yakin tolak lamaran ini?')">
                                 <h4 class="form-title"><i class="fas fa-times-circle"></i> Tolak Lamaran</h4>
                                 <input type="hidden" name="application_id" value="<?php echo (int)$detail['application_id']; ?>">
@@ -326,7 +311,7 @@ $list = mysqli_query($conn, "
                                             <td><?php echo htmlspecialchars($row['title']); ?></td>
                                             <td><?php echo !empty($row['no_telepon']) ? htmlspecialchars($row['no_telepon']) : '-'; ?></td>
                                             <td>
-                                                <?php 
+                                                <?php
                                                 if (!empty($row['nama_jenjang'])) {
                                                     echo htmlspecialchars($row['nama_jenjang']);
                                                     if (!empty($row['nama_jurusan'])) {
@@ -355,7 +340,7 @@ $list = mysqli_query($conn, "
                     </div>
                 </div>
             <?php endif; ?>
-            
+
             <!-- Tabel Semua Pelamar -->
             <div class="card">
                 <div class="card-header">
@@ -397,7 +382,15 @@ $list = mysqli_query($conn, "
                             <?php
                             $filter = "";
                             if (!empty($_GET['status_filter'])) {
-                                $filter = "AND a.status = '" . mysqli_real_escape_string($conn, $_GET['status_filter']) . "'";
+                                $value = mysqli_real_escape_string($conn, $_GET['status_filter']);
+
+                                if ($value === 'ditolak') {
+                                    // ambil semua status yg mengandung kata "ditolak"
+                                    $filter = "AND a.status LIKE '%ditolak%'";
+                                } else {
+                                    // normal
+                                    $filter = "AND a.status = '$value'";
+                                }
                             }
 
                             $sql = "SELECT u.full_name AS nama, 
@@ -422,7 +415,7 @@ $list = mysqli_query($conn, "
                                 $no = 1;
                                 while ($row = mysqli_fetch_assoc($result)) {
                                     $telepon = !empty($row['no_telepon']) ? htmlspecialchars($row['no_telepon']) : '-';
-                                    
+
                                     $pendidikan = '-';
                                     if (!empty($row['nama_jenjang'])) {
                                         $pendidikan = htmlspecialchars($row['nama_jenjang']);
@@ -430,7 +423,7 @@ $list = mysqli_query($conn, "
                                             $pendidikan .= ' - ' . htmlspecialchars($row['nama_jurusan']);
                                         }
                                     }
-                                    
+
                                     echo "<tr>
                                             <td>{$no}</td>
                                             <td>" . htmlspecialchars($row['nama']) . "</td>

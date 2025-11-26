@@ -536,7 +536,7 @@ if (isset($_GET['success']) && $_GET['success'] == 1) {
                                                 <div class="summary-item">
                                                     <span class="summary-label">CV:</span>
                                                     <span class="summary-value">
-                                                        <a href="../uploads/cv/<?php echo htmlspecialchars($user_profile['cv_filename']); ?>" target="_blank" class="btn-link">
+                                                        <a href="cv/<?php echo htmlspecialchars($user_profile['cv_filename']); ?>" target="_blank" class="btn-link">
                                                             <i class="fas fa-file-pdf"></i> Lihat CV
                                                         </a>
                                                     </span>

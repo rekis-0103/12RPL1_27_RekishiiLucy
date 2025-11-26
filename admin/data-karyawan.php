@@ -107,7 +107,7 @@ $total_karyawan = mysqli_num_rows($result_karyawan);
                     <th>Pendidikan</th>
                     <th>Jurusan</th>
                     <th>Posisi</th>
-                    <th>Tanggal Mulai</th>
+                    <th>Tanggal Mulai Kerja</th>
                 </tr>
             </thead>
             <tbody>

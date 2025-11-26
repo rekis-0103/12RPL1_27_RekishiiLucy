@@ -41,39 +41,71 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
 
     if ($_POST['action'] === 'move_to_interview') {
         $interview_date = !empty($_POST['interview_date']) ? esc($conn, $_POST['interview_date']) : NULL;
-        $q = "UPDATE applications SET status='tes & wawancara', updated_at=NOW()" .
-            ($interview_date ? ", interview_date='$interview_date'" : "") .
-            " WHERE application_id=$application_id";
-        if (mysqli_query($conn, $q)) {
-            $success = 'Dipindah ke Tes & Wawancara';
-            logActivity($conn, $user_id, "HRD: set interview application #$application_id");
+        
+        // Validasi tanggal tidak boleh mundur
+        if ($interview_date) {
+            $interview_timestamp = strtotime($interview_date);
+            $now = time();
+            
+            if ($interview_timestamp < $now) {
+                $error = 'Tanggal dan waktu wawancara tidak boleh mundur dari sekarang!';
+            } else {
+                $q = "UPDATE applications SET status='tes & wawancara', updated_at=NOW(), interview_date='$interview_date' WHERE application_id=$application_id";
+                if (mysqli_query($conn, $q)) {
+                    $info = mysqli_query($conn, "SELECT a.*, u.email, u.full_name, l.title FROM applications a JOIN users u ON a.user_id=u.user_id JOIN lowongan l ON a.job_id=l.job_id WHERE a.application_id=$application_id");
+                    if ($info) {
+                        $row = mysqli_fetch_assoc($info);
+                        $to = $row['email'];
+                        $subject = 'Jadwal Wawancara - ' . $row['title'];
+                        $msg = "Halo " . $row['full_name'] . ",\n\n" .
+                            "Selamat! Anda dijadwalkan untuk mengikuti Tes & Wawancara untuk posisi " . $row['title'] . ".\n" .
+                            "Jadwal: " . date('d F Y, H:i', strtotime($interview_date)) . " WIB\n\n" .
+                            "Mohon hadir tepat waktu.\n\nTerima kasih.\nHRD";
+                        sendEmail($to, $subject, $msg);
+                    }
+                    $success = 'Jadwal wawancara berhasil diset';
+                    logActivity($conn, $user_id, "HRD: set interview application #$application_id");
+                } else {
+                    $error = 'Gagal memperbarui jadwal wawancara';
+                }
+            }
         } else {
-            $error = 'Gagal memperbarui';
+            $error = 'Tanggal wawancara wajib diisi';
         }
     } elseif ($_POST['action'] === 'accept_hire') {
         $reason = esc($conn, $_POST['reason']);
         $start_date = esc($conn, $_POST['start_date']);
-        $q = "UPDATE applications SET status='diterima bekerja', updated_at=NOW(), reason='$reason', start_date='$start_date' WHERE application_id=$application_id";
-        if (mysqli_query($conn, $q)) {
-            $info = mysqli_query($conn, "SELECT a.*, u.email, u.full_name, l.title FROM applications a JOIN users u ON a.user_id=u.user_id JOIN lowongan l ON a.job_id=l.job_id WHERE a.application_id=$application_id");
-            if ($info) {
-                $row = mysqli_fetch_assoc($info);
-                $to = $row['email'];
-                $subject = 'Selamat Bergabung - ' . $row['title'];
-                $msg = "Halo " . $row['full_name'] . ",\n\n" .
-                    "Selamat! Anda DITERIMA BEKERJA pada posisi " . $row['title'] . ".\n" .
-                    "Tanggal Mulai: " . $start_date . "\n" .
-                    "Catatan: " . $reason . "\n\nSampai jumpa di hari pertama.\nHRD";
-                sendEmail($to, $subject, $msg);
-                logActivity($conn, $user_id, "HRD: terima bekerja application #$application_id (" . $row['title'] . ")");
-            }
-            $success = 'Kandidat diterima bekerja';
+        
+        // Validasi tanggal mulai bekerja tidak boleh mundur
+        $start_timestamp = strtotime($start_date);
+        $today = strtotime(date('Y-m-d'));
+        
+        if ($start_timestamp < $today) {
+            $error = 'Tanggal mulai bekerja tidak boleh mundur dari hari ini!';
         } else {
-            $error = 'Gagal memperbarui';
+            $q = "UPDATE applications SET status='diterima bekerja', updated_at=NOW(), reason='$reason', start_date='$start_date' WHERE application_id=$application_id";
+            if (mysqli_query($conn, $q)) {
+                $info = mysqli_query($conn, "SELECT a.*, u.email, u.full_name, l.title FROM applications a JOIN users u ON a.user_id=u.user_id JOIN lowongan l ON a.job_id=l.job_id WHERE a.application_id=$application_id");
+                if ($info) {
+                    $row = mysqli_fetch_assoc($info);
+                    $to = $row['email'];
+                    $subject = 'Selamat Bergabung - ' . $row['title'];
+                    $msg = "Halo " . $row['full_name'] . ",\n\n" .
+                        "Selamat! Anda DITERIMA BEKERJA pada posisi " . $row['title'] . ".\n" .
+                        "Tanggal Mulai: " . date('d F Y', strtotime($start_date)) . "\n" .
+                        (!empty($reason) ? "Catatan: " . $reason . "\n" : "") .
+                        "\nSampai jumpa di hari pertama.\nHRD";
+                    sendEmail($to, $subject, $msg);
+                    logActivity($conn, $user_id, "HRD: terima bekerja application #$application_id (" . $row['title'] . ")");
+                }
+                $success = 'Kandidat diterima bekerja';
+            } else {
+                $error = 'Gagal memperbarui status';
+            }
         }
     } elseif ($_POST['action'] === 'reject_after_interview') {
         $reason = esc($conn, $_POST['reason']);
-        $q = "UPDATE applications SET status='ditolak', updated_at=NOW(), reason='$reason' WHERE application_id=$application_id";
+        $q = "UPDATE applications SET status='ditolak tes & wawancara', updated_at=NOW(), reason='$reason' WHERE application_id=$application_id";
         if (mysqli_query($conn, $q)) {
             $info = mysqli_query($conn, "SELECT a.*, u.email, u.full_name, l.title FROM applications a JOIN users u ON a.user_id=u.user_id JOIN lowongan l ON a.job_id=l.job_id WHERE a.application_id=$application_id");
             if ($info) {
@@ -81,14 +113,33 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                 $to = $row['email'];
                 $subject = 'Hasil Wawancara - ' . $row['title'];
                 $msg = "Halo " . $row['full_name'] . ",\n\n" .
-                    "Terima kasih telah mengikuti proses. Mohon maaf Anda BELUM DITERIMA untuk posisi " . $row['title'] . ".\n" .
+                    "Terima kasih telah mengikuti proses wawancara. Mohon maaf Anda BELUM DITERIMA untuk posisi " . $row['title'] . ".\n" .
                     "Alasan: " . $reason . "\n\nSemoga sukses di kesempatan berikutnya.\nHRD";
                 sendEmail($to, $subject, $msg);
                 logActivity($conn, $user_id, "HRD: tolak setelah interview application #$application_id (" . $row['title'] . ")");
             }
             $success = 'Kandidat ditolak';
         } else {
-            $error = 'Gagal memperbarui';
+            $error = 'Gagal memperbarui status';
+        }
+    } elseif ($_POST['action'] === 'reject_before_interview') {
+        $reason = esc($conn, $_POST['reason']);
+        $q = "UPDATE applications SET status='ditolak administrasi', updated_at=NOW(), reason='$reason' WHERE application_id=$application_id";
+        if (mysqli_query($conn, $q)) {
+            $info = mysqli_query($conn, "SELECT a.*, u.email, u.full_name, l.title FROM applications a JOIN users u ON a.user_id=u.user_id JOIN lowongan l ON a.job_id=l.job_id WHERE a.application_id=$application_id");
+            if ($info) {
+                $row = mysqli_fetch_assoc($info);
+                $to = $row['email'];
+                $subject = 'Hasil Seleksi - ' . $row['title'];
+                $msg = "Halo " . $row['full_name'] . ",\n\n" .
+                    "Terima kasih atas minat Anda. Mohon maaf lamaran Anda DITOLAK untuk posisi " . $row['title'] . ".\n" .
+                    "Alasan: " . $reason . "\n\nSemoga sukses di kesempatan berikutnya.\nHRD";
+                sendEmail($to, $subject, $msg);
+                logActivity($conn, $user_id, "HRD: tolak kandidat application #$application_id (" . $row['title'] . ")");
+            }
+            $success = 'Kandidat ditolak';
+        } else {
+            $error = 'Gagal memperbarui status';
         }
     }
 }
@@ -112,6 +163,10 @@ if ($detail && mysqli_num_rows($detail) > 0) {
     header('Location: candidates.php');
     exit();
 }
+
+// Get minimum datetime for validation (now)
+$min_datetime = date('Y-m-d\TH:i');
+$min_date = date('Y-m-d');
 ?>
 <!DOCTYPE html>
 <html lang="id">
@@ -152,9 +207,6 @@ if ($detail && mysqli_num_rows($detail) > 0) {
         <div class="main-content">
             <div class="dashboard-header">
                 <div class="header-with-back">
-                    <a href="candidates.php" class="back-button">
-                        <i class="fas fa-arrow-left"></i> Kembali ke Daftar Kandidat
-                    </a>
                     <h1>Detail Kandidat</h1>
                     <p>Informasi lengkap kandidat</p>
                 </div>
@@ -185,19 +237,15 @@ if ($detail && mysqli_num_rows($detail) > 0) {
                             <div class="detail-item">
                                 <div class="detail-label"><i class="fas fa-envelope"></i> Email</div>
                                 <div class="detail-value">
-                                    <a href="mailto:<?php echo htmlspecialchars($candidate['email']); ?>" class="btn-link">
                                         <?php echo htmlspecialchars($candidate['email']); ?>
-                                    </a>
                                 </div>
                             </div>
                             <div class="detail-item">
                                 <div class="detail-label"><i class="fas fa-phone"></i> Nomor Telepon</div>
                                 <div class="detail-value">
                                     <?php if (!empty($candidate['no_telepon'])): ?>
-                                        <a href="tel:<?php echo htmlspecialchars($candidate['no_telepon']); ?>" class="btn-link">
                                             <i class="fas fa-phone-alt"></i>
                                             <?php echo htmlspecialchars($candidate['no_telepon']); ?>
-                                        </a>
                                     <?php else: ?>
                                         <span class="text-muted">Tidak ada</span>
                                     <?php endif; ?>
@@ -244,7 +292,7 @@ if ($detail && mysqli_num_rows($detail) > 0) {
                                 <div class="detail-label"><i class="fas fa-file-pdf"></i> CV</div>
                                 <div class="detail-value">
                                     <?php if (!empty($candidate['cv'])): ?>
-                                        <a href="../<?php echo htmlspecialchars($candidate['cv']); ?>" target="_blank" class="btn-link">
+                                        <a href="../pelamar/cv/<?php echo htmlspecialchars($candidate['cv']); ?>" target="_blank" class="btn-link">
                                             <i class="fas fa-download"></i> Lihat/Download CV
                                         </a>
                                     <?php else: ?>
@@ -286,49 +334,51 @@ if ($detail && mysqli_num_rows($detail) > 0) {
                     <div class="detail-section">
                         <h4><i class="fas fa-tasks"></i> Aksi HRD</h4>
                         <div class="actions">
-                            <!-- Pindah ke Tahap Tes & Wawancara -->
+                            <!-- Untuk Status: Lolos Administrasi -->
                             <?php if ($candidate['status'] === 'lolos administrasi'): ?>
-                            <form method="POST" class="action-form accept-form">
+                            <form method="POST" class="action-form accept-form" onsubmit="return validateInterviewDate()">
                                 <h4 class="form-title"><i class="fas fa-calendar-check"></i> Jadwalkan Wawancara</h4>
                                 <input type="hidden" name="application_id" value="<?php echo $candidate['application_id']; ?>">
                                 <input type="hidden" name="action" value="move_to_interview">
                                 <div class="form-group">
-                                    <label><i class="fas fa-calendar-alt"></i> Tanggal Wawancara</label>
-                                    <input type="datetime-local" name="interview_date" class="form-control" placeholder="Tanggal Wawancara">
+                                    <label><i class="fas fa-calendar-alt"></i> Tanggal & Waktu Wawancara <span class="required">*</span></label>
+                                    <input type="datetime-local" id="interview_date" name="interview_date" class="form-control" min="<?php echo $min_datetime; ?>" required>
+                                    <small class="form-hint">Pilih tanggal dan waktu wawancara (tidak boleh mundur dari sekarang)</small>
                                 </div>
                                 <button type="submit" class="btn btn-primary btn-block">
-                                    <i class="fas fa-calendar-check"></i> Jadwalkan Wawancara
+                                    <i class="fas fa-calendar-check"></i> Set Jadwal Wawancara
                                 </button>
                             </form>
+                            
                             <?php endif; ?>
 
-                            <!-- Terima Bekerja -->
+                            <!-- Untuk Status: Tes & Wawancara -->
                             <?php if ($candidate['status'] === 'tes & wawancara'): ?>
-                            <form method="POST" class="action-form accept-form" onsubmit="return confirm('Yakin terima kandidat ini?')">
+                            <form method="POST" class="action-form accept-form" onsubmit="return validateStartDate() && confirm('Yakin terima kandidat ini?')">
                                 <h4 class="form-title"><i class="fas fa-user-check"></i> Terima Bekerja</h4>
                                 <input type="hidden" name="application_id" value="<?php echo $candidate['application_id']; ?>">
                                 <input type="hidden" name="action" value="accept_hire">
                                 <div class="form-group">
-                                    <label><i class="fas fa-calendar-alt"></i> Tanggal Mulai <span class="required">*</span></label>
-                                    <input type="date" name="start_date" class="form-control" required>
+                                    <label><i class="fas fa-calendar-alt"></i> Tanggal Mulai Bekerja <span class="required">*</span></label>
+                                    <input type="date" id="start_date" name="start_date" class="form-control" min="<?php echo $min_date; ?>" required>
+                                    <small class="form-hint">Pilih tanggal mulai bekerja (tidak boleh mundur dari hari ini)</small>
                                 </div>
                                 <div class="form-group">
                                     <label><i class="fas fa-comment"></i> Catatan (opsional)</label>
                                     <input type="text" name="reason" class="form-control" placeholder="Catatan untuk kandidat">
                                 </div>
-                                <button type="submit" class="btn btn-primary btn-block">
+                                <button type="submit" class="btn btn-success btn-block">
                                     <i class="fas fa-user-check"></i> Terima Bekerja
                                 </button>
                             </form>
 
-                            <!-- Tolak Setelah Wawancara -->
                             <form method="POST" class="action-form reject-form" onsubmit="return confirm('Yakin tolak kandidat ini?')">
                                 <h4 class="form-title"><i class="fas fa-user-times"></i> Tolak Kandidat</h4>
                                 <input type="hidden" name="application_id" value="<?php echo $candidate['application_id']; ?>">
                                 <input type="hidden" name="action" value="reject_after_interview">
                                 <div class="form-group">
                                     <label><i class="fas fa-comment"></i> Alasan Penolakan <span class="required">*</span></label>
-                                    <textarea name="reason" class="form-control" rows="3" placeholder="Contoh: Tidak memenuhi standar wawancara" required></textarea>
+                                    <textarea name="reason" class="form-control" rows="3" placeholder="Contoh: Hasil wawancara kurang memuaskan" required></textarea>
                                 </div>
                                 <button type="submit" class="btn btn-danger btn-block">
                                     <i class="fas fa-user-times"></i> Tolak Kandidat
@@ -369,6 +419,38 @@ if ($detail && mysqli_num_rows($detail) > 0) {
                 }
             }
         });
+
+        // Validasi tanggal wawancara
+        function validateInterviewDate() {
+            const interviewInput = document.getElementById('interview_date');
+            if (!interviewInput) return true;
+            
+            const selectedDate = new Date(interviewInput.value);
+            const now = new Date();
+            
+            if (selectedDate < now) {
+                alert('Tanggal dan waktu wawancara tidak boleh mundur dari sekarang!');
+                return false;
+            }
+            return true;
+        }
+
+        // Validasi tanggal mulai bekerja
+        function validateStartDate() {
+            const startInput = document.getElementById('start_date');
+            if (!startInput) return true;
+            
+            const selectedDate = new Date(startInput.value);
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            selectedDate.setHours(0, 0, 0, 0);
+            
+            if (selectedDate < today) {
+                alert('Tanggal mulai bekerja tidak boleh mundur dari hari ini!');
+                return false;
+            }
+            return true;
+        }
     </script>
 </body>
 </html>

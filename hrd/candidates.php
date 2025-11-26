@@ -223,38 +223,6 @@ $list = mysqli_query($conn, "SELECT a.*, u.full_name, u.email, l.title,
                                                 <a href="candidate-detail.php?id=<?php echo (int)$row['application_id']; ?>" class="btn btn-info btn-sm">
                                                     <i class="fas fa-eye"></i> Periksa
                                                 </a>
-                                                
-                                                <?php if ($row['status'] === 'lolos administrasi'): ?>
-                                                    <form method="POST" class="inline action-form">
-                                                        <input type="hidden" name="action" value="move_to_interview">
-                                                        <input type="hidden" name="application_id" value="<?php echo (int)$row['application_id']; ?>">
-                                                        <input type="datetime-local" name="interview_date" class="input-sm" required>
-                                                        <button type="submit" class="btn btn-primary btn-sm">
-                                                            <i class="fas fa-calendar-alt"></i> Set Wawancara
-                                                        </button>
-                                                    </form>
-                                                <?php endif; ?>
-                                                
-                                                <?php if ($row['status'] === 'tes & wawancara' || $row['status'] === 'lolos administrasi'): ?>
-                                                    <form method="POST" class="inline action-form" onsubmit="return confirm('Terima kandidat ini?')">
-                                                        <input type="hidden" name="action" value="accept_hire">
-                                                        <input type="hidden" name="application_id" value="<?php echo (int)$row['application_id']; ?>">
-                                                        <input type="date" name="start_date" class="input-sm" placeholder="Tanggal Mulai" required>
-                                                        <input type="text" name="reason" class="input-sm" placeholder="Catatan" required>
-                                                        <button type="submit" class="btn btn-success btn-sm">
-                                                            <i class="fas fa-check"></i> Terima
-                                                        </button>
-                                                    </form>
-                                                    
-                                                    <form method="POST" class="inline action-form" onsubmit="return confirm('Tolak kandidat ini?')">
-                                                        <input type="hidden" name="action" value="reject_after_interview">
-                                                        <input type="hidden" name="application_id" value="<?php echo (int)$row['application_id']; ?>">
-                                                        <input type="text" name="reason" class="input-sm" placeholder="Alasan Ditolak" required>
-                                                        <button type="submit" class="btn btn-danger btn-sm">
-                                                            <i class="fas fa-times"></i> Tolak
-                                                        </button>
-                                                    </form>
-                                                <?php endif; ?>
                                             </div>
                                         </td>
                                     </tr>
