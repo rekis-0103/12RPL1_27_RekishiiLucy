@@ -1,5 +1,7 @@
 # Re-Development Website Company Profile dengan Tambahan Fitur E-Recruitment Sebagai Keperluan Untuk Jurnal
 
+# Reminder, untuk di jurnal hanya dibatasi pada fitur e-recruitment saja
+
 ## Teknologi yang Digunakan :
 ### Bahasa Pemrograman :
 - PHP
